@@ -1,0 +1,9 @@
+
+
+
+# ignore dir
+.SpaceVim.d/
+node_modules/
+
+# ignore file
+.clang
