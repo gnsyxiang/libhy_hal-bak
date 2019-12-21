@@ -1,5 +1,5 @@
 
-
+# ignore pattern
 
 # ignore dir
 .SpaceVim.d/
@@ -7,3 +7,20 @@ node_modules/
 
 # ignore file
 .clang
+configure.scan
+Makefile.in
+aclocal.m4
+ar-lib
+autom4te.cache/
+autoscan.log
+compile
+config.guess
+config.h.in
+config.h.in~
+config.sub
+configure
+depcomp
+install-sh
+ltmain.sh
+missing
+
