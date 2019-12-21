@@ -18,5 +18,12 @@
 #     last modified: 21/12 2019 13:20
 # ===============================================================
 
+ACLOCAL_AMFLAGS = -I m4
+
+AM_CFLAGS_COM  = $(ACLOCAL_AMFLAGS)
+AM_CFLAGS_COM += -pipe -W -Wall -Werror
+AM_CFLAGS_COM += -I$(top_srcdir)/../include
+export AM_CFLAGS_COM
+
 SUBDIRS = include src example
 

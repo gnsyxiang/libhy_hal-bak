@@ -18,11 +18,12 @@
 #     last modified: 21/12 2019 13:20
 # ===============================================================
 
-lib_LTLIBRARIES		= libhal.la
+lib_LTLIBRARIES = libhal.la
 
-AM_CFLAGS  	 		= -pipe -W -Wall -Werror
-libhal_la_LDFLAGS 	= -rdynamic -fPIC
-libhal_la_SOURCES  	= demo.c
+AM_CFLAGS = $(AM_CFLAGS_COM)
+
+libhal_la_LDFLAGS = -rdynamic -fPIC
+libhal_la_SOURCES = demo.c
 
 all: libhal.la
 

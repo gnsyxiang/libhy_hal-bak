@@ -18,7 +18,7 @@
 #     last modified: 21/12 2019 13:22
 # ===============================================================
 
-AM_CFLAGS = -pipe -W -Wall -Werror -I$(top_srcdir)/include
+AM_CFLAGS = $(AM_CFLAGS_COM)
 
 bin_PROGRAMS = demo
 
