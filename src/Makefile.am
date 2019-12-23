@@ -20,9 +20,12 @@
 
 lib_LTLIBRARIES = libhal.la
 
+LDFLAGS_COM  = -rdynamic -fPIC
+LDFLAGS_COM += -version-info @current@:@revision@:@age@
+
 AM_CFLAGS = $(AM_CFLAGS_COM)
 
-libhal_la_LDFLAGS = -rdynamic -fPIC
+libhal_la_LDFLAGS = $(LDFLAGS_COM)
 libhal_la_SOURCES = demo.c
 
 all: libhal.la
