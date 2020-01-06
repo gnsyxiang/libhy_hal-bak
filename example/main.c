@@ -27,6 +27,10 @@ int main(int argc, const char *argv[])
     (void)argv;
 
     hello_world();
+
+#if HAVE_MY_PRINT
+    my_print();
+#endif
     
     return 0;
 }

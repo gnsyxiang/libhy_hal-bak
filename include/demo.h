@@ -24,6 +24,12 @@
 extern "C" {
 #endif
 
+#include "config.h"
+
+#if HAVE_MY_PRINT
+void my_print(void);
+#endif
+
 void hello_world(void);
 
 #ifdef __cplusplus

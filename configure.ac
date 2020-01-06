@@ -21,6 +21,10 @@ AC_SUBST(age)
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])
 AM_SILENT_RULES([yes])
 
+AC_ARG_ENABLE(myprint,
+              AS_HELP_STRING([--enable-myprint], [enable my print]),
+              AC_DEFINE(HAVE_MY_PRINT, 1, [enables my print])
+              )
 
 # Checks for programs.
 AC_PROG_CC

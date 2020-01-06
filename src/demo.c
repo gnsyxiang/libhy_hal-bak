@@ -19,6 +19,15 @@
  */
 #include <stdio.h>
 
+#include "demo.h"
+
+#if HAVE_MY_PRINT
+void my_print(void)
+{
+    printf("my print \n");
+}
+#endif
+
 void hello_world(void)
 {
     printf("hello world\n");
