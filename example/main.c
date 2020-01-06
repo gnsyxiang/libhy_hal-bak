@@ -19,7 +19,11 @@
  */
 #include <stdio.h>
 
+#include "config.h"
 #include "demo.h"
+#if HAVE_MY_PRINT
+#include "my_print.h"
+#endif
 
 int main(int argc, const char *argv[])
 {

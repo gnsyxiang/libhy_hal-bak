@@ -2,10 +2,10 @@
  * 
  * Release under GPL-3.0.
  * 
- * @file    demo.c
+ * @file    my_print.c
  * @brief   
  * @author  gnsyxiang <gnsyxiang@163.com>
- * @date    17/12 2019 20:40
+ * @date    06/01 2020 11:20
  * @version v0.0.1
  * 
  * @since    note
@@ -13,15 +13,16 @@
  * 
  *     change log:
  *     NO.     Author              Date            Modified
- *     00      zhenquan.qiu        17/12 2019      create the file
+ *     00      zhenquan.qiu        06/01 2020      create the file
  * 
- *     last modified: 17/12 2019 20:40
+ *     last modified: 06/01 2020 11:20
  */
 #include <stdio.h>
 
-#include "demo.h"
+#include "my_print.h"
 
-void hello_world(void)
+void my_print(void)
 {
-    printf("hello world\n");
+    printf("my print \n");
 }
+

@@ -27,6 +27,9 @@ AM_CFLAGS = $(AM_CFLAGS_COM)
 
 libhal_la_LDFLAGS = $(LDFLAGS_COM)
 libhal_la_SOURCES = demo.c
+if COMPILE_WITH_MY_PRINT
+libhal_la_SOURCES += my_print.c
+endif
 
 all: libhal.la
 

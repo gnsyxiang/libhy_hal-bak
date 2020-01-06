@@ -25,6 +25,7 @@ AC_ARG_ENABLE(myprint,
               AS_HELP_STRING([--enable-myprint], [enable my print]),
               AC_DEFINE(HAVE_MY_PRINT, 1, [enables my print])
               )
+AM_CONDITIONAL([COMPILE_WITH_MY_PRINT], [test "x$enable_myprint" = "xyes"])
 
 # Checks for programs.
 AC_PROG_CC
