@@ -18,5 +18,5 @@
 #     last modified: 21/12 2019 13:21
 # ===============================================================
 
-include_HEADERS = demo.h
+include_HEADERS = hal_pthread.h
 

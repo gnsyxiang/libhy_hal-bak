@@ -2,10 +2,10 @@
  * 
  * Release under GPL-3.0.
  * 
- * @file    main.c
+ * @file    hal_pthread.c
  * @brief   
  * @author  gnsyxiang <gnsyxiang@163.com>
- * @date    17/12 2019 20:41
+ * @date    10/01 2020 20:59
  * @version v0.0.1
  * 
  * @since    note
@@ -13,21 +13,18 @@
  * 
  *     change log:
  *     NO.     Author              Date            Modified
- *     00      zhenquan.qiu        17/12 2019      create the file
+ *     00      zhenquan.qiu        10/01 2020      create the file
  * 
- *     last modified: 17/12 2019 20:41
+ *     last modified: 10/01 2020 20:59
  */
 #include <stdio.h>
 
-#include "config.h"
+#define LIBHAL_INCLUDE_HAL_PTHREAD_GB
 #include "hal_pthread.h"
+#undef LIBHAL_INCLUDE_HAL_PTHREAD_GB
 
-int main(int argc, const char *argv[])
+void hello_world(void)
 {
-    (void)argc;
-    (void)argv;
-
-    hello_world();
-
-    return 0;
+    printf("hello world \n");
 }
+

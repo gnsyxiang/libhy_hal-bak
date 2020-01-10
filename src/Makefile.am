@@ -17,19 +17,9 @@
 # 
 #     last modified: 21/12 2019 13:20
 # ===============================================================
-
-lib_LTLIBRARIES = libhal.la
-
-LDFLAGS_COM  = -rdynamic -fPIC
-LDFLAGS_COM += -version-info @current@:@revision@:@age@
-
-AM_CFLAGS = $(AM_CFLAGS_COM)
-
-libhal_la_LDFLAGS = $(LDFLAGS_COM)
-libhal_la_SOURCES = demo.c
-if COMPILE_WITH_MY_PRINT
-libhal_la_SOURCES += my_print.c
+if COMPILE_WITH_RTOS_HAL
+SUBDIRS = rtos
+else
+SUBDIRS = linux
 endif
-
-all: libhal.la
 

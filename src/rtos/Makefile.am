@@ -5,7 +5,7 @@
 # @file    Makefile.am
 # @brief   
 # @author  gnsyxiang <gnsyxiang@163.com>
-# @date    21/12 2019 13:22
+# @date    10/01 2020 20:13
 # @version v0.0.1
 # 
 # @since    note
@@ -13,20 +13,21 @@
 # 
 #     change log:
 #     NO.     Author              Date            Modified
-#     00      zhenquan.qiu        21/12 2019      create the file
+#     00      zhenquan.qiu        10/01 2020      create the file
 # 
-#     last modified: 21/12 2019 13:22
+#     last modified: 10/01 2020 20:13
 # ===============================================================
+
+lib_LTLIBRARIES = libhal.la
+
+LDFLAGS_COM  = -rdynamic -fPIC
+LDFLAGS_COM += -version-info @current@:@revision@:@age@
 
 AM_CFLAGS = $(AM_CFLAGS_COM)
 AM_CFLAGS += -I$(top_srcdir)/include
 
-bin_PROGRAMS = demo
+libhal_la_LDFLAGS = $(LDFLAGS_COM)
+libhal_la_SOURCES = hal_pthread.c
 
-demo_SOURCES = main.c
-if COMPILE_WITH_RTOS_HAL
-demo_LDADD   = $(top_builddir)/src/rtos/.libs/libhal.a
-else
-demo_LDADD   = $(top_builddir)/src/linux/.libs/libhal.a
-endif
+all: libhal.la
 
