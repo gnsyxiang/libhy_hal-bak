@@ -1,0 +1,21 @@
+
+# ignore pattern
+
+# ignore dir
+.SpaceVim.d/
+node_modules/
+m4/
+build-aux/
+autom4te.cache/
+
+# ignore file
+.clang
+configure.scan
+autoscan.log
+build-aux/version.num
+Makefile.in
+aclocal.m4
+config.h.in
+config.h.in~
+configure
+
