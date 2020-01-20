@@ -18,7 +18,7 @@ get_version_num_file()
 get_full_version_num()
 {
     full_version=`tr -d '\n' < version.num`
-    major=`cat version.num    | awk -F '_' '{print $1}' | awk -F '.' '{print $1}'`
+    current=`cat version.num    | awk -F '_' '{print $1}' | awk -F '.' '{print $1}'`
     revision=`cat version.num | awk -F '_' '{print $1}' | awk -F '.' '{print $2}'`
     age=`cat version.num      | awk -F '_' '{print $1}' | awk -F '.' '{print $3}'`
 
@@ -26,7 +26,7 @@ get_full_version_num()
     mkdir -p ${m4_dir}
 
     echo "m4_define([VERSION_NUM],          [$full_version])" >  ${m4_dir}/version.m4
-    echo "m4_define([VERSION_CURRENT_NUM],  [$major])"        >> ${m4_dir}/version.m4
+    echo "m4_define([VERSION_CURRENT_NUM],  [$current])"        >> ${m4_dir}/version.m4
     echo "m4_define([VERSION_REVISION_NUM], [$revision])"     >> ${m4_dir}/version.m4
     echo "m4_define([VERSION_AGE_NUM],      [$age])"          >> ${m4_dir}/version.m4
 }
