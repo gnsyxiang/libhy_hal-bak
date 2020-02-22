@@ -24,13 +24,12 @@
 extern "C" {
 #endif
 
-#ifdef HAVE_RTT_HAL
-#else
+#include "hal_config.h"
+
 #define HalLogD printf
 #define HalLogT printf
 #define HalLogW printf
 #define HalLogE printf
-#endif
 
 #ifdef __cplusplus
 }

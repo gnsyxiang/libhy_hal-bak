@@ -1,11 +1,11 @@
 /**
- *
+ * 
  * Release under GPL-3.0.
  * 
- * @file    hal_time.h
+ * @file    hal_log.c
  * @brief   
  * @author  gnsyxiang <gnsyxiang@163.com>
- * @date    22/02 2020 15:35
+ * @date    22/02 2020 16:49
  * @version v0.0.1
  * 
  * @since    note
@@ -15,22 +15,12 @@
  *     NO.     Author              Date            Modified
  *     00      zhenquan.qiu        22/02 2020      create the file
  * 
- *     last modified: 22/02 2020 15:35
+ *     last modified: 22/02 2020 16:49
  */
-#ifndef __LIBHAL_INCLUDE_HAL_TIME_H_
-#define __LIBHAL_INCLUDE_HAL_TIME_H_
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
+#include "config.h"
 #include "hal_config.h"
 
-hal_uint32_t HalSleep(hal_uint32_t seconds);
-
-#ifdef __cplusplus
-}
+#ifdef HAVE_RTT_HAL
+#else
 #endif
-
-#endif // __LIBHAL_INCLUDE_HAL_TIME_H_
 

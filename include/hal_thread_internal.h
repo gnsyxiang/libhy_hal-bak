@@ -24,10 +24,18 @@
 extern "C" {
 #endif
 
+#include "config.h"
+#include "hal_config.h"
+
 #ifdef HAVE_RTT_HAL
 #else
 
-#include "hal_config.h"
+#include <pthread.h>
+#include <sched.h>
+#define _GNU_SOURCE         /* See feature_test_macros(7) */
+#include <unistd.h>
+#include <sys/syscall.h>   /* For SYS_xxx definitions */
+#include <sys/prctl.h>
 
 #define HAL_THREAD_NAME_MAX_LEN (16)
 

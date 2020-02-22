@@ -24,11 +24,11 @@
 extern "C" {
 #endif
 
-#ifdef HAVE_RTT_HAL
-#else
-#define HalStrncpy strncpy
-#define HalStrlen strlen
-#endif
+#include "hal_config.h"
+
+hal_int8_t *HalStrcpy(hal_int8_t *dest, const hal_int8_t *src);
+hal_int8_t *HalStrncpy(hal_int8_t *dest, const hal_int8_t *src, size_t n);
+size_t HalStrlen(const hal_int8_t *s);
 
 #ifdef __cplusplus
 }

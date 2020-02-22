@@ -24,11 +24,12 @@
 extern "C" {
 #endif
 
-#ifdef HAVE_RTT_HAL
-#else
-#define HalCalloc calloc
-#define HalFree free
-#endif
+#include "hal_config.h"
+
+void *HalMalloc(size_t size);
+void HalFree(void *ptr);
+void *HalCalloc(size_t nmemb, size_t size);
+void *HalRealloc(void *ptr, size_t size);
 
 #ifdef __cplusplus
 }

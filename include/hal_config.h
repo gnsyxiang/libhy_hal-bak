@@ -24,17 +24,7 @@
 extern "C" {
 #endif
 
-#ifdef HAVE_RTT_HAL
-#else
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <pthread.h>
-#include <sched.h>
-#include <unistd.h>
-#include <sys/syscall.h>   /* For SYS_xxx definitions */
-#include <sys/prctl.h>
-#endif
 
 #include "hal_type.h"
 #include "hal_log.h"
