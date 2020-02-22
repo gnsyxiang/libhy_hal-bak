@@ -18,5 +18,12 @@
 #     last modified: 21/12 2019 13:21
 # ===============================================================
 
-include_HEADERS = hal_pthread.h
+include_HEADERS = hal_config.h \
+				  hal_type.h \
+				  hal_log.h \
+				  hal_mem.h \
+				  hal_time.h \
+				  hal_string.h \
+				  hal_thread.h
+				  
 

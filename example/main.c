@@ -17,17 +17,38 @@
  * 
  *     last modified: 17/12 2019 20:41
  */
-#include <stdio.h>
+#include "hal_config.h"
 
-#include "config.h"
-#include "hal_pthread.h"
-
-int main(int argc, const char *argv[])
+static void _test_thread_loop(void *args)
 {
-    (void)argc;
-    (void)argv;
+    HalLogT("nihao \n");
+    hal_int8_t *string = (hal_int8_t *)args;
 
-    hello_world();
+    HalLogD("--------%s \n", string);
+}
+
+static hal_int8_t *test_string = "hello test string";
+
+hal_int32_t main(hal_int32_t argc, const hal_int8_t *argv[])
+{
+    HalLogT("hello world \n");
+
+    HalThreadLoopConfig_t   loop_config;
+    loop_config.loop = _test_thread_loop;
+    loop_config.args = test_string;
+
+    HalThreadConfig_t hal_thread_config;
+    hal_thread_config.name        = "test";
+    hal_thread_config.stack_size  = STACK_NORMAL_SIZE;
+    hal_thread_config.priority    = HAL_THREAD_PRIORITY_HIGH;
+    hal_thread_config.loop_config = &loop_config;
+
+    void *test_thead_handle = HalThreadInit(&hal_thread_config);
+
+    HalSleep(1);
+
+    HalThreadFinal(test_thead_handle);
 
     return 0;
 }
+

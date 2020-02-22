@@ -18,15 +18,13 @@
 #     last modified: 21/12 2019 13:22
 # ===============================================================
 
-AM_CFLAGS = $(AM_CFLAGS_COM)
+AM_CFLAGS  = $(AM_CFLAGS_COM)
+AM_CFLAGS += -Wno-error=unused-parameter
 AM_CFLAGS += -I$(top_srcdir)/include
 
 bin_PROGRAMS = demo
 
 demo_SOURCES = main.c
-if COMPILE_WITH_RTOS_HAL
-demo_LDADD   = $(top_builddir)/src/rtos/.libs/libhal.a
-else
-demo_LDADD   = $(top_builddir)/src/linux/.libs/libhal.a
-endif
+demo_LDADD   = $(top_builddir)/src/.libs/libhal.a
+demo_LDADD  += -lpthread
 
