@@ -41,11 +41,17 @@ LT_INIT
 
 # Checks for library functions.
 
-AC_ARG_ENABLE(rtos,
+AC_ARG_ENABLE(rtt,
               AS_HELP_STRING([--enable-rtt], [using the hardware abstraction layer for rt-thread] [[default=no]]),
               AC_DEFINE(HAVE_RTT_HAL, 1, [using the hardware abstraction layer for rt-thread])
               )
 AM_CONDITIONAL([COMPILE_WITH_RTT_HAL], [test "x$enable_rtt" = "xyes"])
+
+AC_ARG_ENABLE(linux,
+              AS_HELP_STRING([--enable-linux], [using the hardware abstraction layer for linux] [[default=no]]),
+              AC_DEFINE(HAVE_LINUX_HAL, 1, [using the hardware abstraction layer for linux])
+              )
+AM_CONDITIONAL([COMPILE_WITH_LINUX_HAL], [test "x$enable_linux" = "xyes"])
 
 AC_CONFIG_FILES([Makefile
                  example/Makefile

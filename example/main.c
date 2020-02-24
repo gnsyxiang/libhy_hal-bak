@@ -17,8 +17,18 @@
  * 
  *     last modified: 17/12 2019 20:41
  */
+#include "config.h"
 #include "hal_config.h"
 
+#ifdef HAVE_RTT_HAL
+hal_int32_t main(hal_int32_t argc, const hal_int8_t *argv[])
+{
+    
+    return 0;
+}
+#endif
+
+#ifdef HAVE_LINUX_HAL
 static void _test_thread_loop(void *args)
 {
     HalLogT("nihao \n");
@@ -51,4 +61,5 @@ hal_int32_t main(hal_int32_t argc, const hal_int8_t *argv[])
 
     return 0;
 }
+#endif
 

@@ -21,10 +21,16 @@
 AM_CFLAGS  = $(AM_CFLAGS_COM)
 AM_CFLAGS += -Wno-error=unused-parameter
 AM_CFLAGS += -I$(top_srcdir)/include
+if COMPILE_WITH_RTT_HAL
+AM_CFLAGS += --specs=rdimon.specs
+endif
 
 bin_PROGRAMS = demo
 
 demo_SOURCES = main.c
-demo_LDADD   = $(top_builddir)/src/.libs/libhal.a
+
+demo_LDADD   = $(top_builddir)/src/.libs/libhal.a 
+if COMPILE_WITH_LINUX_HAL
 demo_LDADD  += -lpthread
+endif
 

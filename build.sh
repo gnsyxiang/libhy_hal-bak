@@ -17,6 +17,7 @@ echo "------------------------------------------------"
 case $1 in
     linux)
         echo "linux"
+        SELECT_OPT=--enable-linux
         ;;
     rtt)
         TOOLCHAINS_DIR=/opt/toolchains/gcc-arm-none-eabi-5_4-2016q3/bin/arm-none-eabi-

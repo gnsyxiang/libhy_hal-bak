@@ -27,15 +27,14 @@ extern "C" {
 #include "config.h"
 #include "hal_config.h"
 
-#ifdef HAVE_RTT_HAL
-#else
-
+#ifdef HAVE_LINUX_HAL
 #include <pthread.h>
 #include <sched.h>
 #define _GNU_SOURCE         /* See feature_test_macros(7) */
 #include <unistd.h>
 #include <sys/syscall.h>   /* For SYS_xxx definitions */
 #include <sys/prctl.h>
+#endif
 
 #define HAL_THREAD_NAME_MAX_LEN (16)
 
@@ -55,8 +54,10 @@ typedef struct {
     hal_int8_t              name[HAL_THREAD_NAME_MAX_LEN];
     HalThreadLoopConfig_t   loop_config;
 
+#ifdef HAVE_LINUX_HAL
     pthread_t               id;
     pid_t                   pid;
+#endif
     hal_thread_state_t      state;
 } hal_thread_context_t;
 
@@ -80,8 +81,6 @@ do {                                                                          \
         }                                                                     \
     }                                                                         \
 } while(0)                               
-
-#endif
 
 #ifdef __cplusplus
 }

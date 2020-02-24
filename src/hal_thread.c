@@ -32,7 +32,12 @@ typedef struct {
 } func_call_t;
 
 #ifdef HAVE_RTT_HAL
-#else
+static func_call_t g_func_call = {
+    NULL, NULL, NULL, NULL
+};
+#endif
+
+#ifdef HAVE_LINUX_HAL
 #include "hal_linux_thread.h"
 static func_call_t g_func_call = {
     HalLinuxThreadInit, HalLinuxThreadFinal, HalLinuxThreadParamSet, HalLinuxThreadParamGet

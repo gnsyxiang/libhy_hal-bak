@@ -52,10 +52,9 @@ libhal_la_SOURCES  = hal_log.c \
 					 hal_mem.c \
 					 hal_time.c \
 					 hal_string.c \
-                     hal_thread.c
+					 hal_thread.c
 
-if COMPILE_WITH_RTT_HAL
-else
+if COMPILE_WITH_LINUX_HAL
 LDFLAGS_COM += -rdynamic -fPIC
 
 libhal_la_SOURCES += linux/hal_linux_thread.c
