@@ -47,7 +47,7 @@ typedef enum {
   HAL_ALLOC_MEM_ERR,
   HAL_UNSUPPORT_ERR,
   HAL_ERR_NUM_END
-} hal_err_t;
+} HalErr_t;
 
 #ifdef __cplusplus
 }

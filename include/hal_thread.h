@@ -59,18 +59,18 @@ typedef struct HalThreadConfig {
 
     hal_uint32_t            stack_size;
     HalThreadPriority_t     priority;
-#ifdef HAVE_RTOS_HAL
+#ifdef HAVE_RTT_HAL
     hal_uint32_t            tick;
 #endif
 
     HalThreadLoopConfig_t   *loop_config;
 } HalThreadConfig_t;
 
-void *HalThreadInit(HalThreadConfig_t *config);
-void HalThreadFinal(void *handle);
+void *HalThreadCreate(HalThreadConfig_t *config);
+void HalThreadDestroy(void *handle);
 
-void HalThreadParamSet(void *handle, HalThreadParam_t type, void *args);
-void HalThreadParamGet(void *handle, HalThreadParam_t type, void *args);
+hal_int32_t HalThreadParamSet(void *handle, HalThreadParam_t type, void *args);
+hal_int32_t HalThreadParamGet(void *handle, HalThreadParam_t type, void *args);
 
 #ifdef __cplusplus
 }

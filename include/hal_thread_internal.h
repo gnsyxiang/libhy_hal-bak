@@ -51,17 +51,33 @@ typedef enum {
 } hal_thread_index_t;
 
 typedef struct {
-    hal_int8_t              name[HAL_THREAD_NAME_MAX_LEN];
-    HalThreadLoopConfig_t   loop_config;
+    hal_int8_t                  name[HAL_THREAD_NAME_MAX_LEN];
+    HalThreadLoopConfig_t       loop_config;
 
 #ifdef HAVE_LINUX_HAL
-    pthread_t               id;
-    pid_t                   pid;
+    pthread_t                   id;
+    pid_t                       pid;
 #endif
-    hal_thread_state_t      state;
+#ifdef HAVE_RTT_HAL
+    rt_thread_t                 id;
+#endif
+    hal_thread_state_t          state;
 } hal_thread_context_t;
+#define HAL_THREAD_CONTEXT_LEN (sizeof(hal_thread_context_t))
 
-typedef void (*hal_thread_param_cb)(hal_thread_context_t *context, void *args);
+typedef hal_int32_t (*hal_thread_create_t)(HalThreadConfig_t *config, hal_thread_context_t *context);
+typedef hal_int32_t (*hal_thhread_destroy_t)(hal_thread_context_t *context);
+typedef hal_int32_t (*hal_thread_param_t)(hal_thread_context_t *context, HalThreadParam_t type, void *args);
+
+typedef struct {
+    hal_thread_create_t create;
+    hal_thhread_destroy_t destroy;
+    hal_thread_param_t get;
+    hal_thread_param_t set;
+} hal_thread_system_cb_t;
+#define HAL_THREAD_SYSTEM_CB_LEN (sizeof(hal_thread_system_cb_t))
+
+typedef hal_int32_t (*hal_thread_param_cb)(hal_thread_context_t *context, void *args);
 
 typedef struct {
     hal_thread_param_cb set_param_cb;
@@ -69,18 +85,20 @@ typedef struct {
 } hal_linux_thread_param_cb_t;
 
 #define hal_thread_param_common(hal_thread_param, context, type, args, index) \
-do {                                                                          \
+  ({                                                                          \
+   hal_int32_t ret = -1;                                                      \
     for (HalThreadParam_t i = 0; i < HAL_THREAD_PARAM_MAX; i++) {             \
         if (type == i) {                                                      \
             if (HAL_THREAD_INDEX_SET == index) {                              \
-                hal_thread_param[i].set_param_cb(context, args);              \
+                ret = hal_thread_param[i].set_param_cb(context, args);        \
             } else {                                                          \
-                hal_thread_param[i].get_param_cb(context, args);              \
+                ret = hal_thread_param[i].get_param_cb(context, args);        \
             }                                                                 \
             break;                                                            \
         }                                                                     \
     }                                                                         \
-} while(0)                               
+    ret;                                                                      \
+  })
 
 #ifdef __cplusplus
 }

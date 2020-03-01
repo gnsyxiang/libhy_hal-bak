@@ -63,7 +63,7 @@ static void *_loop_wrapper(void *args)
     return NULL;
 }
 
-hal_int32_t HalLinuxThreadInit(HalThreadConfig_t *config, hal_thread_context_t *context)
+hal_int32_t HalLinuxThreadCreate(HalThreadConfig_t *config, hal_thread_context_t *context)
 {
     if (NULL == config || NULL == context) {
         HalLogE("the param is NULL \n");
@@ -118,29 +118,52 @@ L_ERROR_INIT_1:
     return -1;
 }
 
-void HalLinuxThreadFinal(hal_thread_context_t *context)
+hal_int32_t HalLinuxThreadDestroy(hal_thread_context_t *context)
 {
+    return 0;
 }
 
 //FIXME 初始化后一般不需要修改名字(去掉)
-static void _hal_linux_thread_set_name(hal_thread_context_t *context, void *args)
+static hal_int32_t _hal_linux_thread_set_name(hal_thread_context_t *context, void *args)
 {
+    return 0;
 }
-static void _hal_linux_thread_get_name(hal_thread_context_t *context, void *args)
+
+static hal_int32_t _hal_linux_thread_get_name(hal_thread_context_t *context, void *args)
 {
+    return 0;
 }
 
 static hal_linux_thread_param_cb_t _g_linux_thread_param[] = {
     {_hal_linux_thread_set_name, _hal_linux_thread_get_name},
 };
 
-void HalLinuxThreadParamSet(hal_thread_context_t *context, HalThreadParam_t type, void *args)
+hal_int32_t HalLinuxThreadParamSet(hal_thread_context_t *context, HalThreadParam_t type, void *args)
 {
-    hal_thread_param_common(_g_linux_thread_param, context, type, args, HAL_THREAD_INDEX_SET);
+    return hal_thread_param_common(_g_linux_thread_param,
+                                   context,
+                                   type,
+                                   args,
+                                   HAL_THREAD_INDEX_SET);
 }
-void HalLinuxThreadParamGet(hal_thread_context_t *context, HalThreadParam_t type,  void *args)
+
+hal_int32_t HalLinuxThreadParamGet(hal_thread_context_t *context, HalThreadParam_t type,  void *args)
 {
-    hal_thread_param_common(_g_linux_thread_param, context, type, args, HAL_THREAD_INDEX_GET);
+    return hal_thread_param_common(_g_linux_thread_param,
+                                   context,
+                                   type,
+                                   args,
+                                   HAL_THREAD_INDEX_GET);
+}
+
+void HalThreadSystemInit(hal_thread_system_cb_t *system_cb)
+{
+    HalAssert(NULL != system_cb);
+
+    system_cb->create  = HalLinuxThreadCreate;
+    system_cb->destroy = HalLinuxThreadDestroy;
+    system_cb->get     = HalLinuxThreadParamGet;
+    system_cb->set     = HalLinuxThreadParamSet;
 }
 
 #if 0

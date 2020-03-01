@@ -17,36 +17,22 @@
  * 
  *     last modified: 20/01 2020 16:51
  */
+#include "config.h"
 #include "hal_config.h"
-#include "hal_thread_internal.h"
-
-typedef hal_int32_t (*hal_thread_init_t)(HalThreadConfig_t *config, hal_thread_context_t *context);
-typedef void (*hal_thhread_final_t)(hal_thread_context_t *context);
-typedef void (*hal_thread_param_t)(hal_thread_context_t *context, HalThreadParam_t type, void *args);
-
-typedef struct {
-    hal_thread_init_t   init;
-    hal_thhread_final_t final;
-    hal_thread_param_t  set;
-    hal_thread_param_t  get;
-} func_call_t;
 
 #ifdef HAVE_RTT_HAL
-static func_call_t g_func_call = {
-    NULL, NULL, NULL, NULL
-};
+#include "hal_rtt_thread.h"
 #endif
-
 #ifdef HAVE_LINUX_HAL
 #include "hal_linux_thread.h"
-static func_call_t g_func_call = {
-    HalLinuxThreadInit, HalLinuxThreadFinal, HalLinuxThreadParamSet, HalLinuxThreadParamGet
-};
 #endif
+
+static hal_thread_system_cb_t g_system_cb;
+static hal_int32_t g_init_flag = 0;
 
 static inline hal_thread_context_t *_context_init(void)
 {
-    hal_thread_context_t *context = HalCalloc(1, sizeof(hal_thread_context_t));
+    hal_thread_context_t *context = HalCalloc(1, HAL_THREAD_CONTEXT_LEN);
     if (NULL == context) {
         HalLogE("hal calloc faild \n");
         return NULL;
@@ -54,19 +40,27 @@ static inline hal_thread_context_t *_context_init(void)
     return context;
 }
 
-static inline void _context_final(hal_thread_context_t *context)
+static inline void _context_final(hal_thread_context_t **context)
 {
-    if (NULL != context) {
-        HalFree(context);
+    if (NULL != *context) {
+        HalFree(*context);
+        *context = NULL;
     }
 }
 
-void *HalThreadInit(HalThreadConfig_t *config)
+void *HalThreadCreate(HalThreadConfig_t *config)
 {
+    HalAssert(NULL != config);
+
+    if (0 == g_init_flag) {
+        g_init_flag = 1;
+        HalThreadSystemInit(&g_system_cb);
+    }
+
     hal_thread_context_t *context = _context_init();
     if (NULL == context) {
         HalLogE("context init faild \n");
-        return NULL;
+        goto L_ERROR_INIT_1;
     }
 
     if (NULL != config->name) {
@@ -80,26 +74,21 @@ void *HalThreadInit(HalThreadConfig_t *config)
         context->loop_config = *config->loop_config;
     }
 
-    if (NULL == g_func_call.init) {
-        HalLogE("init func is NULL \n");
-        goto L_ERROR;
-    }
-
-    hal_int32_t ret = g_func_call.init(config, context);
-    if (0 != ret) {
+    if (NULL == g_system_cb.create || 0 != g_system_cb.create(config, context)) {
         HalLogE("call init faild \n");
-        goto L_ERROR;
+        goto L_ERROR_INIT_2;
     }
 
     HalLogT("creat thread success \n");
 
     return context;
-L_ERROR:
-    _context_final(context);
+L_ERROR_INIT_2:
+    _context_final(&context);
+L_ERROR_INIT_1:
     return NULL;
 }
 
-void HalThreadFinal(void *handle)
+void HalThreadDestroy(void *handle)
 {
     if (NULL == handle) {
         HalLogE("the handle is NULL \n");
@@ -108,48 +97,51 @@ void HalThreadFinal(void *handle)
 
     hal_thread_context_t *context = (hal_thread_context_t *)handle;
 
-    if (NULL != g_func_call.final) {
-        g_func_call.final(context);
+    if (NULL == g_system_cb.destroy || 0 != g_system_cb.destroy(context)) {
+        HalLogE("call final faild \n");
     }
 
-    _context_final(context);
+    _context_final(&context);
 }
 
-static void _hal_thread_param_common(void *handle,
-                                     HalThreadParam_t type,
-                                     void *args,
-                                     hal_thread_index_t index)
+static hal_int32_t _hal_thread_param_common(void *handle,
+                                            HalThreadParam_t type,
+                                            void *args,
+                                            hal_thread_index_t index)
 {
     if (NULL == handle) {
         HalLogE("the hal thread handle is NULL \n");
-        return;
+        return HAL_INVALID_PARAM_ERR;
     }
 
     hal_thread_context_t *context = (hal_thread_context_t *) handle;
 
     if (HAL_THREAD_RUNNING != context->state) {
         HalLogE("can't set hal thread param with wrong state");
-        return;
+        return HAL_INVALID_STATE_ERR;
     }
 
     if (index == HAL_THREAD_INDEX_GET) {
-        if (NULL != g_func_call.get) {
-            return g_func_call.get(context, type, args);
+        if (NULL == g_system_cb.get || 0 != g_system_cb.get(context, type, args)) {
+            HalLogE("call get faild \n");
+            return HAL_INVALID_HANDLE_ERR;
         }
     } else {
-        if (NULL != g_func_call.set) {
-            return g_func_call.set(context, type, args);
+        if (NULL == g_system_cb.set || 0 != g_system_cb.set(context, type, args)) {
+            HalLogE("call set faild \n");
+            return HAL_INVALID_HANDLE_ERR;
         }
     }
+    return HAL_NO_ERR;
 }
 
-void HalThreadParamSet(void *handle, HalThreadParam_t type, void *args)
+hal_int32_t HalThreadParamSet(void *handle, HalThreadParam_t type, void *args)
 {
-    _hal_thread_param_common(handle, type, args, HAL_THREAD_INDEX_SET);
+    return _hal_thread_param_common(handle, type, args, HAL_THREAD_INDEX_SET);
 }
 
-void HalThreadParamGet(void *handle, HalThreadParam_t type, void *args)
+hal_int32_t HalThreadParamGet(void *handle, HalThreadParam_t type, void *args)
 {
-    _hal_thread_param_common(handle, type, args, HAL_THREAD_INDEX_GET);
+    return _hal_thread_param_common(handle, type, args, HAL_THREAD_INDEX_GET);
 }
 

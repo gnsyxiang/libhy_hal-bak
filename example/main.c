@@ -53,11 +53,11 @@ hal_int32_t main(hal_int32_t argc, const hal_int8_t *argv[])
     hal_thread_config.priority    = HAL_THREAD_PRIORITY_HIGH;
     hal_thread_config.loop_config = &loop_config;
 
-    void *test_thead_handle = HalThreadInit(&hal_thread_config);
+    void *test_thead_handle = HalThreadCreate(&hal_thread_config);
 
     HalSleep(1);
 
-    HalThreadFinal(test_thead_handle);
+    HalThreadDestroy(test_thead_handle);
 
     return 0;
 }
