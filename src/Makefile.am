@@ -40,24 +40,30 @@ lib_LTLIBRARIES = libhal.la
 # 表示该library对于依赖于current=c-a(libraryname.so.2)到current=c(libraryname.so.3)的程序都是可用的， 运行时不会出现任何异常。
 LIB_VERSION = -version-info @current@:@revision@:@age@
 
-LDFLAGS_COM = $(LIB_VERSION)
+LDFLAGS_COM  = $(LIB_VERSION)
+LDFLAGS_COM += -rdynamic -fPIC
 
 AM_CFLAGS  = $(AM_CFLAGS_COM)
 AM_CFLAGS += -Wno-error=unused-parameter
 AM_CFLAGS += -I$(top_srcdir)/include
-AM_CFLAGS += -I$(top_srcdir)/include/linux
 
 libhal_la_LDFLAGS  = $(LDFLAGS_COM)
 libhal_la_SOURCES  = hal_log.c \
 					 hal_mem.c \
 					 hal_time.c \
 					 hal_string.c \
+					 hal_assert.c \
 					 hal_thread.c
 
 if COMPILE_WITH_LINUX_HAL
-LDFLAGS_COM += -rdynamic -fPIC
+AM_CFLAGS 	 		+= -I$(top_srcdir)/include/linux
+libhal_la_SOURCES 	+= linux/hal_linux_thread.c
+endif
 
-libhal_la_SOURCES += linux/hal_linux_thread.c
+if COMPILE_WITH_RTT_HAL
+AM_CFLAGS 			+= -I$(top_srcdir)/include/rtt
+AM_CFLAGS 			+= -I$(top_srcdir)/include/rtt/include
+libhal_la_SOURCES 	+= rtt/hal_rtt_thread.c
 endif
 
 all: libhal.la

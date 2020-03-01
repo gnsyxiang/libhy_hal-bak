@@ -32,6 +32,7 @@ extern "C" {
 #include "hal_time.h"
 #include "hal_string.h"
 #include "hal_thread.h"
+#include "hal_assert.h"
 
 #ifdef __cplusplus
 }
