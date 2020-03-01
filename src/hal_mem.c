@@ -21,8 +21,30 @@
 #include "hal_config.h"
 
 #ifdef HAVE_RTT_HAL
-#else
+#include <rtthread.h>
 
+void *HalMalloc(size_t size)
+{
+    return rt_malloc(size);
+}
+
+void HalFree(void *ptr)
+{
+    return rt_free(ptr);
+}
+
+void *HalCalloc(size_t nmemb, size_t size)
+{
+    return rt_calloc(nmemb, size);
+}
+
+void *HalRealloc(void *ptr, size_t size)
+{
+    return rt_realloc(ptr, size);
+}
+#endif
+
+#ifdef HAVE_LINUX_HAL
 #include <stdlib.h>
 
 void *HalMalloc(size_t size)
@@ -44,6 +66,5 @@ void *HalRealloc(void *ptr, size_t size)
 {
     return realloc(ptr, size);
 }
-
 #endif
 

@@ -20,6 +20,16 @@
 #include "config.h"
 #include "hal_config.h"
 
+#ifdef HAVE_RTT_HAL
+#include <rtdebug.h>
+#include <rtthread.h>
+
+void HalAssert(int expression)
+{
+    RT_ASSERT(expression);
+}
+#endif
+
 #ifdef HAVE_LINUX_HAL
 #include <assert.h>
 

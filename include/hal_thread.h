@@ -59,9 +59,7 @@ typedef struct HalThreadConfig {
 
     hal_uint32_t            stack_size;
     HalThreadPriority_t     priority;
-#ifdef HAVE_RTT_HAL
     hal_uint32_t            tick;
-#endif
 
     HalThreadLoopConfig_t   *loop_config;
 } HalThreadConfig_t;

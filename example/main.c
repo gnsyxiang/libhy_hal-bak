@@ -23,7 +23,6 @@
 #ifdef HAVE_RTT_HAL
 hal_int32_t main(hal_int32_t argc, const hal_int8_t *argv[])
 {
-    
     return 0;
 }
 #endif

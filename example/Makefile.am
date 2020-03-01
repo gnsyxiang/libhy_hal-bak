@@ -22,6 +22,8 @@ AM_CFLAGS  = $(AM_CFLAGS_COM)
 AM_CFLAGS += -Wno-error=unused-parameter
 AM_CFLAGS += -I$(top_srcdir)/include
 if COMPILE_WITH_RTT_HAL
+AM_CFLAGS += -I$(top_srcdir)/include/rtt
+AM_CFLAGS += -I$(top_srcdir)/include/rtt/include
 AM_CFLAGS += --specs=rdimon.specs
 endif
 

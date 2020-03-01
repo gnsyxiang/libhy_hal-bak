@@ -21,8 +21,25 @@
 #include "hal_config.h"
 
 #ifdef HAVE_RTT_HAL
-#else
+#include <rtthread.h>
 
+hal_int8_t *HalStrcpy(hal_int8_t *dest, const hal_int8_t *src)
+{
+    return NULL;
+}
+
+hal_int8_t *HalStrncpy(hal_int8_t *dest, const hal_int8_t *src, size_t n)
+{
+    return rt_strncpy(dest, src, n);
+}
+
+size_t HalStrlen(const hal_int8_t *s)
+{
+    return rt_strlen(s);
+}
+#endif
+
+#ifdef HAVE_LINUX_HAL
 #include <string.h>
 
 hal_int8_t *HalStrcpy(hal_int8_t *dest, const hal_int8_t *src)

@@ -65,10 +65,8 @@ static void *_loop_wrapper(void *args)
 
 hal_int32_t HalLinuxThreadCreate(HalThreadConfig_t *config, hal_thread_context_t *context)
 {
-    if (NULL == config || NULL == context) {
-        HalLogE("the param is NULL \n");
-        goto L_ERROR_INIT_1;
-    }
+    HalAssert(NULL != config);
+    HalAssert(NULL != context);
 
     hal_int32_t ret = 0;
     pthread_attr_t attr;

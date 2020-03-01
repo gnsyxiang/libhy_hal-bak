@@ -36,6 +36,11 @@ extern "C" {
 #include <sys/prctl.h>
 #endif
 
+#ifdef HAVE_RTT_HAL
+#include <rtdef.h>
+#include <rtthread.h>
+#endif
+
 #define HAL_THREAD_NAME_MAX_LEN (16)
 
 typedef enum {

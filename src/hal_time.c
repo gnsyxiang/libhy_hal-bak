@@ -21,8 +21,15 @@
 #include "hal_config.h"
 
 #ifdef HAVE_RTT_HAL
-#else
+#include <rtthread.h>
 
+hal_uint32_t HalSleep(hal_uint32_t seconds)
+{
+    return rt_thread_mdelay(1000 * seconds);
+}
+#endif
+
+#ifdef HAVE_LINUX_HAL
 #include <unistd.h>
 
 hal_uint32_t HalSleep(hal_uint32_t seconds)
