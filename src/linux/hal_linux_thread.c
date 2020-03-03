@@ -60,6 +60,9 @@ static void *_loop_wrapper(void *args)
         context->loop_config.loop(context->loop_config.args);
     }
 
+    // typedef unsigned long int pthread_t;
+    context->id = 0;
+
     return NULL;
 }
 
@@ -118,7 +121,11 @@ L_ERROR_INIT_1:
 
 hal_int32_t HalLinuxThreadDestroy(hal_thread_context_t *context)
 {
-    return 0;
+    if (0 != context->id) {
+        return pthread_cancel(context->id);
+    } else {
+        return HAL_NO_ERR;
+    }
 }
 
 //FIXME 初始化后一般不需要修改名字(去掉)

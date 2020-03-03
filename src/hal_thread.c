@@ -79,7 +79,7 @@ void *HalThreadCreate(HalThreadConfig_t *config)
         goto L_ERROR_INIT_2;
     }
 
-    HalLogT("creat thread success \n");
+    HalLogT("creat %s thread success \n", context->name);
 
     return context;
 L_ERROR_INIT_2:
