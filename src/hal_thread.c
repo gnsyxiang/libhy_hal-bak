@@ -32,7 +32,7 @@ static hal_int32_t g_init_flag = 0;
 
 static inline hal_thread_context_t *_context_init(void)
 {
-    hal_thread_context_t *context = HalCalloc(1, HAL_THREAD_CONTEXT_LEN);
+    hal_thread_context_t *context = Hal_calloc(1, HAL_THREAD_CONTEXT_LEN);
     if (NULL == context) {
         HalLogE("hal calloc faild \n");
         return NULL;
@@ -43,14 +43,14 @@ static inline hal_thread_context_t *_context_init(void)
 static inline void _context_final(hal_thread_context_t **context)
 {
     if (NULL != *context) {
-        HalFree(*context);
+        Hal_free(*context);
         *context = NULL;
     }
 }
 
 void *HalThreadCreate(HalThreadConfig_t *config)
 {
-    HalAssert(NULL != config);
+    Hal_assert(NULL != config);
 
     if (0 == g_init_flag) {
         g_init_flag = 1;
@@ -64,9 +64,9 @@ void *HalThreadCreate(HalThreadConfig_t *config)
     }
 
     if (NULL != config->name) {
-        hal_int32_t len = HalStrlen(config->name) < HAL_THREAD_NAME_MAX_LEN ?
-                          HalStrlen(config->name) : HAL_THREAD_NAME_MAX_LEN;
-        HalStrncpy(context->name, config->name, len);
+        hal_int32_t len = Hal_strlen(config->name) < HAL_THREAD_NAME_MAX_LEN ?
+                          Hal_strlen(config->name) : HAL_THREAD_NAME_MAX_LEN;
+        Hal_strncpy(context->name, config->name, len);
         context->name[len] = '\0';
     }
 
@@ -90,10 +90,7 @@ L_ERROR_INIT_1:
 
 void HalThreadDestroy(void *handle)
 {
-    if (NULL == handle) {
-        HalLogE("the handle is NULL \n");
-        return ;
-    }
+    Hal_assert(NULL != handle);
 
     hal_thread_context_t *context = (hal_thread_context_t *)handle;
 
@@ -109,10 +106,7 @@ static hal_int32_t _hal_thread_param_common(void *handle,
                                             void *args,
                                             hal_thread_index_t index)
 {
-    if (NULL == handle) {
-        HalLogE("the hal thread handle is NULL \n");
-        return HAL_INVALID_PARAM_ERR;
-    }
+    Hal_assert(NULL != handle);
 
     hal_thread_context_t *context = (hal_thread_context_t *) handle;
 

@@ -32,8 +32,8 @@ static void _loop_wrapper(void *args)
 
 hal_int32_t HalRTTThreadCreate(HalThreadConfig_t *config, hal_thread_context_t *context)
 {
-    HalAssert(NULL != config);
-    HalAssert(NULL != context);
+    Hal_assert(NULL != config);
+    Hal_assert(NULL != context);
 
     hal_int32_t sched_priority[][2] = {
         {HAL_THREAD_PRIORITY_NORMAL,    RT_THREAD_PRIORITY_MAX - 4},
@@ -61,7 +61,7 @@ hal_int32_t HalRTTThreadCreate(HalThreadConfig_t *config, hal_thread_context_t *
 
 hal_int32_t HalRTTThreadDestroy(hal_thread_context_t *context)
 {
-    HalAssert(NULL != context);
+    Hal_assert(NULL != context);
 
     rt_err_t ret = RT_EOK;
     if (RT_NULL != context->id) {
@@ -82,7 +82,7 @@ hal_int32_t HalRTTThreadParamGet(hal_thread_context_t *context, HalThreadParam_t
 
 void HalThreadSystemInit(hal_thread_system_cb_t *system_cb)
 {
-    HalAssert(NULL != system_cb);
+    Hal_assert(NULL != system_cb);
 
     system_cb->create  = HalRTTThreadCreate;
     system_cb->destroy = HalRTTThreadDestroy;

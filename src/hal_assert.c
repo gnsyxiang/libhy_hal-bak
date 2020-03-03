@@ -24,7 +24,7 @@
 #include <rtdebug.h>
 #include <rtthread.h>
 
-void HalAssert(int expression)
+void Hal_assert(int expression)
 {
     RT_ASSERT(expression);
 }
@@ -33,7 +33,7 @@ void HalAssert(int expression)
 #ifdef HAVE_LINUX_HAL
 #include <assert.h>
 
-void HalAssert(int expression)
+void Hal_assert(int expression)
 {
     assert(expression);
 }

@@ -43,4 +43,7 @@ echo "-----------------------------------"
     --prefix=${PREFIX_PATH} \
     --program-prefix=${PROGRAM_PREFIX}
 
-
+echo "----------------------"
+echo " make and make install"
+echo "----------------------"
+make ; make install

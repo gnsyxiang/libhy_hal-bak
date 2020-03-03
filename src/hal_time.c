@@ -23,7 +23,7 @@
 #ifdef HAVE_RTT_HAL
 #include <rtthread.h>
 
-hal_uint32_t HalSleep(hal_uint32_t seconds)
+hal_uint32_t Hal_sleep(hal_uint32_t seconds)
 {
     return rt_thread_mdelay(1000 * seconds);
 }
@@ -32,7 +32,7 @@ hal_uint32_t HalSleep(hal_uint32_t seconds)
 #ifdef HAVE_LINUX_HAL
 #include <unistd.h>
 
-hal_uint32_t HalSleep(hal_uint32_t seconds)
+hal_uint32_t Hal_sleep(hal_uint32_t seconds)
 {
     return sleep(seconds);
 }

@@ -53,6 +53,7 @@ typedef struct {
     HalThreadLoop_t     loop;
     void                *args;
 } HalThreadLoopConfig_t;
+#define HAL_THREAD_LOOP_CONFIG_LEN (sizeof(HalThreadLoopConfig_t))
 
 typedef struct HalThreadConfig {
     const hal_int8_t        *name;
@@ -63,6 +64,7 @@ typedef struct HalThreadConfig {
 
     HalThreadLoopConfig_t   *loop_config;
 } HalThreadConfig_t;
+#define HAL_THREAD_CONFIG_LEN (sizeof(HalThreadConfig_t))
 
 void *HalThreadCreate(HalThreadConfig_t *config);
 void HalThreadDestroy(void *handle);

@@ -28,35 +28,49 @@ hal_int32_t main(hal_int32_t argc, const hal_int8_t *argv[])
 #endif
 
 #ifdef HAVE_LINUX_HAL
-static void _test_thread_loop(void *args)
+static void _producer_thread_loop(void *args)
 {
-    HalLogT("nihao \n");
-    hal_int8_t *string = (hal_int8_t *)args;
-
-    HalLogD("--------%s \n", string);
+    while (1) {
+        Hal_sleep(1);
+    }
 }
 
-static hal_int8_t *test_string = "hello test string";
+static void _consumer_thread_loop(void *args)
+{
+    while (1) {
+        Hal_sleep(1);
+    }
+}
 
 hal_int32_t main(hal_int32_t argc, const hal_int8_t *argv[])
 {
-    HalLogT("hello world \n");
-
     HalThreadLoopConfig_t   loop_config;
-    loop_config.loop = _test_thread_loop;
-    loop_config.args = test_string;
+    HalThreadConfig_t       thread_config;
 
-    HalThreadConfig_t hal_thread_config;
-    hal_thread_config.name        = "test";
-    hal_thread_config.stack_size  = STACK_NORMAL_SIZE;
-    hal_thread_config.priority    = HAL_THREAD_PRIORITY_HIGH;
-    hal_thread_config.loop_config = &loop_config;
+    Hal_memset(&loop_config, '\0', HAL_THREAD_LOOP_CONFIG_LEN);
+    loop_config.loop = _producer_thread_loop;
 
-    void *test_thead_handle = HalThreadCreate(&hal_thread_config);
+    Hal_memset(&thread_config, '\0', HAL_THREAD_CONFIG_LEN);
+    thread_config.name        = "producer";
+    thread_config.stack_size  = STACK_NORMAL_SIZE;
+    thread_config.priority    = HAL_THREAD_PRIORITY_HIGH;
+    thread_config.loop_config = &loop_config;
 
-    HalSleep(1);
+    void *producer_thread_handle = HalThreadCreate(&thread_config);
 
-    HalThreadDestroy(test_thead_handle);
+    loop_config.loop = _consumer_thread_loop;
+    thread_config.name        = "consumer";
+
+    void *consumer_thread_handle = HalThreadCreate(&thread_config);
+
+    HalLogT("main while \n");
+
+    while (1) {
+        Hal_sleep(1);
+    }
+
+    HalThreadDestroy(producer_thread_handle);
+    HalThreadDestroy(consumer_thread_handle);
 
     return 0;
 }

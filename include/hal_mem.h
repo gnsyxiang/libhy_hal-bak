@@ -26,10 +26,11 @@ extern "C" {
 
 #include "hal_config.h"
 
-void *HalMalloc(size_t size);
-void HalFree(void *ptr);
-void *HalCalloc(size_t nmemb, size_t size);
-void *HalRealloc(void *ptr, size_t size);
+void *Hal_malloc(size_t size);
+void Hal_free(void *ptr);
+void *Hal_calloc(size_t nmemb, size_t size);
+void *Hal_realloc(void *ptr, size_t size);
+void *Hal_memset(void *s, int c, size_t n);
 
 #ifdef __cplusplus
 }

@@ -65,8 +65,8 @@ static void *_loop_wrapper(void *args)
 
 hal_int32_t HalLinuxThreadCreate(HalThreadConfig_t *config, hal_thread_context_t *context)
 {
-    HalAssert(NULL != config);
-    HalAssert(NULL != context);
+    Hal_assert(NULL != config);
+    Hal_assert(NULL != context);
 
     hal_int32_t ret = 0;
     pthread_attr_t attr;
@@ -156,7 +156,7 @@ hal_int32_t HalLinuxThreadParamGet(hal_thread_context_t *context, HalThreadParam
 
 void HalThreadSystemInit(hal_thread_system_cb_t *system_cb)
 {
-    HalAssert(NULL != system_cb);
+    Hal_assert(NULL != system_cb);
 
     system_cb->create  = HalLinuxThreadCreate;
     system_cb->destroy = HalLinuxThreadDestroy;

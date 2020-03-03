@@ -26,7 +26,7 @@ extern "C" {
 
 #include "hal_config.h"
 
-hal_uint32_t HalSleep(hal_uint32_t seconds);
+hal_uint32_t Hal_sleep(hal_uint32_t seconds);
 
 #ifdef __cplusplus
 }
