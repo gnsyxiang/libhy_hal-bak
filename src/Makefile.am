@@ -41,11 +41,15 @@ lib_LTLIBRARIES = libhal.la
 LIB_VERSION = -version-info @current@:@revision@:@age@
 
 LDFLAGS_COM  = $(LIB_VERSION)
-LDFLAGS_COM += -rdynamic -fPIC
 
+# 选项'-rdynamic'用来通知链接器将所有符号添加到动态符号表中（目的是能够通过使用 dlopen 来实现向后跟踪）
+LDFLAGS_COM += -rdynamic
+
+# 参数-fPIC表示生成与位置无关代码
 AM_CFLAGS  = $(AM_CFLAGS_COM)
-AM_CFLAGS += -Wno-error=unused-parameter
+AM_CFLAGS += -fPIC
 AM_CFLAGS += -I$(top_srcdir)/include
+AM_CFLAGS += -Wno-error=unused-parameter
 
 libhal_la_LDFLAGS  = $(LDFLAGS_COM)
 libhal_la_SOURCES  = hal_log.c \
