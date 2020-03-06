@@ -49,6 +49,30 @@ typedef enum {
   HAL_ERR_NUM_END
 } HalErr_t;
 
+#if defined _WIN32 || defined __CYGWIN__
+    #ifdef BUILDING_DLL
+        #ifdef __GNUC__
+            #define EXPORT_FUNC __attribute__((dllexport))
+        #else
+            #define EXPORT_FUNC __declspec(dllexport)
+        #endif
+    #else
+        #ifdef __GNUC__
+            #define EXPORT_FUNC __attribute__((dllimport))
+        #else
+            #define EXPORT_FUNC __declspec(dllimport)
+        #endif
+    #endif
+#else
+    #ifdef __GNUC__
+        #if __GNUC__ >= 4 || defined(__arm__)
+            #define EXPORT_FUNC __attribute__((visibility("default")))
+        #else
+            #error "gcc version too low"
+        #endif
+    #endif
+#endif
+
 #ifdef __cplusplus
 }
 #endif

@@ -24,6 +24,7 @@ include_HEADERS = hal_config.h \
 				  hal_mem.h \
 				  hal_time.h \
 				  hal_string.h \
+				  hal_assert.h \
 				  hal_thread.h
 				  
 

@@ -45,6 +45,20 @@ LDFLAGS_COM  = $(LIB_VERSION)
 # 选项'-rdynamic'用来通知链接器将所有符号添加到动态符号表中（目的是能够通过使用 dlopen 来实现向后跟踪）
 LDFLAGS_COM += -rdynamic
 
+# 导出函数列表方法：
+# 1，直接添加__attribute__((visibility("hidden")))到函数上
+# 2，在CFLAG中添加-fvisibility=hidden参数，全部不导出，然后配合EXPORT_FUNC导出需要导出的函数
+# 3，通过文件指定需要导出的函数，
+#    在gcc中添加参数(两种实现方式): "-Wl,-version-script -Wl,.libs/libhal.ver"
+#                                   "-Wl,--version-script=.libs/libhal.ver"
+#  cat libhal.ver
+#  { global:
+#  Hal_strlen;
+#  Hal_strncpy;
+#  local: *; };
+# 4, 通过libtool导出函数列表，如下参数
+LDFLAGS_COM += -export-symbols-regex 'Hal_*'
+
 # 参数-fPIC表示生成与位置无关代码
 AM_CFLAGS  = $(AM_CFLAGS_COM)
 AM_CFLAGS += -fPIC
