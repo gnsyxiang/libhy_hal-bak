@@ -31,7 +31,8 @@ bin_PROGRAMS = demo
 
 demo_SOURCES = main.c
 
-demo_LDADD   = $(top_builddir)/src/.libs/libhal.a 
+demo_LDADD   = -L$(top_builddir)/src/.libs
+demo_LDADD  += -lhal
 if COMPILE_WITH_LINUX_HAL
 demo_LDADD  += -lpthread
 endif
