@@ -63,7 +63,7 @@ hal_int32_t main(hal_int32_t argc, const hal_int8_t *argv[])
 
     void *consumer_thread_handle = HalThreadCreate(&thread_config);
 
-    HalLogT("main while \n");
+    Hal_LogT("main while \n");
 
     while (1) {
         Hal_sleep(1);

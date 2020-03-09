@@ -26,10 +26,10 @@ extern "C" {
 
 #include "hal_config.h"
 
-#define HalLogD printf
-#define HalLogT printf
-#define HalLogW printf
-#define HalLogE printf
+#define Hal_LogD printf
+#define Hal_LogT printf
+#define Hal_LogW printf
+#define Hal_LogE printf
 
 #ifdef __cplusplus
 }
