@@ -24,5 +24,12 @@ AM_CFLAGS_COM  = $(ACLOCAL_AMFLAGS)
 AM_CFLAGS_COM += -pipe -W -Wall -Werror
 export AM_CFLAGS_COM
 
+# FIXME 下面的问题还没有解决
+# script_SCRIPTS: 指定"make install"时安装的脚本
+# dist_script_DATA: 指定"make dist"时安装的脚本
+# scriptdir = ${prefix}
+# script_SCRIPTS = build.sh
+# dist_script_DATA = build.sh
+
 SUBDIRS = include src example
 

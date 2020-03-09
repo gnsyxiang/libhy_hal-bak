@@ -26,5 +26,12 @@ include_HEADERS = hal_config.h \
 				  hal_string.h \
 				  hal_assert.h \
 				  hal_thread.h
-				  
+
+# FIXME 下面的问题还没有解决
+# inheaderdir = ${prefix}
+# inheader_DATA = hal_thread_internal.h \
+			  # linux/hal_linux_thread.h \
+			  # rtt/hal_rtt_thread.h
+#
+# EXTRA_DIST = $(inheader_DATA)
 
