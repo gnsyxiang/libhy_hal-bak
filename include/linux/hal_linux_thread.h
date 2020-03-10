@@ -27,13 +27,13 @@ extern "C" {
 #include "hal_config.h"
 #include "hal_thread_internal.h"
 
-void HalThreadSystemInit(hal_thread_system_cb_t *system_cb);
+void ThreadSystemInit(hal_thread_system_cb_t *system_cb);
 
-hal_int32_t HalLinuxThreadCreate(HalThreadConfig_t *config, hal_thread_context_t *context);
-hal_int32_t HalLinuxThreadDestroy(hal_thread_context_t *context);
+hal_int32_t LinuxThreadCreate(HalThreadConfig_t *config, hal_thread_context_t *context);
+hal_int32_t LinuxThreadDestroy(hal_thread_context_t *context);
 
-hal_int32_t HalLinuxThreadParamSet(hal_thread_context_t *context, HalThreadParam_t type, void *args);
-hal_int32_t HalLinuxThreadParamGet(hal_thread_context_t *context, HalThreadParam_t type, void *args);
+hal_int32_t LinuxThreadParamSet(hal_thread_context_t *context, HalThreadParam_t type, void *args);
+hal_int32_t LinuxThreadParamGet(hal_thread_context_t *context, HalThreadParam_t type, void *args);
 
 #ifdef __cplusplus
 }

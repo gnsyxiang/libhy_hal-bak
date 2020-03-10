@@ -54,7 +54,7 @@ void *HalThreadCreate(HalThreadConfig_t *config)
 
     if (0 == g_init_flag) {
         g_init_flag = 1;
-        HalThreadSystemInit(&g_system_cb);
+        ThreadSystemInit(&g_system_cb);
     }
 
     hal_thread_context_t *context = _context_init();

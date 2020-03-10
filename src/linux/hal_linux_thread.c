@@ -66,7 +66,7 @@ static void *_loop_wrapper(void *args)
     return NULL;
 }
 
-hal_int32_t HalLinuxThreadCreate(HalThreadConfig_t *config, hal_thread_context_t *context)
+hal_int32_t LinuxThreadCreate(HalThreadConfig_t *config, hal_thread_context_t *context)
 {
     Hal_assert(NULL != config);
     Hal_assert(NULL != context);
@@ -119,7 +119,7 @@ L_ERROR_INIT_1:
     return -1;
 }
 
-hal_int32_t HalLinuxThreadDestroy(hal_thread_context_t *context)
+hal_int32_t LinuxThreadDestroy(hal_thread_context_t *context)
 {
     if (0 != context->id) {
         return pthread_cancel(context->id);
@@ -143,7 +143,7 @@ static hal_linux_thread_param_cb_t _g_linux_thread_param[] = {
     {_hal_linux_thread_set_name, _hal_linux_thread_get_name},
 };
 
-hal_int32_t HalLinuxThreadParamSet(hal_thread_context_t *context, HalThreadParam_t type, void *args)
+hal_int32_t LinuxThreadParamSet(hal_thread_context_t *context, HalThreadParam_t type, void *args)
 {
     return hal_thread_param_common(_g_linux_thread_param,
                                    context,
@@ -152,7 +152,7 @@ hal_int32_t HalLinuxThreadParamSet(hal_thread_context_t *context, HalThreadParam
                                    HAL_THREAD_INDEX_SET);
 }
 
-hal_int32_t HalLinuxThreadParamGet(hal_thread_context_t *context, HalThreadParam_t type,  void *args)
+hal_int32_t LinuxThreadParamGet(hal_thread_context_t *context, HalThreadParam_t type,  void *args)
 {
     return hal_thread_param_common(_g_linux_thread_param,
                                    context,
@@ -161,14 +161,14 @@ hal_int32_t HalLinuxThreadParamGet(hal_thread_context_t *context, HalThreadParam
                                    HAL_THREAD_INDEX_GET);
 }
 
-void HalThreadSystemInit(hal_thread_system_cb_t *system_cb)
+void ThreadSystemInit(hal_thread_system_cb_t *system_cb)
 {
     Hal_assert(NULL != system_cb);
 
-    system_cb->create  = HalLinuxThreadCreate;
-    system_cb->destroy = HalLinuxThreadDestroy;
-    system_cb->get     = HalLinuxThreadParamGet;
-    system_cb->set     = HalLinuxThreadParamSet;
+    system_cb->create  = LinuxThreadCreate;
+    system_cb->destroy = LinuxThreadDestroy;
+    system_cb->get     = LinuxThreadParamGet;
+    system_cb->set     = LinuxThreadParamSet;
 }
 
 #if 0
