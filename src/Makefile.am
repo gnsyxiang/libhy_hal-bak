@@ -57,32 +57,42 @@ LDFLAGS_COM += -rdynamic
 #  Hal_strncpy;
 #  local: *; };
 # 4, 通过libtool导出函数列表，如下参数
-LDFLAGS_COM += -export-symbols-regex 'Hal_*'
+LDFLAGS_COM += -export-symbols-regex 'Hal*'
 
 # 参数-fPIC表示生成与位置无关代码
-AM_CFLAGS  = $(AM_CFLAGS_COM)
-AM_CFLAGS += -fPIC
-AM_CFLAGS += -I$(top_srcdir)/include
-AM_CFLAGS += -Wno-error=unused-parameter
+CFLAGS_COM  = $(AM_CFLAGS_COM)
+CFLAGS_COM += -fPIC
+CFLAGS_COM += -I$(top_srcdir)/include
 
-libhal_la_LDFLAGS  = $(LDFLAGS_COM)
-libhal_la_SOURCES  = hal_log.c \
-					 hal_mem.c \
-					 hal_time.c \
-					 hal_string.c \
-					 hal_assert.c \
-					 hal_thread.c
+# 下面两个参数一个显示警告，一个直接通过
+# CFLAGS_COM += -Wno-error=unused-parameter
+CFLAGS_COM += -Wno-unused-parameter
+
+SOURCES_COM = hal_log.c \
+			  hal_mem.c \
+			  hal_time.c \
+			  hal_string.c \
+			  hal_assert.c \
+			  hal_thread.c \
+			  hal_sem.c
+
+FUNC_MODULE_SOURCES =
 
 if COMPILE_WITH_LINUX_HAL
-AM_CFLAGS 	 		+= -I$(top_srcdir)/include/linux
-libhal_la_SOURCES 	+= linux/hal_linux_thread.c
+CFLAGS_COM 	+= -I$(top_srcdir)/include/linux
+SOURCES_COM += linux/hal_linux_thread.c
 endif
 
 if COMPILE_WITH_RTT_HAL
-AM_CFLAGS 			+= -I$(top_srcdir)/include/rtt
-AM_CFLAGS 			+= -I$(top_srcdir)/include/rtt/include
-libhal_la_SOURCES 	+= rtt/hal_rtt_thread.c
+CFLAGS_COM += -I$(top_srcdir)/include/rtt \
+			  -I$(top_srcdir)/include/rtt/include
+SOURCES_COM += rtt/hal_rtt_thread.c
 endif
+
+AM_CFLAGS 		   = $(CFLAGS_COM)
+libhal_la_LDFLAGS  = $(LDFLAGS_COM)
+libhal_la_SOURCES  = $(SOURCES_COM) \
+					 $(FUNC_MODULE_SOURCES)
 
 all: libhal.la
 

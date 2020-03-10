@@ -18,14 +18,19 @@
 #     last modified: 21/12 2019 13:21
 # ===============================================================
 
-include_HEADERS = hal_config.h \
-				  hal_type.h \
-				  hal_log.h \
-				  hal_mem.h \
-				  hal_time.h \
-				  hal_string.h \
-				  hal_assert.h \
-				  hal_thread.h
+HEADERS_COM = hal_config.h \
+			  hal_type.h \
+			  hal_log.h \
+			  hal_mem.h \
+			  hal_time.h \
+			  hal_string.h \
+			  hal_assert.h \
+			  hal_thread.h \
+			  hal_sem.h
+
+HEADERS_FUNC_MODULE =
+
+include_HEADERS = $(HEADERS_COM) $(HEADERS_FUNC_MODULE)
 
 # FIXME 下面的问题还没有解决
 # inheaderdir = ${prefix}
