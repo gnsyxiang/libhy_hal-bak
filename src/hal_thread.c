@@ -88,7 +88,7 @@ L_ERROR_INIT_1:
     return NULL;
 }
 
-void HalThreadDestroy(void *handle)
+void HalThreadDestroy(ThreadHandle_t handle)
 {
     Hal_assert(NULL != handle);
 
@@ -101,7 +101,7 @@ void HalThreadDestroy(void *handle)
     _context_final(&context);
 }
 
-static hal_int32_t _hal_thread_param_common(void *handle,
+static hal_int32_t _hal_thread_param_common(ThreadHandle_t handle,
                                             HalThreadParam_t type,
                                             void *args,
                                             hal_thread_index_t index)
@@ -129,12 +129,12 @@ static hal_int32_t _hal_thread_param_common(void *handle,
     return HAL_NO_ERR;
 }
 
-hal_int32_t HalThreadParamSet(void *handle, HalThreadParam_t type, void *args)
+hal_int32_t HalThreadParamSet(ThreadHandle_t handle, HalThreadParam_t type, void *args)
 {
     return _hal_thread_param_common(handle, type, args, HAL_THREAD_INDEX_SET);
 }
 
-hal_int32_t HalThreadParamGet(void *handle, HalThreadParam_t type, void *args)
+hal_int32_t HalThreadParamGet(ThreadHandle_t handle, HalThreadParam_t type, void *args)
 {
     return _hal_thread_param_common(handle, type, args, HAL_THREAD_INDEX_GET);
 }
