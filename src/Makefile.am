@@ -76,7 +76,7 @@ SOURCES_COM = hal_log.c \
 			  hal_thread.c \
 			  hal_sem.c
 
-FUNC_MODULE_SOURCES =
+FUNC_MODULE_SOURCES = hal_audio_recorder.c
 
 if COMPILE_WITH_LINUX_HAL
 CFLAGS_COM 	+= -I$(top_srcdir)/include/linux

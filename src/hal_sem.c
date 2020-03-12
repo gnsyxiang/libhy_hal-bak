@@ -28,7 +28,7 @@ typedef struct {
 } hal_sem_context_t; 
 #define HAL_SEM_CONTEXT_LEN (sizeof(hal_sem_context_t))
 
-static hal_sem_context_t *_context_init(void)
+static inline hal_sem_context_t *_context_init(void)
 {
     hal_sem_context_t *context = Hal_calloc(1, HAL_SEM_CONTEXT_LEN);
     if (NULL == context) {
@@ -61,7 +61,7 @@ ThreadSemHandle_t HalSemInit(hal_int32_t pshared, hal_uint32_t value)
 
 hal_int32_t HalSemDestroy(ThreadSemHandle_t handle)
 {
-    Hal_assert(NULL == handle);
+    Hal_assert(NULL != handle);
     hal_sem_context_t *context = (hal_sem_context_t *)handle;
 
     sem_destroy(&context->sem);
@@ -73,7 +73,7 @@ hal_int32_t HalSemDestroy(ThreadSemHandle_t handle)
 
 hal_int32_t HalSemPost(ThreadSemHandle_t handle)
 {
-    Hal_assert(NULL == handle);
+    Hal_assert(NULL != handle);
     hal_sem_context_t *context = (hal_sem_context_t *)handle;
 
     sem_post(&context->sem);
@@ -83,7 +83,7 @@ hal_int32_t HalSemPost(ThreadSemHandle_t handle)
 
 hal_int32_t HalSemWait(ThreadSemHandle_t handle)
 {
-    Hal_assert(NULL == handle);
+    Hal_assert(NULL != handle);
     hal_sem_context_t *context = (hal_sem_context_t *)handle;
 
     sem_wait(&context->sem);

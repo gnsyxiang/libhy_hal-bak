@@ -28,49 +28,23 @@ hal_int32_t main(hal_int32_t argc, const hal_int8_t *argv[])
 #endif
 
 #ifdef HAVE_LINUX_HAL
-static void _producer_thread_loop(void *args)
-{
-    while (1) {
-        Hal_sleep(1);
-    }
-}
-
-static void _consumer_thread_loop(void *args)
-{
-    while (1) {
-        Hal_sleep(1);
-    }
-}
-
 hal_int32_t main(hal_int32_t argc, const hal_int8_t *argv[])
 {
-    HalThreadLoopConfig_t   loop_config;
-    HalThreadConfig_t       thread_config;
+    AudioRecorderConfig_t audio_recorder_config;
+    audio_recorder_config.rate    = 16 * 1000;
+    audio_recorder_config.channel = 2;
+    audio_recorder_config.bit     = 16;
 
-    Hal_memset(&loop_config, '\0', HAL_THREAD_LOOP_CONFIG_LEN);
-    loop_config.loop = _producer_thread_loop;
-
-    Hal_memset(&thread_config, '\0', HAL_THREAD_CONFIG_LEN);
-    thread_config.name        = "producer";
-    thread_config.stack_size  = STACK_NORMAL_SIZE;
-    thread_config.priority    = HAL_THREAD_PRIORITY_HIGH;
-    thread_config.loop_config = &loop_config;
-
-    void *producer_thread_handle = HalThreadCreate(&thread_config);
-
-    loop_config.loop = _consumer_thread_loop;
-    thread_config.name        = "consumer";
-
-    void *consumer_thread_handle = HalThreadCreate(&thread_config);
-
-    Hal_LogT("main while \n");
+    AudioRecorderHandle_t handle = HalAudioRecorderCreate(&audio_recorder_config);
 
     while (1) {
-        Hal_sleep(1);
+        HalAudioRecorderStart(handle);
+        Hal_sleep(5);
+        
+        HalAudioRecorderStop(handle);
     }
 
-    HalThreadDestroy(producer_thread_handle);
-    HalThreadDestroy(consumer_thread_handle);
+    HalAudioRecorderDestroy(handle);
 
     return 0;
 }

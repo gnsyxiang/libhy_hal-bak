@@ -28,7 +28,7 @@ HEADERS_COM = hal_config.h \
 			  hal_thread.h \
 			  hal_sem.h
 
-HEADERS_FUNC_MODULE =
+HEADERS_FUNC_MODULE = hal_audio_recorder.h
 
 include_HEADERS = $(HEADERS_COM) $(HEADERS_FUNC_MODULE)
 

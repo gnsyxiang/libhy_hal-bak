@@ -35,6 +35,8 @@ extern "C" {
 #include "hal_thread.h"
 #include "hal_sem.h"
 
+#include "hal_audio_recorder.h"
+
 #ifdef __cplusplus
 }
 #endif
