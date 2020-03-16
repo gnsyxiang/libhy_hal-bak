@@ -30,6 +30,11 @@ export AM_CFLAGS_COM
 # scriptdir = ${prefix}
 # script_SCRIPTS = build.sh
 # dist_script_DATA = build.sh
+# tinyalsalibdir = ${prefix}/3rd_lib/tinyalsa
+# tinyalsalib_DATA = 3rd_lib/tinyalsa/*
+# EXTRA_DIST=conf           #在make dist打包的时候也要将扩展文件夹打包进去
+
+dist_doc_DATA = README.md
 
 SUBDIRS = include src example
 

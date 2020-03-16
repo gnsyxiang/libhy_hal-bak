@@ -34,12 +34,27 @@ AM_PROG_AR
 LT_INIT
 
 # Checks for libraries.
+AC_CHECK_LIB([hal], [HalThreadCreate])
+AC_CHECK_LIB([pthread], [pthread_create])
 
 # Checks for header files.
+AC_CHECK_HEADERS([stddef.h stdlib.h string.h sys/time.h unistd.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
+AC_C_INLINE
+AC_TYPE_PID_T
+AC_TYPE_SIZE_T
 
 # Checks for library functions.
+AC_FUNC_MALLOC
+AC_FUNC_REALLOC
+AC_CHECK_FUNCS([memset strdup])
+
+AC_CONFIG_FILES([Makefile
+                 example/Makefile
+                 include/Makefile
+                 src/Makefile
+                 ])
 
 AC_ARG_ENABLE(rtt,
               AS_HELP_STRING([--enable-rtt], [using the hardware abstraction layer for rt-thread] [[default=no]]),
@@ -53,9 +68,4 @@ AC_ARG_ENABLE(linux,
               )
 AM_CONDITIONAL([COMPILE_WITH_LINUX_HAL], [test "x$enable_linux" = "xyes"])
 
-AC_CONFIG_FILES([Makefile
-                 example/Makefile
-                 include/Makefile
-                 src/Makefile
-                 ])
 AC_OUTPUT
