@@ -30,6 +30,16 @@ HEADERS_COM = hal_config.h \
 
 HEADERS_FUNC_MODULE = hal_audio_recorder.h
 
+noinst_HEADERS  = hal_thread_internal.h
+
+if COMPILE_WITH_LINUX_HAL
+noinst_HEADERS += linux/hal_linux_thread.h
+endif
+
+if COMPILE_WITH_RTT_HAL
+noinst_HEADERS += rtt/hal_rtt_thread.h
+endif
+
 include_HEADERS = $(HEADERS_COM) $(HEADERS_FUNC_MODULE)
 
 # FIXME 下面的问题还没有解决

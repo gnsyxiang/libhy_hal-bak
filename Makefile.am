@@ -35,6 +35,7 @@ export AM_CFLAGS_COM
 # EXTRA_DIST=conf           #在make dist打包的时候也要将扩展文件夹打包进去
 
 dist_doc_DATA = README.md
+dist_build_SCRIPTS = build.sh
 
 SUBDIRS = include src example
 
