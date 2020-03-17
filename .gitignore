@@ -8,6 +8,7 @@ config.*
 *.la
 *.dirstamp
 .libs/
+*-build.sh
 
 # ignore dir
 .SpaceVim.d/
