@@ -1,21 +1,38 @@
 
 # ignore pattern
+cscope.*
+
+config.*
+*.o
+*.lo
+*.la
+*.dirstamp
+.libs/
 
 # ignore dir
 .SpaceVim.d/
 node_modules/
+
 m4/
 build-aux/
 autom4te.cache/
+.deps
 
 # ignore file
 .clang
+cscope_ctags.sh
+tags
+
+configure
 configure.scan
 autoscan.log
-build-aux/version.num
 Makefile.in
+Makefile
 aclocal.m4
-config.h.in
-config.h.in~
-configure
+libtool
+stamp-h1
+example/demo
+
+
+
 

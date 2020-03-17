@@ -5,7 +5,7 @@ AC_PREREQ([2.69])
 m4_include([m4/version.m4])
 
 AC_INIT([libhal], [VERSION_NUM], [gnsyxiang@163.com])
-AC_CONFIG_SRCDIR([src/linux/hal_pthread.c])
+AC_CONFIG_SRCDIR([src/hal_thread.c])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_AUX_DIR([build-aux])
@@ -18,7 +18,7 @@ AC_SUBST(current)
 AC_SUBST(revision)
 AC_SUBST(age)
 
-AM_INIT_AUTOMAKE([foreign -Wall -Werror])
+AM_INIT_AUTOMAKE([subdir-objects foreign -Wall -Werror])
 AM_SILENT_RULES([yes])
 
 # Checks for programs.
@@ -34,24 +34,38 @@ AM_PROG_AR
 LT_INIT
 
 # Checks for libraries.
+AC_CHECK_LIB([hal], [HalThreadCreate])
+AC_CHECK_LIB([pthread], [pthread_create])
 
 # Checks for header files.
+AC_CHECK_HEADERS([stddef.h stdlib.h string.h sys/time.h unistd.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
+AC_C_INLINE
+AC_TYPE_PID_T
+AC_TYPE_SIZE_T
 
 # Checks for library functions.
-
-AC_ARG_ENABLE(rtos,
-              AS_HELP_STRING([--enable-rtos], [using the hardware abstraction layer for rtos] [[default=no]]),
-              AC_DEFINE(HAVE_RTOS_HAL, 1, [using the hardware abstraction layer for rtos])
-              )
-AM_CONDITIONAL([COMPILE_WITH_RTOS_HAL], [test "x$enable_rtos" = "xyes"])
+AC_FUNC_MALLOC
+AC_FUNC_REALLOC
+AC_CHECK_FUNCS([memset strdup])
 
 AC_CONFIG_FILES([Makefile
                  example/Makefile
                  include/Makefile
                  src/Makefile
-                 src/linux/Makefile
-                 src/rtos/Makefile
                  ])
+
+AC_ARG_ENABLE(rtt,
+              AS_HELP_STRING([--enable-rtt], [using the hardware abstraction layer for rt-thread] [[default=no]]),
+              AC_DEFINE(HAVE_RTT_HAL, 1, [using the hardware abstraction layer for rt-thread])
+              )
+AM_CONDITIONAL([COMPILE_WITH_RTT_HAL], [test "x$enable_rtt" = "xyes"])
+
+AC_ARG_ENABLE(linux,
+              AS_HELP_STRING([--enable-linux], [using the hardware abstraction layer for linux] [[default=no]]),
+              AC_DEFINE(HAVE_LINUX_HAL, 1, [using the hardware abstraction layer for linux])
+              )
+AM_CONDITIONAL([COMPILE_WITH_LINUX_HAL], [test "x$enable_linux" = "xyes"])
+
 AC_OUTPUT

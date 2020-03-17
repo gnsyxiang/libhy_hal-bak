@@ -17,17 +17,36 @@
  * 
  *     last modified: 17/12 2019 20:41
  */
-#include <stdio.h>
-
 #include "config.h"
-#include "hal_pthread.h"
+#include "hal_config.h"
 
-int main(int argc, const char *argv[])
+#ifdef HAVE_RTT_HAL
+hal_int32_t main(hal_int32_t argc, const hal_int8_t *argv[])
 {
-    (void)argc;
-    (void)argv;
+    return 0;
+}
+#endif
 
-    hello_world();
+#ifdef HAVE_LINUX_HAL
+hal_int32_t main(hal_int32_t argc, const hal_int8_t *argv[])
+{
+    AudioRecorderConfig_t audio_recorder_config;
+    audio_recorder_config.rate    = 16 * 1000;
+    audio_recorder_config.channel = 2;
+    audio_recorder_config.bit     = 16;
+
+    AudioRecorderHandle_t handle = HalAudioRecorderCreate(&audio_recorder_config);
+
+    while (1) {
+        HalAudioRecorderStart(handle);
+        Hal_sleep(5);
+        
+        HalAudioRecorderStop(handle);
+    }
+
+    HalAudioRecorderDestroy(handle);
 
     return 0;
 }
+#endif
+

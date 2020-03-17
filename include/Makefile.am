@@ -18,5 +18,35 @@
 #     last modified: 21/12 2019 13:21
 # ===============================================================
 
-include_HEADERS = hal_pthread.h
+HEADERS_COM = hal_config.h \
+			  hal_type.h \
+			  hal_log.h \
+			  hal_mem.h \
+			  hal_time.h \
+			  hal_string.h \
+			  hal_assert.h \
+			  hal_thread.h \
+			  hal_sem.h
+
+HEADERS_FUNC_MODULE = hal_audio_recorder.h
+
+noinst_HEADERS  = hal_thread_internal.h
+
+if COMPILE_WITH_LINUX_HAL
+noinst_HEADERS += linux/hal_linux_thread.h
+endif
+
+if COMPILE_WITH_RTT_HAL
+noinst_HEADERS += rtt/hal_rtt_thread.h
+endif
+
+include_HEADERS = $(HEADERS_COM) $(HEADERS_FUNC_MODULE)
+
+# FIXME 下面的问题还没有解决
+# inheaderdir = ${prefix}
+# inheader_DATA = hal_thread_internal.h \
+			  # linux/hal_linux_thread.h \
+			  # rtt/hal_rtt_thread.h
+#
+# EXTRA_DIST = $(inheader_DATA)
 
