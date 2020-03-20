@@ -21,8 +21,6 @@ AC_SUBST(age)
 
 AM_INIT_AUTOMAKE([subdir-objects foreign -Wall -Werror])
 AM_SILENT_RULES([yes])
-AM_PROG_AR
-LT_INIT
 
 # Checks for programs.
 AC_PROG_CXX
@@ -32,6 +30,8 @@ AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
+AM_PROG_AR
+LT_INIT
 AC_PROG_LIBTOOL
 
 # Checks for libraries.

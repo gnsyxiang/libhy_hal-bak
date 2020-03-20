@@ -33,6 +33,7 @@ libtool
 stamp-h1
 example/demo
 linux-build_linux.sh
+rtt-build_rtt.sh
 
 
 

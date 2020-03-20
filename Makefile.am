@@ -40,5 +40,9 @@ if COMPILE_WITH_LINUX_HAL
 dist_build_SCRIPTS = build_linux.sh
 endif
 
+if COMPILE_WITH_RTT_HAL
+dist_build_SCRIPTS = build_rtt.sh
+endif
+
 SUBDIRS = include src example
 

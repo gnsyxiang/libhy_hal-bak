@@ -84,8 +84,9 @@ SOURCES_COM += linux/hal_linux_thread.c
 endif
 
 if COMPILE_WITH_RTT_HAL
-CFLAGS_COM += -I$(top_srcdir)/include/rtt \
-			  -I$(top_srcdir)/include/rtt/include
+CFLAGS_COM  += -I$(top_srcdir)/include/rtt \
+			   -I$(top_srcdir)/include/rtt/include
+CFLAGS_COM  += -Wno-error=type-limits
 SOURCES_COM += rtt/hal_rtt_thread.c
 endif
 
