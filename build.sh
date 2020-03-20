@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-if [ $# != 2 ] ; then
-    echo "usage: $0 system_name absolute_install_path"
-    echo " e.g.: $0 linux/rtt "'`pwd`/install'
+if [ $# != 3 ] ; then
+    echo "usage: $0 system_name absolute_install_path 3rd_lib_path"
+    echo " e.g.: $0 linux/rtt "'`pwd`/install `pwd`/3rd_lib'
     exit 1;
 fi
 
@@ -17,7 +17,7 @@ echo "------------------------------------------------"
 case $1 in
     linux)
         echo "linux"
-        SELECT_OPT=--enable-linux
+        SELECT_OPT="--enable-linux --with-libtinyalsa=${3}/tinyalsa"
         ;;
     rtt)
         TOOLCHAINS_DIR=/opt/toolchains/gcc-arm-none-eabi-5_4-2016q3/bin/arm-none-eabi-
