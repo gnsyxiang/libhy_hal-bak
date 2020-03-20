@@ -61,102 +61,106 @@ AC_CONFIG_FILES([Makefile
 # AC_ARG_WITH(package, help-string, [action-if-given], [action-if-not-given])
 # AC_CACHE_CHECK(message, cache-id, commands-to-set-it)
 # AC_TRY_LINK(includes, function-body, [action-if-true], [action-if-false])
-
-trylibtinyalsadir=""
-AC_ARG_WITH(
-    [libtinyalsa],
-    [  --with-libtinyalsa=PATH     Specify path to libtinyalsa installation ],
-    [
-        if test "x$withval" != "xno" ; then
-            trylibtinyalsadir=$withval
-        fi
-    ]
-    )
-
-dnl ------------------------------------------------------
-dnl libtinyalsa detection.  swiped from Tor.  modified a bit.
-
-LIBTINYALSA_URL=https://github.com/tinyalsa/tinyalsa/releases
-
-AC_CACHE_CHECK(
-    [for libtinyalsa directory],
-    [ac_cv_libtinyalsa_dir],
-    [saved_LIBS="$LIBS"
-     saved_LDFLAGS="$LDFLAGS"
-     saved_CPPFLAGS="$CPPFLAGS"
-     le_found=no
-     for ledir in $trylibtinyalsadir "" $prefix /usr/local ; do
-         LDFLAGS="$saved_LDFLAGS"
-         LIBS="$saved_LIBS -ltinyalsa"
-         # Skip the directory if it isn't there.
-         if test ! -z "$ledir" -a ! -d "$ledir" ; then
-             continue;
-         fi
-         if test ! -z "$ledir" ; then
-             if test -d "$ledir/lib" ; then
-                 LDFLAGS="-L$ledir/lib $LDFLAGS"
-             else
-                 LDFLAGS="-L$ledir $LDFLAGS"
-             fi
-             if test -d "$ledir/include" ; then
-                 CPPFLAGS="-I$ledir/include $CPPFLAGS"
-             else
-                 CPPFLAGS="-I$ledir $CPPFLAGS"
-             fi
-         fi
-         # Can I compile and link it?
-         AC_TRY_LINK(
-            [#include <stdio.h> #include <pcm.h>],
-            [pcm_close(NULL);],
-            [libtinyalsa_linked=yes],
-            [libtinyalsa_linked=no])
-         if test $libtinyalsa_linked = yes; then
-             if test ! -z "$ledir" ; then
-                 ac_cv_libtinyalsa_dir=$ledir
-             else
-                 ac_cv_libtinyalsa_dir="(system)"
-             fi
-             le_found=yes
-             break
-         fi
-     done
-     LIBS="$saved_LIBS"
-     LDFLAGS="$saved_LDFLAGS"
-     CPPFLAGS="$saved_CPPFLAGS"
-     if test $le_found = no ; then
-        AC_MSG_ERROR([libtinyalsa is required. You can get it from $LIBTINYALSA_URL, 
-                      If it's already installed, specify its path using --with-libtinyalsa=/dir/])
-     fi
-    ])
-
-LIBS="$LIBS -ltinyalsa"
-if test $ac_cv_libtinyalsa_dir != "(system)"; then
-    if test -d "$ac_cv_libtinyalsa_dir/lib" ; then
-        LDFLAGS="-L$ac_cv_libtinyalsa_dir/lib $LDFLAGS"
-        le_libdir="$ac_cv_libtinyalsa_dir/lib"
-    else
-        LDFLAGS="-L$ac_cv_libtinyalsa_dir $LDFLAGS"
-        le_libdir="$ac_cv_libtinyalsa_dir"
-    fi
-    if test -d "$ac_cv_libtinyalsa_dir/include" ; then
-        CPPFLAGS="-I$ac_cv_libtinyalsa_dir/include $CPPFLAGS"
-    else
-        CPPFLAGS="-I$ac_cv_libtinyalsa_dir $CPPFLAGS"
-    fi
-fi
-
 # AC_ARG_ENABLE (feature, help-string, [action-if-given], [action-if-not-given])
+
+# rtt configure
 AC_ARG_ENABLE([rtt],
     [AS_HELP_STRING([--enable-rtt], [using the hardware abstraction layer for rt-thread] [[default=no]])],
     [AC_DEFINE(HAVE_RTT_HAL, 1, [using the hardware abstraction layer for rt-thread])]
     [])
 AM_CONDITIONAL([COMPILE_WITH_RTT_HAL], [test "x$enable_rtt" = "xyes"])
 
+# linux configure
 AC_ARG_ENABLE([linux],
     [AS_HELP_STRING([--enable-linux], [using the hardware abstraction layer for linux] [[default=no]])],
     [AC_DEFINE(HAVE_LINUX_HAL, 1, [using the hardware abstraction layer for linux])]
     )
 AM_CONDITIONAL([COMPILE_WITH_LINUX_HAL], [test "x$enable_linux" = "xyes"])
+
+if test "x$enable_linux" = "xyes"; then
+    trylibtinyalsadir=""
+    AC_ARG_WITH(
+        [libtinyalsa],
+        [  --with-libtinyalsa=PATH     Specify path to libtinyalsa installation ],
+        [
+            if test "x$withval" != "xno" ; then
+                trylibtinyalsadir=$withval
+            fi
+        ]
+        )
+    
+    dnl ------------------------------------------------------
+    dnl libtinyalsa detection.  swiped from Tor.  modified a bit.
+    
+    LIBTINYALSA_URL=https://github.com/tinyalsa/tinyalsa/releases
+    
+    AC_CACHE_CHECK(
+        [for libtinyalsa directory],
+        [ac_cv_libtinyalsa_dir],
+        [saved_LIBS="$LIBS"
+         saved_LDFLAGS="$LDFLAGS"
+         saved_CPPFLAGS="$CPPFLAGS"
+         le_found=no
+         for ledir in $trylibtinyalsadir "" $prefix /usr/local ; do
+             LDFLAGS="$saved_LDFLAGS"
+             LIBS="$saved_LIBS -ltinyalsa"
+             # Skip the directory if it isn't there.
+             if test ! -z "$ledir" -a ! -d "$ledir" ; then
+                 continue;
+             fi
+             if test ! -z "$ledir" ; then
+                 if test -d "$ledir/lib" ; then
+                     LDFLAGS="-L$ledir/lib $LDFLAGS"
+                 else
+                     LDFLAGS="-L$ledir $LDFLAGS"
+                 fi
+                 if test -d "$ledir/include" ; then
+                     CPPFLAGS="-I$ledir/include $CPPFLAGS"
+                 else
+                     CPPFLAGS="-I$ledir $CPPFLAGS"
+                 fi
+             fi
+             # Can I compile and link it?
+             AC_TRY_LINK(
+                [#include <stdio.h> #include <pcm.h>],
+                [pcm_close(NULL);],
+                [libtinyalsa_linked=yes],
+                [libtinyalsa_linked=no])
+             if test $libtinyalsa_linked = yes; then
+                 if test ! -z "$ledir" ; then
+                     ac_cv_libtinyalsa_dir=$ledir
+                 else
+                     ac_cv_libtinyalsa_dir="(system)"
+                 fi
+                 le_found=yes
+                 break
+             fi
+         done
+         LIBS="$saved_LIBS"
+         LDFLAGS="$saved_LDFLAGS"
+         CPPFLAGS="$saved_CPPFLAGS"
+         if test $le_found = no ; then
+            AC_MSG_ERROR([libtinyalsa is required. You can get it from $LIBTINYALSA_URL, 
+                          If it's already installed, specify its path using --with-libtinyalsa=/dir/])
+         fi
+        ])
+    
+    LIBS="$LIBS -ltinyalsa"
+    if test $ac_cv_libtinyalsa_dir != "(system)"; then
+        if test -d "$ac_cv_libtinyalsa_dir/lib" ; then
+            LDFLAGS="-L$ac_cv_libtinyalsa_dir/lib $LDFLAGS"
+            le_libdir="$ac_cv_libtinyalsa_dir/lib"
+        else
+            LDFLAGS="-L$ac_cv_libtinyalsa_dir $LDFLAGS"
+            le_libdir="$ac_cv_libtinyalsa_dir"
+        fi
+        if test -d "$ac_cv_libtinyalsa_dir/include" ; then
+            CPPFLAGS="-I$ac_cv_libtinyalsa_dir/include $CPPFLAGS"
+        else
+            CPPFLAGS="-I$ac_cv_libtinyalsa_dir $CPPFLAGS"
+        fi
+    fi
+fi
 
 AC_OUTPUT
 
