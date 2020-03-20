@@ -27,7 +27,7 @@
 #include "hal_linux_thread.h"
 #endif
 
-static hal_thread_system_cb_t g_system_cb;
+static hal_system_init_cb_t g_system_cb;
 static hal_int32_t g_init_flag = 0;
 
 static inline hal_thread_context_t *_context_init(void)
@@ -69,12 +69,12 @@ void *HalThreadCreate(HalThreadConfig_t *config)
         Hal_strncpy(context->name, config->name, len);
         context->name[len] = '\0';
     }
-
     if (NULL != config->loop_config) {
         context->loop_config = *config->loop_config;
     }
+    context->config = config;
 
-    if (NULL == g_system_cb.create || 0 != g_system_cb.create(config, context)) {
+    if (NULL == g_system_cb.create || 0 != g_system_cb.create(context)) {
         Hal_LogE("call init faild \n");
         goto L_ERROR_INIT_2;
     }

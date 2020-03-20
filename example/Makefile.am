@@ -28,18 +28,23 @@ CFLAGS_COM += -I$(top_srcdir)/include/rtt \
 CFLAGS_COM += --specs=rdimon.specs
 endif
 
-demo_ld_com  = -L$(top_builddir)/src/.libs
-demo_ld_com += -lhal
-
-if COMPILE_WITH_LINUX_HAL
-demo_ld_com += -lpthread
-endif
+hal_ld_com  = -L$(top_builddir)/src/.libs
+hal_ld_com += -lhal
 
 SOURCES_COM = main.c
 
-bin_PROGRAMS = demo
-demo_SOURCES = $(SOURCES_COM)
-demo_LDADD   = $(demo_ld_com)
-demo_CFLAGS  = $(AM_CFLAGS_COM) \
-			   $(CFLAGS_COM)
+bin_PROGRAMS 	= demo
+
+demo_SOURCES 	= main.c
+demo_LDADD   	= $(hal_ld_com)
+demo_CFLAGS  	= $(AM_CFLAGS_COM) $(CFLAGS_COM)
+
+if COMPILE_WITH_LINUX_HAL
+bin_PROGRAMS   += thread
+hal_ld_com += -lpthread
+
+thread_SOURCES 	= thread.c
+thread_LDADD   	= $(hal_ld_com)
+thread_CFLAGS  	= $(AM_CFLAGS_COM) $(CFLAGS_COM)
+endif
 
