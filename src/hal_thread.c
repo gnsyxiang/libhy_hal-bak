@@ -19,6 +19,7 @@
  */
 #include "config.h"
 #include "hal_config.h"
+#include "hal_thread_internal.h"
 
 #ifdef HAVE_RTT_HAL
 #include "hal_rtt_thread.h"

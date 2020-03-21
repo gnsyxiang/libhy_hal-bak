@@ -19,6 +19,7 @@
  */
 #include "hal_config.h"
 #include "hal_rtt_thread.h"
+#include "hal_thread_internal.h"
 
 static void _loop_wrapper(void *args)
 {
