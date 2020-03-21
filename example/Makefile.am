@@ -18,33 +18,34 @@
 #     last modified: 21/12 2019 13:22
 # ===============================================================
 
-CFLAGS_COM  = -I$(top_srcdir)/include
+CFLAGS_COM  	= -I$(top_srcdir)/include
 # CFLAGS_COM += -Wno-error=unused-parameter
-CFLAGS_COM += -Wno-unused-parameter
+CFLAGS_COM 		+= -Wno-unused-parameter
 
 if COMPILE_WITH_RTT_HAL
-CFLAGS_COM += -I$(top_srcdir)/include/rtt \
-			  -I$(top_srcdir)/include/rtt/include
-CFLAGS_COM += --specs=rdimon.specs
+CFLAGS_COM 	   	+= -I$(top_srcdir)/include/rtt \
+				   -I$(top_srcdir)/include/rtt/include
+CFLAGS_COM		+= --specs=rdimon.specs
 endif
 
-hal_ld_com  = -L$(top_builddir)/src/.libs
-hal_ld_com += -lhal
-
-SOURCES_COM = main.c
+hal_ld_com  	= -L$(top_builddir)/src/.libs
+hal_ld_com 	   	+= -lhal
 
 bin_PROGRAMS 	= demo
 
-demo_SOURCES 	= main.c
+demo_SOURCES 	= demo.c
 demo_LDADD   	= $(hal_ld_com)
 demo_CFLAGS  	= $(AM_CFLAGS_COM) $(CFLAGS_COM)
 
 if COMPILE_WITH_LINUX_HAL
-bin_PROGRAMS   += thread
-hal_ld_com += -lpthread
+bin_PROGRAMS   	+= thread audio
+
+audio_SOURCES 	= audio.c
+audio_LDADD   	= $(hal_ld_com)
+audio_CFLAGS  	= $(AM_CFLAGS_COM) $(CFLAGS_COM)
 
 thread_SOURCES 	= thread.c
-thread_LDADD   	= $(hal_ld_com)
+thread_LDADD   	= $(hal_ld_com) -lpthread
 thread_CFLAGS  	= $(AM_CFLAGS_COM) $(CFLAGS_COM)
 endif
 
