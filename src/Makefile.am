@@ -18,6 +18,10 @@
 #     last modified: 21/12 2019 13:20
 # ===============================================================
 
+if COMPILE_WITH_LINUX_HAL
+SUBDIRS = linux
+endif
+
 lib_LTLIBRARIES = libhal.la
 
 # libtool动态库的版本由三个字段组成current:revision:age: 
@@ -80,16 +84,15 @@ FUNC_MODULE_SOURCES = hal_audio_recorder.c
 
 if COMPILE_WITH_LINUX_HAL
 CFLAGS_COM 	+= -I$(top_srcdir)/include/linux
-SOURCES_COM += linux/hal_linux_thread.c \
-			   linux/hal_linux_audio.c
+LDFLAGS_COM += linux/.libs/libhal_linux.a
 endif
 
-if COMPILE_WITH_RTT_HAL
-CFLAGS_COM  += -I$(top_srcdir)/include/rtt \
-			   -I$(top_srcdir)/include/rtt/include
-CFLAGS_COM  += -Wno-error=type-limits
-SOURCES_COM += rtt/hal_rtt_thread.c
-endif
+# if COMPILE_WITH_RTT_HAL
+# CFLAGS_COM  += -I$(top_srcdir)/include/rtt \
+			   # -I$(top_srcdir)/include/rtt/include
+# CFLAGS_COM  += -Wno-error=type-limits
+# SOURCES_COM += rtt/hal_rtt_thread.c
+# endif
 
 AM_CFLAGS 		   = $(CFLAGS_COM)
 libhal_la_LDFLAGS  = $(LDFLAGS_COM)
