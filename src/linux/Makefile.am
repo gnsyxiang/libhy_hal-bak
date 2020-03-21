@@ -18,24 +18,20 @@
 #     last modified: 21/03 2020 22:57
 # ===============================================================
 
-#生成的静态库文件名称，noinst加上之后是只编译，不安装到系统中。
 noinst_LTLIBRARIES = libhal_linux.la          
 
-CFLAGS_COM  = $(AM_CFLAGS_COM)
-CFLAGS_COM += -fPIC
-CFLAGS_COM += -I$(top_srcdir)/include
-CFLAGS_COM += -I$(top_srcdir)/include/linux
+CFLAGS_COM 	 = $(AM_CFLAGS_COM)
+CFLAGS_COM 	+= -I$(top_srcdir)/include
+CFLAGS_COM 	+= -I$(top_srcdir)/include/linux
+CFLAGS_COM 	+= -Wno-unused-parameter
 
-CFLAGS_COM += -Wno-unused-parameter
+SOURCES_COM  = hal_linux_audio.c \
+			   hal_linux_thread.c
 
-SOURCES_COM = hal_linux_audio.c \
-			  hal_linux_thread.c
-
-LDFLAGS_COM  = 
-LDFLAGS_COM += -rdynamic
+LDFLAGS_COM  = -rdynamic
 LDFLAGS_COM += -export-symbols-regex 'Hal*'
 
-AM_CFLAGS 		   = $(CFLAGS_COM)
+AM_CFLAGS 		   	   	 = $(CFLAGS_COM)
 libhal_linux_la_LDFLAGS  = $(LDFLAGS_COM)
 libhal_linux_la_SOURCES  = $(SOURCES_COM)
 
