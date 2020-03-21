@@ -29,11 +29,19 @@ extern "C" {
 
 typedef hal_int32_t (*hal_create_cb_t)(void *context);
 typedef hal_int32_t (*hal_destroy_cb_t)(void *context);
+
+typedef hal_int32_t (*hal_start_cb_t)(void *context);
+typedef hal_int32_t (*hal_stop_cb_t)(void *context);
+
 typedef hal_int32_t (*hal_param_cb_t)(void *context, hal_int32_t type, void *args);
 
 typedef struct {
     hal_create_cb_t     create;
     hal_destroy_cb_t    destroy;
+
+    hal_start_cb_t      start;
+    hal_stop_cb_t       stop;
+
     hal_param_cb_t      get;
     hal_param_cb_t      set;
 } hal_system_init_cb_t;

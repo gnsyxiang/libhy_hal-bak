@@ -25,26 +25,15 @@ extern "C" {
 #endif
 
 #include "hal_config.h"
+#include "hal_module_cb.h"
 
-typedef hal_int32_t (*hal_audio_create_t)(HalThreadConfig_t *config, hal_thread_context_t *context);
-typedef hal_int32_t (*hal_thhread_destroy_t)(hal_thread_context_t *context);
-typedef hal_int32_t (*hal_thread_param_t)(hal_thread_context_t *context, HalThreadParam_t type, void *args);
+void AudioSystemInit(hal_system_init_cb_t *system_cb);
 
-typedef struct {
-    hal_thread_create_t create;
-    hal_thhread_destroy_t destroy;
-    hal_thread_param_t get;
-    hal_thread_param_t set;
-} hal_thread_system_cb_t;
-#define HAL_THREAD_SYSTEM_CB_LEN (sizeof(hal_thread_system_cb_t))
+hal_int32_t LinuxAudioCreate(void *args);
+hal_int32_t LinuxAudioDestroy(void *args);
 
-void AudioSystemInit(hal_thread_system_cb_t *system_cb);
-
-hal_int32_t LinuxThreadCreate(HalThreadConfig_t *config, hal_thread_context_t *context);
-hal_int32_t LinuxThreadDestroy(hal_thread_context_t *context);
-
-hal_int32_t LinuxThreadParamSet(hal_thread_context_t *context, HalThreadParam_t type, void *args);
-hal_int32_t LinuxThreadParamGet(hal_thread_context_t *context, HalThreadParam_t type, void *args);
+hal_int32_t LinuxAudioStart(void *args);
+hal_int32_t LinuxAudioStop(void *args);
 
 #ifdef __cplusplus
 }
