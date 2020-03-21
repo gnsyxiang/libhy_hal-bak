@@ -56,8 +56,9 @@ AC_CHECK_FUNCS([memset strdup])
 AC_CONFIG_FILES([Makefile
                  example/Makefile
                  include/Makefile
+                 src/Makefile
                  src/linux/Makefile
-                 src/Makefile])
+                 src/rtt/Makefile])
 
 # AC_ARG_WITH(package, help-string, [action-if-given], [action-if-not-given])
 # AC_CACHE_CHECK(message, cache-id, commands-to-set-it)
