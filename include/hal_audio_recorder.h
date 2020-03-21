@@ -34,10 +34,14 @@ typedef enum {
     AUDIO_RECORDER_PARAM_MAX,
 } AudioRecorderParam_t;
 
+typedef hal_int32_t (*HalAudioDataCB_t)(hal_char_t *buf, hal_uint32_t len);
+
 typedef struct {
-    hal_int32_t rate;
-    hal_int32_t channel;
-    hal_int32_t bit;
+    hal_int32_t         rate;
+    hal_int32_t         channel;
+    hal_int32_t         bit;
+
+    HalAudioDataCB_t    data_cb;
 } AudioRecorderConfig_t;
 
 typedef void * AudioRecorderHandle_t;

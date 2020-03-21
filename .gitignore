@@ -16,7 +16,9 @@ node_modules/
 m4/
 build-aux/
 autom4te.cache/
-.deps
+.deps/
+3rd_lib/
+install/
 
 # ignore file
 .clang
@@ -31,8 +33,11 @@ Makefile
 aclocal.m4
 libtool
 stamp-h1
+linux-build_linux.sh
+rtt-build_rtt.sh
+
 example/demo
-
-
+example/audio
+example/thread
 
 

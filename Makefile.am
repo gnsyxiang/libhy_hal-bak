@@ -35,7 +35,14 @@ export AM_CFLAGS_COM
 # EXTRA_DIST=conf           #在make dist打包的时候也要将扩展文件夹打包进去
 
 dist_doc_DATA = README.md
-dist_build_SCRIPTS = build.sh
+
+if COMPILE_WITH_LINUX_HAL
+dist_build_SCRIPTS = build_linux.sh
+endif
+
+if COMPILE_WITH_RTT_HAL
+dist_build_SCRIPTS = build_rtt.sh
+endif
 
 SUBDIRS = include src example
 

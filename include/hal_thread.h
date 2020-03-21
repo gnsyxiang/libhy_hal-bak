@@ -56,7 +56,7 @@ typedef struct {
 #define HAL_THREAD_LOOP_CONFIG_LEN (sizeof(HalThreadLoopConfig_t))
 
 typedef struct HalThreadConfig {
-    const hal_int8_t        *name;
+    const hal_char_t        *name;
 
     hal_uint32_t            stack_size;
     HalThreadPriority_t     priority;

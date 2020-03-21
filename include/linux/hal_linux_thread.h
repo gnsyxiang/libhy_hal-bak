@@ -27,7 +27,7 @@ extern "C" {
 #include "hal_config.h"
 #include "hal_thread_internal.h"
 
-void ThreadSystemInit(hal_thread_system_cb_t *system_cb);
+void ThreadSystemInit(hal_system_init_cb_t *system_cb);
 
 hal_int32_t LinuxThreadCreate(HalThreadConfig_t *config, hal_thread_context_t *context);
 hal_int32_t LinuxThreadDestroy(hal_thread_context_t *context);

@@ -2,7 +2,7 @@
  * 
  * Release under GPL-3.0.
  * 
- * @file    main.c
+ * @file    audio.c
  * @brief   
  * @author  gnsyxiang <gnsyxiang@163.com>
  * @date    17/12 2019 20:41
@@ -17,30 +17,28 @@
  * 
  *     last modified: 17/12 2019 20:41
  */
-#include "config.h"
 #include "hal_config.h"
 
-#ifdef HAVE_RTT_HAL
-hal_int32_t main(hal_int32_t argc, const hal_int8_t *argv[])
+static hal_int32_t _audio_data_cb(hal_char_t *buf, hal_uint32_t len)
 {
+    Hal_LogT("buf: %s, len: %d \n", buf, len);
+
     return 0;
 }
-#endif
 
-#ifdef HAVE_LINUX_HAL
-hal_int32_t main(hal_int32_t argc, const hal_int8_t *argv[])
+hal_int32_t main(hal_int32_t argc, const hal_char_t *argv[])
 {
     AudioRecorderConfig_t audio_recorder_config;
     audio_recorder_config.rate    = 16 * 1000;
     audio_recorder_config.channel = 2;
     audio_recorder_config.bit     = 16;
+    audio_recorder_config.data_cb = _audio_data_cb;
 
     AudioRecorderHandle_t handle = HalAudioRecorderCreate(&audio_recorder_config);
 
     while (1) {
         HalAudioRecorderStart(handle);
         Hal_sleep(5);
-        
         HalAudioRecorderStop(handle);
     }
 
@@ -48,5 +46,3 @@ hal_int32_t main(hal_int32_t argc, const hal_int8_t *argv[])
 
     return 0;
 }
-#endif
-

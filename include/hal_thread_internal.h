@@ -26,6 +26,7 @@ extern "C" {
 
 #include "config.h"
 #include "hal_config.h"
+#include "hal_module_cb.h"
 
 #ifdef HAVE_LINUX_HAL
 #include <pthread.h>
@@ -41,8 +42,6 @@ extern "C" {
 #include <rtthread.h>
 #endif
 
-#define HAL_THREAD_NAME_MAX_LEN (16)
-
 typedef enum {
     HAL_THREAD_INIT,
     HAL_THREAD_IDLE,
@@ -55,8 +54,10 @@ typedef enum {
     HAL_THREAD_INDEX_MAX,
 } hal_thread_index_t;
 
+#define HAL_THREAD_NAME_MAX_LEN (16)
 typedef struct {
-    hal_int8_t                  name[HAL_THREAD_NAME_MAX_LEN];
+    HalThreadConfig_t           *config;
+    hal_char_t                  name[HAL_THREAD_NAME_MAX_LEN];
     HalThreadLoopConfig_t       loop_config;
 
 #ifdef HAVE_LINUX_HAL
@@ -70,29 +71,17 @@ typedef struct {
 } hal_thread_context_t;
 #define HAL_THREAD_CONTEXT_LEN (sizeof(hal_thread_context_t))
 
-typedef hal_int32_t (*hal_thread_create_t)(HalThreadConfig_t *config, hal_thread_context_t *context);
-typedef hal_int32_t (*hal_thhread_destroy_t)(hal_thread_context_t *context);
-typedef hal_int32_t (*hal_thread_param_t)(hal_thread_context_t *context, HalThreadParam_t type, void *args);
+typedef hal_int32_t (*hal_thread_param_cb_t)(hal_thread_context_t *context, void *args);
 
 typedef struct {
-    hal_thread_create_t create;
-    hal_thhread_destroy_t destroy;
-    hal_thread_param_t get;
-    hal_thread_param_t set;
-} hal_thread_system_cb_t;
-#define HAL_THREAD_SYSTEM_CB_LEN (sizeof(hal_thread_system_cb_t))
-
-typedef hal_int32_t (*hal_thread_param_cb)(hal_thread_context_t *context, void *args);
-
-typedef struct {
-    hal_thread_param_cb set_param_cb;
-    hal_thread_param_cb get_param_cb;
+    hal_thread_param_cb_t set_param_cb;
+    hal_thread_param_cb_t get_param_cb;
 } hal_linux_thread_param_cb_t;
 
 #define hal_thread_param_common(hal_thread_param, context, type, args, index) \
   ({                                                                          \
    hal_int32_t ret = -1;                                                      \
-    for (HalThreadParam_t i = 0; i < HAL_THREAD_PARAM_MAX; i++) {             \
+    for (hal_int32_t i = 0; i < HAL_THREAD_PARAM_MAX; i++) {                  \
         if (type == i) {                                                      \
             if (HAL_THREAD_INDEX_SET == index) {                              \
                 ret = hal_thread_param[i].set_param_cb(context, args);        \
