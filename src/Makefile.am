@@ -84,7 +84,7 @@ FUNC_MODULE_SOURCES = hal_audio_recorder.c
 
 if COMPILE_WITH_LINUX_HAL
 CFLAGS_COM 	+= -I$(top_srcdir)/include/linux
-LDFLAGS_COM += linux/.libs/libhal_linux.a
+LDFLAGS_COM += linux/*.lo
 endif
 
 # if COMPILE_WITH_RTT_HAL
