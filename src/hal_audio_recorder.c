@@ -29,15 +29,15 @@ typedef enum {
 } audio_recorder_state_t;
 
 typedef struct {
-    audio_recorder_state_t state;
-    AudioRecorderConfig_t config;
+    audio_recorder_state_t  state;
+    AudioRecorderConfig_t   config;
 
-    ThreadHandle_t thread_handle;
-    hal_int32_t is_running;
-    ThreadSemHandle_t sem_thread_exit_sync;
+    ThreadHandle_t          thread_handle;
+    hal_int32_t             is_running;
+    ThreadSemHandle_t       sem_thread_exit_sync;
 
-    ThreadSemHandle_t wait_stop;
-    ThreadSemHandle_t wait_start;
+    ThreadSemHandle_t       wait_stop;
+    ThreadSemHandle_t       wait_start;
 } audio_recorder_context_t;
 #define AUDIO_RECORDER_CONTEXT_LEN (sizeof(audio_recorder_context_t))
 
@@ -92,6 +92,10 @@ static void _recorder_thread_loop(void *args)
 
             HalSemWait(context->wait_start);
             Hal_LogT("audio record is started \n");
+        }
+
+        if (NULL != context->config.data_cb) {
+            context->config.data_cb("haha test", sizeof("haha test"));
         }
 
         Hal_LogT("haha test \n");
