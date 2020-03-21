@@ -18,6 +18,7 @@
  *     last modified: 10/01 2020 20:59
  */
 #include "hal_config.h"
+#include "hal_linux_thread.h"
 #include "hal_thread_internal.h"
 
 /*

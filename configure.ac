@@ -19,7 +19,7 @@ AC_SUBST(current)
 AC_SUBST(revision)
 AC_SUBST(age)
 
-AM_INIT_AUTOMAKE([subdir-objects foreign -Wall -Werror])
+AM_INIT_AUTOMAKE([foreign -Wall -Werror])
 AM_SILENT_RULES([yes])
 
 # Checks for programs.
@@ -56,7 +56,9 @@ AC_CHECK_FUNCS([memset strdup])
 AC_CONFIG_FILES([Makefile
                  example/Makefile
                  include/Makefile
-                 src/Makefile])
+                 src/Makefile
+                 src/linux/Makefile
+                 src/rtt/Makefile])
 
 # AC_ARG_WITH(package, help-string, [action-if-given], [action-if-not-given])
 # AC_CACHE_CHECK(message, cache-id, commands-to-set-it)

@@ -26,7 +26,6 @@ extern "C" {
 
 #include "config.h"
 #include "hal_config.h"
-#include "hal_module_cb.h"
 
 #ifdef HAVE_LINUX_HAL
 #include <pthread.h>
