@@ -30,7 +30,7 @@ static inline pid_t _getpid(void)
 }
 
 // 设置的名字可以在proc文件系统中查看: cat /proc/PID/task/tid/comm
-static inline void _linux_thread_set_name(pthread_t id, hal_int8_t *name)
+static inline void _linux_thread_set_name(pthread_t id, hal_char_t *name)
 {
     // hal_int32_t ret = pthread_setname_np(id, name);
     hal_int32_t ret = prctl(PR_SET_NAME, name);
@@ -39,7 +39,7 @@ static inline void _linux_thread_set_name(pthread_t id, hal_int8_t *name)
     }
 }
 
-static inline void _linux_thread_get_name(pthread_t id, hal_int8_t *name)
+static inline void _linux_thread_get_name(pthread_t id, hal_char_t *name)
 {
     // hal_int32_t ret = pthread_getname_np(id, name, HAL_THREAD_NAME_MAX_LEN);
     hal_int32_t ret = prctl(PR_GET_NAME, name);

@@ -17,19 +17,18 @@
  * 
  *     last modified: 20/03 2020 16:55
  */
-#include "config.h"
 #include "hal_config.h"
 
 #define STACK_SIZE                  (1024 * 1024 * 8)
 
 static void _thread_test_loop(void *args)
 {
-    Hal_LogT("the str: %s \n", (hal_char *)args);
+    Hal_LogT("the str: %s \n", (hal_char_t *)args);
 }
 
-hal_int32_t main(hal_int32_t argc, const hal_int8_t *argv[])
+hal_int32_t main(hal_int32_t argc, const hal_char_t *argv[])
 {
-    static hal_char *test_str = "test thread str";
+    static hal_char_t *test_str = "test thread str";
 
     HalThreadLoopConfig_t loop_config;
     loop_config.args = test_str;

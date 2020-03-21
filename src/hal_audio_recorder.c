@@ -43,9 +43,9 @@ typedef struct {
 
 static hal_int32_t audio_recorder_is_init = 0;
 
-static hal_char *_recorder_state_2_str(audio_recorder_state_t state)
+static hal_char_t *_recorder_state_2_str(audio_recorder_state_t state)
 {
-    static hal_char *state_str[] = {
+    static hal_char_t *state_str[] = {
         [AUDIO_RECORDER_STATE_IDLE]     = "AUDIO_RECORDER_STATE_IDLE",
         [AUDIO_RECORDER_STATE_RUNNING]  = "AUDIO_RECORDER_STATE_RUNNING",
         [AUDIO_RECORDER_STATE_STOPPING] = "AUDIO_RECORDER_STATE_STOPPING",
