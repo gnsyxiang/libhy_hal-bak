@@ -33,6 +33,9 @@ typedef hal_int32_t (*hal_destroy_cb_t)(void *context);
 typedef hal_int32_t (*hal_start_cb_t)(void *context);
 typedef hal_int32_t (*hal_stop_cb_t)(void *context);
 
+typedef hal_int32_t (*hal_read_cb_t)(void *context, const hal_char_t *buf, hal_uint32_t len);
+typedef hal_int32_t (*hal_write_cb_t)(void *context, const hal_char_t *buf, hal_uint32_t len);
+
 typedef hal_int32_t (*hal_param_cb_t)(void *context, hal_int32_t type, void *args);
 
 typedef struct {
@@ -41,6 +44,9 @@ typedef struct {
 
     hal_start_cb_t      start;
     hal_stop_cb_t       stop;
+
+    hal_read_cb_t       read;
+    hal_write_cb_t      write;
 
     hal_param_cb_t      get;
     hal_param_cb_t      set;

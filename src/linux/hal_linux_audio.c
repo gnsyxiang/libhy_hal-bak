@@ -30,12 +30,7 @@ hal_int32_t LinuxAudioDestroy(void *args)
     return 0;
 }
 
-hal_int32_t LinuxAudioStart(void *args)
-{
-    return 0;
-}
-
-hal_int32_t LinuxAudioStop(void *args)
+static hal_int32_t _linux_audio_read(void *context, const hal_char_t *buf, hal_uint32_t len)
 {
     return 0;
 }
@@ -47,7 +42,6 @@ void AudioSystemInit(hal_system_init_cb_t *system_cb)
     system_cb->create   = LinuxAudioCreate;
     system_cb->destroy  = LinuxAudioDestroy;
 
-    system_cb->start    = LinuxAudioStart;
-    system_cb->stop     = LinuxAudioStop;
+    system_cb->read     = _linux_audio_read;
 }
 

@@ -219,10 +219,6 @@ hal_int32_t HalAudioRecorderStart(AudioRecorderHandle_t handle)
         return HAL_INVALID_STATE_ERR;
     }
 
-    if (NULL == g_system_cb.start || 0 != g_system_cb.start(context)) {
-        Hal_LogE("call start faild \n");
-    }
-
     _set_audio_recorder_state(context, AUDIO_RECORDER_STATE_RUNNING);
     HalSemPost(context->wait_start);
 
@@ -242,10 +238,6 @@ hal_int32_t HalAudioRecorderStop(AudioRecorderHandle_t handle)
 
     _set_audio_recorder_state(context, AUDIO_RECORDER_STATE_STOPPING);
     HalSemWait(context->wait_stop);
-
-    if (NULL == g_system_cb.stop || 0 != g_system_cb.stop(context)) {
-        Hal_LogE("call stop faild \n");
-    }
 
     Hal_LogT("audio recorder stop \n");
     return HAL_NO_ERR;
