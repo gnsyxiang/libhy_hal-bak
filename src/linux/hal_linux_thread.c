@@ -2,7 +2,7 @@
  * 
  * Release under GPL-3.0.
  * 
- * @file    hal_pthread.c
+ * @file    hal_linux_thread.c
  * @brief   
  * @author  gnsyxiang <gnsyxiang@163.com>
  * @date    10/01 2020 20:59
@@ -18,6 +18,7 @@
  *     last modified: 10/01 2020 20:59
  */
 #include "hal_config.h"
+#include "hal_linux_thread.h"
 #include "hal_thread_internal.h"
 
 /*
@@ -65,7 +66,7 @@ static void *_loop_wrapper(void *args)
     return NULL;
 }
 
-hal_int32_t LinuxThreadCreate(void *args)
+static hal_int32_t _linux_thread_create(void *args)
 {
     hal_thread_context_t *context = args;
     hal_int32_t ret = 0;
@@ -116,7 +117,7 @@ L_ERROR_INIT_1:
     return -1;
 }
 
-hal_int32_t LinuxThreadDestroy(void *args)
+static hal_int32_t _linux_thread_destroy(void *args)
 {
     hal_thread_context_t *context = args;
     if (0 != context->id) {
@@ -141,7 +142,7 @@ static hal_linux_thread_param_cb_t _g_linux_thread_param[] = {
     {_hal_linux_thread_set_name, _hal_linux_thread_get_name},
 };
 
-hal_int32_t LinuxThreadParamSet(void *context, hal_int32_t type, void *args)
+static hal_int32_t _linux_thread_param_set(void *context, hal_int32_t type, void *args)
 {
     return hal_thread_param_common(_g_linux_thread_param,
                                    context,
@@ -150,7 +151,7 @@ hal_int32_t LinuxThreadParamSet(void *context, hal_int32_t type, void *args)
                                    HAL_THREAD_INDEX_SET);
 }
 
-hal_int32_t LinuxThreadParamGet(void *context, hal_int32_t type,  void *args)
+static hal_int32_t _linux_thread_param_get(void *context, hal_int32_t type,  void *args)
 {
     return hal_thread_param_common(_g_linux_thread_param,
                                    context,
@@ -163,10 +164,11 @@ void ThreadSystemInit(hal_system_init_cb_t *system_cb)
 {
     Hal_assert(NULL != system_cb);
 
-    system_cb->create  = LinuxThreadCreate;
-    system_cb->destroy = LinuxThreadDestroy;
-    system_cb->get     = LinuxThreadParamGet;
-    system_cb->set     = LinuxThreadParamSet;
+    system_cb->create  = _linux_thread_create;
+    system_cb->destroy = _linux_thread_destroy;
+
+    system_cb->get     = _linux_thread_param_get;
+    system_cb->set     = _linux_thread_param_set;
 }
 
 #if 0

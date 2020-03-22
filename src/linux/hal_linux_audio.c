@@ -18,14 +18,14 @@
  *     last modified: 12/03 2020 16:36
  */
 #include "hal_config.h"
-#include "hal_thread_internal.h"
+#include "hal_linux_audio.h"
 
-hal_int32_t LinuxAudioCreate(void *args)
+static hal_int32_t _linux_audio_open(void *args)
 {
     return 0;
 }
 
-hal_int32_t LinuxAudioDestroy(void *args)
+static hal_int32_t _linux_audio_close(void *args)
 {
     return 0;
 }
@@ -39,8 +39,8 @@ void AudioSystemInit(hal_system_init_cb_t *system_cb)
 {
     Hal_assert(NULL != system_cb);
 
-    system_cb->create   = LinuxAudioCreate;
-    system_cb->destroy  = LinuxAudioDestroy;
+    system_cb->create   = _linux_audio_open;
+    system_cb->destroy  = _linux_audio_close;
 
     system_cb->read     = _linux_audio_read;
 }
