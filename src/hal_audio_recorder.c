@@ -164,7 +164,10 @@ static inline void _context_final(audio_recorder_context_t **context)
 
 void *HalAudioRecorderCreate(AudioRecorderConfig_t *audio_recorder_config)
 {
-    Hal_assert(NULL != audio_recorder_config);
+    if (NULL == audio_recorder_config) {
+        Hal_LogE("the param is NULL \n");
+        goto L_ERROR_INIT_1;
+    }
 
     if (1 == audio_recorder_is_init) {
         Hal_LogW("hal audio recorder is init\n");
@@ -198,8 +201,12 @@ L_ERROR_INIT_1:
 
 void HalAudioRecorderDestroy(AudioRecorderHandle_t handle)
 {
-    Hal_assert(NULL != handle);
-    audio_recorder_context_t *context = (audio_recorder_context_t *)handle;
+    if (NULL == handle) {
+        Hal_LogE("the param is NULL \n");
+        return;
+    }
+
+    audio_recorder_context_t *context = handle;
 
     _recorder_thread_break(context);
     _destroy_recorder_thread(context);
@@ -213,7 +220,11 @@ void HalAudioRecorderDestroy(AudioRecorderHandle_t handle)
 
 hal_int32_t HalAudioRecorderStart(AudioRecorderHandle_t handle)
 {
-    Hal_assert(NULL != handle);
+    if (NULL == handle) {
+        Hal_LogE("the param is NULL \n");
+        return HAL_INVALID_HANDLE_ERR;
+    }
+
     audio_recorder_context_t *context = (audio_recorder_context_t *)handle;
 
     if (_check_audio_recorder_state(context, AUDIO_RECORDER_STATE_RUNNING)) {
@@ -230,7 +241,11 @@ hal_int32_t HalAudioRecorderStart(AudioRecorderHandle_t handle)
 
 hal_int32_t HalAudioRecorderStop(AudioRecorderHandle_t handle)
 {
-    Hal_assert(NULL != handle);
+    if (NULL == handle) {
+        Hal_LogE("the param is NULL \n");
+        return HAL_INVALID_HANDLE_ERR;
+    }
+
     audio_recorder_context_t *context = (audio_recorder_context_t *)handle;
 
     if (_check_audio_recorder_state(context, AUDIO_RECORDER_STATE_STOPPING)) {
@@ -247,7 +262,11 @@ hal_int32_t HalAudioRecorderStop(AudioRecorderHandle_t handle)
 
 hal_int32_t HalAudioRecorderIsActive(AudioRecorderHandle_t handle)
 {
-    Hal_assert(NULL != handle);
+    if (NULL == handle) {
+        Hal_LogE("the param is NULL \n");
+        return HAL_INVALID_HANDLE_ERR;
+    }
+
     audio_recorder_context_t *context = (audio_recorder_context_t *)handle;
 
     return _check_audio_recorder_state(context, AUDIO_RECORDER_STATE_RUNNING);
@@ -255,11 +274,21 @@ hal_int32_t HalAudioRecorderIsActive(AudioRecorderHandle_t handle)
 
 hal_int32_t HalAudioRecorderParamGet(AudioRecorderHandle_t handle, AudioRecorderParam_t type, void *args)
 {
+    if (NULL == handle) {
+        Hal_LogE("the param is NULL \n");
+        return HAL_INVALID_HANDLE_ERR;
+    }
+
     return HAL_NO_ERR;
 }
 
 hal_int32_t HalAudioRecorderParamSet(AudioRecorderHandle_t handle, AudioRecorderParam_t type, void *args)
 {
+    if (NULL == handle) {
+        Hal_LogE("the param is NULL \n");
+        return HAL_INVALID_HANDLE_ERR;
+    }
+
     return HAL_NO_ERR;
 }
 

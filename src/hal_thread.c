@@ -63,7 +63,10 @@ static inline void _context_final(hal_thread_context_t **context)
 
 void *HalThreadCreate(HalThreadConfig_t *config)
 {
-    Hal_assert(NULL != config);
+    if (NULL == config) {
+        Hal_LogE("the param is NULL \n");
+        return NULL;
+    }
 
     if (0 == g_init_flag) {
         g_init_flag = 1;
@@ -92,7 +95,10 @@ L_ERROR_INIT_1:
 
 void HalThreadDestroy(ThreadHandle_t handle)
 {
-    Hal_assert(NULL != handle);
+    if (NULL == handle) {
+        Hal_LogE("the param is NULL \n");
+        return;
+    }
 
     hal_thread_context_t *context = (hal_thread_context_t *)handle;
 
@@ -108,8 +114,6 @@ static hal_int32_t _hal_thread_param_common(ThreadHandle_t handle,
                                             void *args,
                                             hal_thread_index_t index)
 {
-    Hal_assert(NULL != handle);
-
     hal_thread_context_t *context = (hal_thread_context_t *) handle;
 
     if (HAL_THREAD_RUNNING != context->state) {
@@ -133,11 +137,21 @@ static hal_int32_t _hal_thread_param_common(ThreadHandle_t handle,
 
 hal_int32_t HalThreadParamSet(ThreadHandle_t handle, HalThreadParam_t type, void *args)
 {
+    if (NULL == handle) {
+        Hal_LogE("the param is NULL \n");
+        return HAL_INVALID_HANDLE_ERR;
+    }
+
     return _hal_thread_param_common(handle, type, args, HAL_THREAD_INDEX_SET);
 }
 
 hal_int32_t HalThreadParamGet(ThreadHandle_t handle, HalThreadParam_t type, void *args)
 {
+    if (NULL == handle) {
+        Hal_LogE("the param is NULL \n");
+        return HAL_INVALID_HANDLE_ERR;
+    }
+
     return _hal_thread_param_common(handle, type, args, HAL_THREAD_INDEX_GET);
 }
 
