@@ -21,28 +21,7 @@
 #include "hal_config.h"
 
 #include "hal_linux_audio.h"
-
-typedef enum {
-    AUDIO_RECORDER_STATE_IDLE,
-    AUDIO_RECORDER_STATE_RUNNING,
-    AUDIO_RECORDER_STATE_STOPPING,
-
-    AUDIO_RECORDER_STATE_MAX,
-} audio_recorder_state_t;
-
-typedef struct {
-    audio_recorder_state_t  state;
-
-    ThreadHandle_t          thread_handle;
-    hal_int32_t             is_running;
-    ThreadSemHandle_t       sem_thread_exit_sync;
-
-    ThreadSemHandle_t       wait_stop;
-    ThreadSemHandle_t       wait_start;
-
-    HalAudioDataCB_t        data_cb;
-} audio_recorder_context_t;
-#define AUDIO_RECORDER_CONTEXT_LEN (sizeof(audio_recorder_context_t))
+#include "hal_audio_recorder_internal.h"
 
 static hal_int32_t audio_recorder_is_init = 0;
 static hal_system_init_cb_t g_system_cb;
@@ -183,7 +162,7 @@ void *HalAudioRecorderCreate(AudioRecorderConfig_t *audio_recorder_config)
     }
 
     if (NULL == g_system_cb.create \
-            || 0 != g_system_cb.create(context, audio_recorder_config)) {
+            || 0 != g_system_cb.create(&context->hal_audio_handle, audio_recorder_config)) {
         Hal_LogE("call init faild \n");
         goto L_ERROR_INIT_2;
     }

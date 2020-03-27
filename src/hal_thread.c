@@ -79,7 +79,7 @@ void *HalThreadCreate(HalThreadConfig_t *config)
         goto L_ERROR_INIT_1;
     }
 
-    if (NULL == g_system_cb.create || 0 != g_system_cb.create(context, config)) {
+    if (NULL == g_system_cb.create || 0 != g_system_cb.create((void **)&context, config)) {
         Hal_LogE("call init faild \n");
         goto L_ERROR_INIT_2;
     }

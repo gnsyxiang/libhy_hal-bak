@@ -19,18 +19,21 @@
  */
 #include "hal_config.h"
 #include "hal_linux_audio.h"
+#include "hal_audio_recorder_internal.h"
 
-static hal_int32_t _linux_audio_open(void *context_tmp, void *config)
+static hal_int32_t _linux_audio_open(void **handle, void *config)
+{
+    Hal_assert(NULL != handle);
+
+    return 0;
+}
+
+static hal_int32_t _linux_audio_close(void *handle)
 {
     return 0;
 }
 
-static hal_int32_t _linux_audio_close(void *context_tmp)
-{
-    return 0;
-}
-
-static hal_int32_t _linux_audio_read(void *context_tmp, const hal_char_t *buf, hal_uint32_t len)
+static hal_int32_t _linux_audio_read(void *handle, const hal_char_t *buf, hal_uint32_t len)
 {
     return 0;
 }

@@ -66,9 +66,9 @@ static void *_loop_wrapper(void *args)
     return NULL;
 }
 
-static hal_int32_t _linux_thread_create(void *context_tmp, void *config_tmp)
+static hal_int32_t _linux_thread_create(void **context_tmp, void *config_tmp)
 {
-    hal_thread_context_t *context = context_tmp;
+    hal_thread_context_t *context = *context_tmp;
     HalThreadConfig_t *config = config_tmp;
 
     hal_int32_t ret = 0;
