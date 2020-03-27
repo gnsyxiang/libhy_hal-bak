@@ -27,7 +27,7 @@ extern "C" {
 #include "config.h"
 #include "hal_config.h"
 
-typedef hal_int32_t (*hal_create_cb_t)(void *context);
+typedef hal_int32_t (*hal_create_cb_t)(void *context, void *config);
 typedef hal_int32_t (*hal_destroy_cb_t)(void *context);
 
 typedef hal_int32_t (*hal_start_cb_t)(void *context);

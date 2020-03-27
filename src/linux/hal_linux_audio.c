@@ -20,17 +20,17 @@
 #include "hal_config.h"
 #include "hal_linux_audio.h"
 
-static hal_int32_t _linux_audio_open(void *args)
+static hal_int32_t _linux_audio_open(void *context_tmp, void *config)
 {
     return 0;
 }
 
-static hal_int32_t _linux_audio_close(void *args)
+static hal_int32_t _linux_audio_close(void *context_tmp)
 {
     return 0;
 }
 
-static hal_int32_t _linux_audio_read(void *context, const hal_char_t *buf, hal_uint32_t len)
+static hal_int32_t _linux_audio_read(void *context_tmp, const hal_char_t *buf, hal_uint32_t len)
 {
     return 0;
 }

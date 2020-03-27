@@ -32,7 +32,6 @@ typedef enum {
 
 typedef struct {
     audio_recorder_state_t  state;
-    AudioRecorderConfig_t   config;
 
     ThreadHandle_t          thread_handle;
     hal_int32_t             is_running;
@@ -40,6 +39,8 @@ typedef struct {
 
     ThreadSemHandle_t       wait_stop;
     ThreadSemHandle_t       wait_start;
+
+    HalAudioDataCB_t        data_cb;
 } audio_recorder_context_t;
 #define AUDIO_RECORDER_CONTEXT_LEN (sizeof(audio_recorder_context_t))
 
@@ -97,8 +98,8 @@ static void _recorder_thread_loop(void *args)
             Hal_LogT("audio record is started \n");
         }
 
-        if (NULL != context->config.data_cb) {
-            context->config.data_cb("haha test", sizeof("haha test"));
+        if (NULL != context->data_cb) {
+            context->data_cb("haha test", sizeof("haha test"));
         }
 
         Hal_LogT("haha test \n");
@@ -138,8 +139,8 @@ static inline audio_recorder_context_t *_context_init(AudioRecorderConfig_t *aud
         Hal_LogE("hal calloc faild \n");
         return NULL;
     }
-    context->config               = *audio_recorder_config;
     context->state                = AUDIO_RECORDER_STATE_IDLE;
+    context->data_cb              = audio_recorder_config->data_cb;
 
     context->sem_thread_exit_sync = HalSemInit(0, 0);
     context->wait_stop            = HalSemInit(0, 0);
@@ -178,7 +179,8 @@ void *HalAudioRecorderCreate(AudioRecorderConfig_t *audio_recorder_config)
         goto L_ERROR_INIT_1;
     }
 
-    if (NULL == g_system_cb.create || 0 != g_system_cb.create(context)) {
+    if (NULL == g_system_cb.create \
+            || 0 != g_system_cb.create(context, audio_recorder_config)) {
         Hal_LogE("call init faild \n");
         goto L_ERROR_INIT_2;
     }

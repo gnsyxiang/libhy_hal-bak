@@ -31,13 +31,25 @@
 static hal_system_init_cb_t g_system_cb;
 static hal_int32_t g_init_flag = 0;
 
-static inline hal_thread_context_t *_context_init(void)
+static inline hal_thread_context_t *_context_init(HalThreadConfig_t *config)
 {
     hal_thread_context_t *context = Hal_calloc(1, HAL_THREAD_CONTEXT_LEN);
     if (NULL == context) {
         Hal_LogE("hal calloc faild \n");
         return NULL;
     }
+
+    if (NULL != config->name) {
+        hal_int32_t len = Hal_strlen(config->name) < HAL_THREAD_NAME_MAX_LEN ?
+                          Hal_strlen(config->name) : HAL_THREAD_NAME_MAX_LEN;
+        Hal_strncpy(context->name, config->name, len);
+        context->name[len] = '\0';
+    }
+
+    if (NULL != config->loop_config) {
+        context->loop_config = *config->loop_config;
+    }
+
     return context;
 }
 
@@ -58,24 +70,13 @@ void *HalThreadCreate(HalThreadConfig_t *config)
         ThreadSystemInit(&g_system_cb);
     }
 
-    hal_thread_context_t *context = _context_init();
+    hal_thread_context_t *context = _context_init(config);
     if (NULL == context) {
         Hal_LogE("context init faild \n");
         goto L_ERROR_INIT_1;
     }
 
-    if (NULL != config->name) {
-        hal_int32_t len = Hal_strlen(config->name) < HAL_THREAD_NAME_MAX_LEN ?
-                          Hal_strlen(config->name) : HAL_THREAD_NAME_MAX_LEN;
-        Hal_strncpy(context->name, config->name, len);
-        context->name[len] = '\0';
-    }
-    if (NULL != config->loop_config) {
-        context->loop_config = *config->loop_config;
-    }
-    context->config = config;
-
-    if (NULL == g_system_cb.create || 0 != g_system_cb.create(context)) {
+    if (NULL == g_system_cb.create || 0 != g_system_cb.create(context, config)) {
         Hal_LogE("call init faild \n");
         goto L_ERROR_INIT_2;
     }
