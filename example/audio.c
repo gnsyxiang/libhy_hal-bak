@@ -21,7 +21,7 @@
 
 static hal_int32_t _audio_data_cb(hal_char_t *buf, hal_uint32_t len)
 {
-    Hal_LogT("buf: %s, len: %d \n", buf, len);
+    HalLogT("buf: %s, len: %d \n", buf, len);
 
     return 0;
 }

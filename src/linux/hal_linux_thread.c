@@ -35,7 +35,7 @@ static inline void _linux_thread_set_name(pthread_t id, hal_char_t *name)
     // hal_int32_t ret = pthread_setname_np(id, name);
     hal_int32_t ret = prctl(PR_SET_NAME, name);
     if (0 != ret) {
-        Hal_LogE("set name faild \n");
+        HalLogE("set name faild \n");
     }
 }
 
@@ -44,7 +44,7 @@ static inline void _linux_thread_get_name(pthread_t id, hal_char_t *name)
     // hal_int32_t ret = pthread_getname_np(id, name, HAL_THREAD_NAME_MAX_LEN);
     hal_int32_t ret = prctl(PR_GET_NAME, name);
     if (0 != ret) {
-        Hal_LogE("set name faild \n");
+        HalLogE("set name faild \n");
     }
 }
 
@@ -73,7 +73,7 @@ hal_int32_t LinuxThreadCreate(void *args)
 
     ret = pthread_attr_init(&attr);
     if (0 != ret) {
-        Hal_LogE("pthread_attr_init faild \n");
+        HalLogE("pthread_attr_init faild \n");
         goto L_ERROR_INIT_1;
     }
 
@@ -84,7 +84,7 @@ hal_int32_t LinuxThreadCreate(void *args)
     if (context->config->stack_size > 0) {
         ret = pthread_attr_setstacksize(&attr, context->config->stack_size);
         if (0 != ret) {
-            Hal_LogE("pthread_attr_setstacksize faild \n");
+            HalLogE("pthread_attr_setstacksize faild \n");
             goto L_ERROR_INIT_2;
         }
     }
@@ -104,7 +104,7 @@ hal_int32_t LinuxThreadCreate(void *args)
 
     ret = pthread_create(&context->id, &attr, _loop_wrapper, context);
     if (0 != ret) {
-        Hal_LogE("pthread_attr_setstacksize faild \n");
+        HalLogE("pthread_attr_setstacksize faild \n");
         goto  L_ERROR_INIT_2;
     }
 

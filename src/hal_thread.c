@@ -34,7 +34,7 @@ static inline hal_thread_context_t *_context_init(void)
 {
     hal_thread_context_t *context = Hal_calloc(1, HAL_THREAD_CONTEXT_LEN);
     if (NULL == context) {
-        Hal_LogE("hal calloc faild \n");
+        HalLogE("hal calloc faild \n");
         return NULL;
     }
     return context;
@@ -59,7 +59,7 @@ void *HalThreadCreate(HalThreadConfig_t *config)
 
     hal_thread_context_t *context = _context_init();
     if (NULL == context) {
-        Hal_LogE("context init faild \n");
+        HalLogE("context init faild \n");
         goto L_ERROR_INIT_1;
     }
 
@@ -75,11 +75,11 @@ void *HalThreadCreate(HalThreadConfig_t *config)
     context->config = config;
 
     if (NULL == g_system_cb.create || 0 != g_system_cb.create(context)) {
-        Hal_LogE("call init faild \n");
+        HalLogE("call init faild \n");
         goto L_ERROR_INIT_2;
     }
 
-    Hal_LogT("creat %s thread success \n", context->name);
+    HalLogT("creat %s thread success \n", context->name);
 
     return context;
 L_ERROR_INIT_2:
@@ -95,7 +95,7 @@ void HalThreadDestroy(ThreadHandle_t handle)
     hal_thread_context_t *context = (hal_thread_context_t *)handle;
 
     if (NULL == g_system_cb.destroy || 0 != g_system_cb.destroy(context)) {
-        Hal_LogE("call final faild \n");
+        HalLogE("call final faild \n");
     }
 
     _context_final(&context);
@@ -111,18 +111,18 @@ static hal_int32_t _hal_thread_param_common(ThreadHandle_t handle,
     hal_thread_context_t *context = (hal_thread_context_t *) handle;
 
     if (HAL_THREAD_RUNNING != context->state) {
-        Hal_LogE("can't set hal thread param with wrong state");
+        HalLogE("can't set hal thread param with wrong state");
         return HAL_INVALID_STATE_ERR;
     }
 
     if (index == HAL_THREAD_INDEX_GET) {
         if (NULL == g_system_cb.get || 0 != g_system_cb.get(context, type, args)) {
-            Hal_LogE("call get faild \n");
+            HalLogE("call get faild \n");
             return HAL_INVALID_HANDLE_ERR;
         }
     } else {
         if (NULL == g_system_cb.set || 0 != g_system_cb.set(context, type, args)) {
-            Hal_LogE("call set faild \n");
+            HalLogE("call set faild \n");
             return HAL_INVALID_HANDLE_ERR;
         }
     }

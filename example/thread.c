@@ -23,7 +23,7 @@
 
 static void _thread_test_loop(void *args)
 {
-    Hal_LogT("the str: %s \n", (hal_char_t *)args);
+    HalLogT("the str: %s \n", (hal_char_t *)args);
 }
 
 hal_int32_t main(hal_int32_t argc, const hal_char_t *argv[])
@@ -44,7 +44,7 @@ hal_int32_t main(hal_int32_t argc, const hal_char_t *argv[])
 
     int cnt = 5;
     while (cnt-- > 0) {
-        Hal_LogT("main loop \n");
+        HalLogT("main loop \n");
         Hal_sleep(1);
     }
 
