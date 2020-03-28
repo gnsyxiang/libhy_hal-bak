@@ -38,11 +38,21 @@ typedef enum {
 } LogLevel_t;
 
 typedef enum {
-    LOG_COLOR_ON,
     LOG_COLOR_OFF,
+    LOG_COLOR_ON,
 
     LOG_COLOR_MAX,
 } LogColor_t;
+
+typedef struct {
+    LogLevel_t level;
+    LogColor_t color_flag;
+} LogConfig_t;
+
+typedef void * LogHandle_t;
+
+void HalLogInit(LogConfig_t *log_config);
+void HalLogFinal(void);
 
 void HalLogSetLevel(LogLevel_t level);
 void HalLogSetColor(LogColor_t color_flag);

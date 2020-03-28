@@ -21,7 +21,7 @@
 
 hal_int32_t main(hal_int32_t argc, const hal_char_t *argv[])
 {
-    HalLogT("demo test \n");
+    printf("demo test \n");
 
     return 0;
 }

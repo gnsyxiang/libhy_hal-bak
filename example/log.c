@@ -21,11 +21,19 @@
 
 hal_int32_t main(hal_int32_t argc, const hal_char_t *argv[])
 {
+    LogConfig_t log_config;
+    log_config.level        = LOG_LEVEL_VERBOSE;
+    log_config.color_flag   = LOG_COLOR_ON;
+
+    HalLogInit(&log_config);
+
     HalLogV("demo test\n");
     HalLogT("demo test\n");
     HalLogD("demo test\n");
     HalLogW("demo test\n");
     HalLogE("demo test\n");
+
+    HalLogFinal();
 
     return 0;
 }

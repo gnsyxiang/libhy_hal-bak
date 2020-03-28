@@ -28,6 +28,12 @@ static hal_int32_t _audio_data_cb(hal_char_t *buf, hal_uint32_t len)
 
 hal_int32_t main(hal_int32_t argc, const hal_char_t *argv[])
 {
+    LogConfig_t log_config;
+    log_config.level        = LOG_LEVEL_VERBOSE;
+    log_config.color_flag   = LOG_COLOR_ON;
+
+    HalLogInit(&log_config);
+
     AudioRecorderConfig_t audio_recorder_config;
     audio_recorder_config.rate    = 16 * 1000;
     audio_recorder_config.channel = 2;
@@ -43,6 +49,7 @@ hal_int32_t main(hal_int32_t argc, const hal_char_t *argv[])
     }
 
     HalAudioRecorderDestroy(handle);
+    HalLogFinal();
 
     return 0;
 }
