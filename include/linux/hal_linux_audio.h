@@ -29,12 +29,6 @@ extern "C" {
 
 void AudioSystemInit(hal_system_init_cb_t *system_cb);
 
-hal_int32_t LinuxAudioCreate(void *args);
-hal_int32_t LinuxAudioDestroy(void *args);
-
-hal_int32_t LinuxAudioStart(void *args);
-hal_int32_t LinuxAudioStop(void *args);
-
 #ifdef __cplusplus
 }
 #endif

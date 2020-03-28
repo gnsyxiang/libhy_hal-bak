@@ -41,7 +41,7 @@ if COMPILE_WITH_LINUX_HAL
 bin_PROGRAMS   	+= thread audio
 
 audio_SOURCES 	= audio.c
-audio_LDADD   	= $(hal_ld_com)
+audio_LDADD   	= $(hal_ld_com) -ltinyalsa
 audio_CFLAGS  	= $(AM_CFLAGS_COM) $(CFLAGS_COM)
 
 thread_SOURCES 	= thread.c

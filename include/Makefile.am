@@ -30,10 +30,13 @@ HEADERS_COM = hal_config.h \
 
 HEADERS_FUNC_MODULE = hal_audio_recorder.h
 
-noinst_HEADERS  = hal_thread_internal.h
+noinst_HEADERS  = hal_module_cb.h \
+				  hal_thread_internal.h \
+				  hal_audio_recorder_internal.h
 
 if COMPILE_WITH_LINUX_HAL
-noinst_HEADERS += linux/hal_linux_thread.h
+noinst_HEADERS += linux/hal_linux_thread.h \
+				  linux/hal_linux_audio.h
 endif
 
 if COMPILE_WITH_RTT_HAL

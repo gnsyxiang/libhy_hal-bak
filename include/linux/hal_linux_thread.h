@@ -29,12 +29,6 @@ extern "C" {
 
 void ThreadSystemInit(hal_system_init_cb_t *system_cb);
 
-hal_int32_t LinuxThreadCreate(void *args);
-hal_int32_t LinuxThreadDestroy(void *args);
-
-hal_int32_t LinuxThreadParamSet(void *context, hal_int32_t type, void *args);
-hal_int32_t LinuxThreadParamGet(void *context, hal_int32_t type, void *args);
-
 #ifdef __cplusplus
 }
 #endif

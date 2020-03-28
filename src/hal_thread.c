@@ -31,13 +31,25 @@
 static hal_system_init_cb_t g_system_cb;
 static hal_int32_t g_init_flag = 0;
 
-static inline hal_thread_context_t *_context_init(void)
+static inline hal_thread_context_t *_context_init(HalThreadConfig_t *config)
 {
     hal_thread_context_t *context = Hal_calloc(1, HAL_THREAD_CONTEXT_LEN);
     if (NULL == context) {
         Hal_LogE("hal calloc faild \n");
         return NULL;
     }
+
+    if (NULL != config->name) {
+        hal_int32_t len = Hal_strlen(config->name) < HAL_THREAD_NAME_MAX_LEN ?
+                          Hal_strlen(config->name) : HAL_THREAD_NAME_MAX_LEN;
+        Hal_strncpy(context->name, config->name, len);
+        context->name[len] = '\0';
+    }
+
+    if (NULL != config->loop_config) {
+        context->loop_config = *config->loop_config;
+    }
+
     return context;
 }
 
@@ -51,31 +63,23 @@ static inline void _context_final(hal_thread_context_t **context)
 
 void *HalThreadCreate(HalThreadConfig_t *config)
 {
-    Hal_assert(NULL != config);
+    if (NULL == config) {
+        Hal_LogE("the param is NULL \n");
+        return NULL;
+    }
 
     if (0 == g_init_flag) {
         g_init_flag = 1;
         ThreadSystemInit(&g_system_cb);
     }
 
-    hal_thread_context_t *context = _context_init();
+    hal_thread_context_t *context = _context_init(config);
     if (NULL == context) {
         Hal_LogE("context init faild \n");
         goto L_ERROR_INIT_1;
     }
 
-    if (NULL != config->name) {
-        hal_int32_t len = Hal_strlen(config->name) < HAL_THREAD_NAME_MAX_LEN ?
-                          Hal_strlen(config->name) : HAL_THREAD_NAME_MAX_LEN;
-        Hal_strncpy(context->name, config->name, len);
-        context->name[len] = '\0';
-    }
-    if (NULL != config->loop_config) {
-        context->loop_config = *config->loop_config;
-    }
-    context->config = config;
-
-    if (NULL == g_system_cb.create || 0 != g_system_cb.create(context)) {
+    if (NULL == g_system_cb.create || 0 != g_system_cb.create((void **)&context, config)) {
         Hal_LogE("call init faild \n");
         goto L_ERROR_INIT_2;
     }
@@ -91,7 +95,10 @@ L_ERROR_INIT_1:
 
 void HalThreadDestroy(ThreadHandle_t handle)
 {
-    Hal_assert(NULL != handle);
+    if (NULL == handle) {
+        Hal_LogE("the param is NULL \n");
+        return;
+    }
 
     hal_thread_context_t *context = (hal_thread_context_t *)handle;
 
@@ -107,8 +114,6 @@ static hal_int32_t _hal_thread_param_common(ThreadHandle_t handle,
                                             void *args,
                                             hal_thread_index_t index)
 {
-    Hal_assert(NULL != handle);
-
     hal_thread_context_t *context = (hal_thread_context_t *) handle;
 
     if (HAL_THREAD_RUNNING != context->state) {
@@ -132,11 +137,21 @@ static hal_int32_t _hal_thread_param_common(ThreadHandle_t handle,
 
 hal_int32_t HalThreadParamSet(ThreadHandle_t handle, HalThreadParam_t type, void *args)
 {
+    if (NULL == handle) {
+        Hal_LogE("the param is NULL \n");
+        return HAL_INVALID_HANDLE_ERR;
+    }
+
     return _hal_thread_param_common(handle, type, args, HAL_THREAD_INDEX_SET);
 }
 
 hal_int32_t HalThreadParamGet(ThreadHandle_t handle, HalThreadParam_t type, void *args)
 {
+    if (NULL == handle) {
+        Hal_LogE("the param is NULL \n");
+        return HAL_INVALID_HANDLE_ERR;
+    }
+
     return _hal_thread_param_common(handle, type, args, HAL_THREAD_INDEX_GET);
 }
 

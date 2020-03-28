@@ -29,12 +29,6 @@ extern "C" {
 
 void ThreadSystemInit(hal_system_init_cb_t *system_cb);
 
-hal_int32_t RTTThreadCreate(void *context);
-hal_int32_t RTTThreadDestroy(void *context);
-
-hal_int32_t RTTThreadParamSet(void *context, hal_int32_t type, void *args);
-hal_int32_t RTTThreadParamGet(void *context, hal_int32_t type, void *args);
-
 #ifdef __cplusplus
 }
 #endif

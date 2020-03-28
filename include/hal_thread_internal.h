@@ -55,7 +55,6 @@ typedef enum {
 
 #define HAL_THREAD_NAME_MAX_LEN (16)
 typedef struct {
-    HalThreadConfig_t           *config;
     hal_char_t                  name[HAL_THREAD_NAME_MAX_LEN];
     HalThreadLoopConfig_t       loop_config;
 

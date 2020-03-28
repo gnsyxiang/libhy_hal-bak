@@ -21,27 +21,7 @@
 #include "hal_config.h"
 
 #include "hal_linux_audio.h"
-
-typedef enum {
-    AUDIO_RECORDER_STATE_IDLE,
-    AUDIO_RECORDER_STATE_RUNNING,
-    AUDIO_RECORDER_STATE_STOPPING,
-
-    AUDIO_RECORDER_STATE_MAX,
-} audio_recorder_state_t;
-
-typedef struct {
-    audio_recorder_state_t  state;
-    AudioRecorderConfig_t   config;
-
-    ThreadHandle_t          thread_handle;
-    hal_int32_t             is_running;
-    ThreadSemHandle_t       sem_thread_exit_sync;
-
-    ThreadSemHandle_t       wait_stop;
-    ThreadSemHandle_t       wait_start;
-} audio_recorder_context_t;
-#define AUDIO_RECORDER_CONTEXT_LEN (sizeof(audio_recorder_context_t))
+#include "hal_audio_recorder_internal.h"
 
 static hal_int32_t audio_recorder_is_init = 0;
 static hal_system_init_cb_t g_system_cb;
@@ -77,6 +57,7 @@ static hal_int32_t _check_audio_recorder_state(audio_recorder_context_t *context
 static void _recorder_thread_break(audio_recorder_context_t *context)
 {
     context->is_running = 1;
+    HalSemPost(context->wait_start);
     HalSemWait(context->sem_thread_exit_sync);
 }
 
@@ -85,6 +66,14 @@ static void _recorder_thread_loop(void *args)
     audio_recorder_context_t *context = (audio_recorder_context_t *)args;
 
     HalSemWait(context->wait_start);
+
+    int ret = 0;
+    hal_uint32_t len = context->period_size * context->period_count;
+    hal_char_t *buf = Hal_calloc(1, len);
+    if (NULL == buf) {
+        Hal_LogE("calloc failed \n");
+        return;
+    }
 
     while (0 == context->is_running) {
         if (_check_audio_recorder_state(context, AUDIO_RECORDER_STATE_STOPPING)) {
@@ -95,16 +84,23 @@ static void _recorder_thread_loop(void *args)
 
             HalSemWait(context->wait_start);
             Hal_LogT("audio record is started \n");
+
+            if (1 == context->is_running) {
+                break;
+            }
         }
 
-        if (NULL != context->config.data_cb) {
-            context->config.data_cb("haha test", sizeof("haha test"));
+        if (NULL != g_system_cb.read) {
+            ret = g_system_cb.read(context->hal_audio_handle, buf, len);
         }
 
-        Hal_LogT("haha test \n");
-
-        Hal_sleep(1);
+        if (NULL != context->data_cb) {
+            context->data_cb(buf, ret);
+        }
     }
+
+    Hal_free(buf);
+    buf = NULL;
 
     HalSemPost(context->sem_thread_exit_sync);
 }
@@ -138,32 +134,38 @@ static inline audio_recorder_context_t *_context_init(AudioRecorderConfig_t *aud
         Hal_LogE("hal calloc faild \n");
         return NULL;
     }
-    context->config               = *audio_recorder_config;
     context->state                = AUDIO_RECORDER_STATE_IDLE;
+    context->data_cb              = audio_recorder_config->data_cb;
 
     context->sem_thread_exit_sync = HalSemInit(0, 0);
     context->wait_stop            = HalSemInit(0, 0);
     context->wait_start           = HalSemInit(0, 0);
 
+    context->period_size            = audio_recorder_config->period_size;
+    context->period_count           = audio_recorder_config->period_count;
+
     return context;
 }
 
-static inline void _context_final(audio_recorder_context_t **context)
+static inline void _context_final(audio_recorder_context_t **context_tmp)
 {
-    audio_recorder_context_t *context_tmp = *context;
-    if (NULL != context_tmp) {
-        HalSemDestroy(context_tmp->sem_thread_exit_sync);
-        HalSemDestroy(context_tmp->wait_stop);
-        HalSemDestroy(context_tmp->wait_start);
+    audio_recorder_context_t *context = *context_tmp;
+    if (NULL != context) {
+        HalSemDestroy(context->sem_thread_exit_sync);
+        HalSemDestroy(context->wait_stop);
+        HalSemDestroy(context->wait_start);
 
-        Hal_free(context_tmp);
-        context_tmp = NULL;
+        Hal_free(context);
+        *context_tmp = NULL;
     }
 }
 
 void *HalAudioRecorderCreate(AudioRecorderConfig_t *audio_recorder_config)
 {
-    Hal_assert(NULL != audio_recorder_config);
+    if (NULL == audio_recorder_config) {
+        Hal_LogE("the param is NULL \n");
+        goto L_ERROR_INIT_1;
+    }
 
     if (1 == audio_recorder_is_init) {
         Hal_LogW("hal audio recorder is init\n");
@@ -178,7 +180,8 @@ void *HalAudioRecorderCreate(AudioRecorderConfig_t *audio_recorder_config)
         goto L_ERROR_INIT_1;
     }
 
-    if (NULL == g_system_cb.create || 0 != g_system_cb.create(context)) {
+    if (NULL == g_system_cb.create \
+            || 0 != g_system_cb.create(&context->hal_audio_handle, audio_recorder_config)) {
         Hal_LogE("call init faild \n");
         goto L_ERROR_INIT_2;
     }
@@ -196,13 +199,17 @@ L_ERROR_INIT_1:
 
 void HalAudioRecorderDestroy(AudioRecorderHandle_t handle)
 {
-    Hal_assert(NULL != handle);
-    audio_recorder_context_t *context = (audio_recorder_context_t *)handle;
+    if (NULL == handle) {
+        Hal_LogE("the param is NULL \n");
+        return;
+    }
+
+    audio_recorder_context_t *context = handle;
 
     _recorder_thread_break(context);
     _destroy_recorder_thread(context);
 
-    if (NULL == g_system_cb.destroy || 0 != g_system_cb.destroy(context)) {
+    if (NULL == g_system_cb.destroy || 0 != g_system_cb.destroy(context->hal_audio_handle)) {
         Hal_LogE("call final faild \n");
     }
 
@@ -211,16 +218,16 @@ void HalAudioRecorderDestroy(AudioRecorderHandle_t handle)
 
 hal_int32_t HalAudioRecorderStart(AudioRecorderHandle_t handle)
 {
-    Hal_assert(NULL != handle);
+    if (NULL == handle) {
+        Hal_LogE("the param is NULL \n");
+        return HAL_INVALID_HANDLE_ERR;
+    }
+
     audio_recorder_context_t *context = (audio_recorder_context_t *)handle;
 
     if (_check_audio_recorder_state(context, AUDIO_RECORDER_STATE_RUNNING)) {
         Hal_LogE("wrong state");
         return HAL_INVALID_STATE_ERR;
-    }
-
-    if (NULL == g_system_cb.start || 0 != g_system_cb.start(context)) {
-        Hal_LogE("call start faild \n");
     }
 
     _set_audio_recorder_state(context, AUDIO_RECORDER_STATE_RUNNING);
@@ -232,7 +239,11 @@ hal_int32_t HalAudioRecorderStart(AudioRecorderHandle_t handle)
 
 hal_int32_t HalAudioRecorderStop(AudioRecorderHandle_t handle)
 {
-    Hal_assert(NULL != handle);
+    if (NULL == handle) {
+        Hal_LogE("the param is NULL \n");
+        return HAL_INVALID_HANDLE_ERR;
+    }
+
     audio_recorder_context_t *context = (audio_recorder_context_t *)handle;
 
     if (_check_audio_recorder_state(context, AUDIO_RECORDER_STATE_STOPPING)) {
@@ -243,17 +254,17 @@ hal_int32_t HalAudioRecorderStop(AudioRecorderHandle_t handle)
     _set_audio_recorder_state(context, AUDIO_RECORDER_STATE_STOPPING);
     HalSemWait(context->wait_stop);
 
-    if (NULL == g_system_cb.stop || 0 != g_system_cb.stop(context)) {
-        Hal_LogE("call stop faild \n");
-    }
-
     Hal_LogT("audio recorder stop \n");
     return HAL_NO_ERR;
 }
 
 hal_int32_t HalAudioRecorderIsActive(AudioRecorderHandle_t handle)
 {
-    Hal_assert(NULL != handle);
+    if (NULL == handle) {
+        Hal_LogE("the param is NULL \n");
+        return HAL_INVALID_HANDLE_ERR;
+    }
+
     audio_recorder_context_t *context = (audio_recorder_context_t *)handle;
 
     return _check_audio_recorder_state(context, AUDIO_RECORDER_STATE_RUNNING);
@@ -261,11 +272,21 @@ hal_int32_t HalAudioRecorderIsActive(AudioRecorderHandle_t handle)
 
 hal_int32_t HalAudioRecorderParamGet(AudioRecorderHandle_t handle, AudioRecorderParam_t type, void *args)
 {
+    if (NULL == handle) {
+        Hal_LogE("the param is NULL \n");
+        return HAL_INVALID_HANDLE_ERR;
+    }
+
     return HAL_NO_ERR;
 }
 
 hal_int32_t HalAudioRecorderParamSet(AudioRecorderHandle_t handle, AudioRecorderParam_t type, void *args)
 {
+    if (NULL == handle) {
+        Hal_LogE("the param is NULL \n");
+        return HAL_INVALID_HANDLE_ERR;
+    }
+
     return HAL_NO_ERR;
 }
 

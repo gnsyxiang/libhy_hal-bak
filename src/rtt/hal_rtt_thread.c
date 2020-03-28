@@ -31,7 +31,7 @@ static void _loop_wrapper(void *args)
     context->id = RT_NULL;
 }
 
-hal_int32_t RTTThreadCreate(void *args)
+static hal_int32_t _rtt_thread_create(void *args)
 {
     hal_thread_context_t *context = args;
 
@@ -59,7 +59,7 @@ hal_int32_t RTTThreadCreate(void *args)
     return HAL_NO_ERR;
 }
 
-hal_int32_t RTTThreadDestroy(void *args)
+static hal_int32_t _rtt_thread_destroy(void *args)
 {
     hal_thread_context_t *context = args;
     rt_err_t ret = RT_EOK;
@@ -69,12 +69,12 @@ hal_int32_t RTTThreadDestroy(void *args)
     return ret;
 }
 
-hal_int32_t RTTThreadParamSet(void *context, hal_int32_t type, void *args)
+static hal_int32_t _rtt_thread_param_set(void *context, hal_int32_t type, void *args)
 {
     return 0;
 }
 
-hal_int32_t RTTThreadParamGet(void *context, hal_int32_t type, void *args)
+static hal_int32_t _rtt_thread_param_get(void *context, hal_int32_t type, void *args)
 {
     return 0;
 }
@@ -83,9 +83,10 @@ void ThreadSystemInit(hal_system_init_cb_t *system_cb)
 {
     Hal_assert(NULL != system_cb);
 
-    system_cb->create  = RTTThreadCreate;
-    system_cb->destroy = RTTThreadDestroy;
-    system_cb->get     = RTTThreadParamGet;
-    system_cb->set     = RTTThreadParamSet;
+    system_cb->create  = _rtt_thread_create;
+    system_cb->destroy = _rtt_thread_destroy;
+
+    system_cb->get     = _rtt_thread_param_get;
+    system_cb->set     = _rtt_thread_param_set;
 }
 
