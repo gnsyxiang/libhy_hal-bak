@@ -57,6 +57,7 @@ static hal_int32_t _check_audio_recorder_state(audio_recorder_context_t *context
 static void _recorder_thread_break(audio_recorder_context_t *context)
 {
     context->is_running = 1;
+    HalSemPost(context->wait_start);
     HalSemWait(context->sem_thread_exit_sync);
 }
 
@@ -83,6 +84,10 @@ static void _recorder_thread_loop(void *args)
 
             HalSemWait(context->wait_start);
             Hal_LogT("audio record is started \n");
+
+            if (1 == context->is_running) {
+                break;
+            }
         }
 
         if (NULL != g_system_cb.read) {
@@ -92,8 +97,6 @@ static void _recorder_thread_loop(void *args)
         if (NULL != context->data_cb) {
             context->data_cb(buf, ret);
         }
-
-        Hal_sleep(1);
     }
 
     Hal_free(buf);

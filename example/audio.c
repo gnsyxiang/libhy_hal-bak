@@ -21,7 +21,7 @@
 
 static hal_int32_t _audio_data_cb(hal_char_t *buf, hal_uint32_t len)
 {
-    Hal_LogT("buf: %s, len: %d \n", buf, len);
+    Hal_LogT("len: %d \n", len);
 
     return 0;
 }
@@ -41,12 +41,9 @@ hal_int32_t main(hal_int32_t argc, const hal_char_t *argv[])
     AudioRecorderHandle_t handle = HalAudioRecorderCreate(&audio_recorder_config);
 
 
-    while (1) {
-        HalAudioRecorderStart(handle);
-        Hal_sleep(15);
-        HalAudioRecorderStop(handle);
-        Hal_sleep(1);
-    }
+    HalAudioRecorderStart(handle);
+    Hal_sleep(10);
+    HalAudioRecorderStop(handle);
 
     HalAudioRecorderDestroy(handle);
 
