@@ -61,8 +61,11 @@ typedef char            hal_char_t;
 
 typedef enum {
   HAL_NO_ERR = 0,
+
   HAL_THREAD_ERR,
+
   HAL_SYSTEM_ERR,
+
   HAL_INVALID_STATE_ERR,
   HAL_INVALID_HANDLE_ERR,
   HAL_INVALID_FILE_ERR,

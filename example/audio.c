@@ -29,17 +29,23 @@ static hal_int32_t _audio_data_cb(hal_char_t *buf, hal_uint32_t len)
 hal_int32_t main(hal_int32_t argc, const hal_char_t *argv[])
 {
     AudioRecorderConfig_t audio_recorder_config;
-    audio_recorder_config.rate    = 16 * 1000;
-    audio_recorder_config.channel = 2;
-    audio_recorder_config.bit     = 16;
-    audio_recorder_config.data_cb = _audio_data_cb;
+    audio_recorder_config.rate          = AUDIO_RECORDER_RATE_48K;
+    audio_recorder_config.channel       = AUDIO_RECORDER_CH_2;
+    audio_recorder_config.bit           = AUDIO_RECORDER_S16_LE;
+
+    audio_recorder_config.period_size   = 1024;
+    audio_recorder_config.period_count  = 4;
+
+    audio_recorder_config.data_cb       = _audio_data_cb;
 
     AudioRecorderHandle_t handle = HalAudioRecorderCreate(&audio_recorder_config);
 
+
     while (1) {
         HalAudioRecorderStart(handle);
-        Hal_sleep(5);
+        Hal_sleep(15);
         HalAudioRecorderStop(handle);
+        Hal_sleep(1);
     }
 
     HalAudioRecorderDestroy(handle);

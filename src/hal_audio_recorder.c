@@ -66,6 +66,14 @@ static void _recorder_thread_loop(void *args)
 
     HalSemWait(context->wait_start);
 
+    int ret = 0;
+    hal_uint32_t len = context->period_size * context->period_count;
+    hal_char_t *buf = Hal_calloc(1, len);
+    if (NULL == buf) {
+        Hal_LogE("calloc failed \n");
+        return;
+    }
+
     while (0 == context->is_running) {
         if (_check_audio_recorder_state(context, AUDIO_RECORDER_STATE_STOPPING)) {
             _set_audio_recorder_state(context, AUDIO_RECORDER_STATE_IDLE);
@@ -77,14 +85,19 @@ static void _recorder_thread_loop(void *args)
             Hal_LogT("audio record is started \n");
         }
 
-        if (NULL != context->data_cb) {
-            context->data_cb("haha test", sizeof("haha test"));
+        if (NULL != g_system_cb.read) {
+            ret = g_system_cb.read(context->hal_audio_handle, buf, len);
         }
 
-        Hal_LogT("haha test \n");
+        if (NULL != context->data_cb) {
+            context->data_cb(buf, ret);
+        }
 
         Hal_sleep(1);
     }
+
+    Hal_free(buf);
+    buf = NULL;
 
     HalSemPost(context->sem_thread_exit_sync);
 }
@@ -125,19 +138,22 @@ static inline audio_recorder_context_t *_context_init(AudioRecorderConfig_t *aud
     context->wait_stop            = HalSemInit(0, 0);
     context->wait_start           = HalSemInit(0, 0);
 
+    context->period_size            = audio_recorder_config->period_size;
+    context->period_count           = audio_recorder_config->period_count;
+
     return context;
 }
 
-static inline void _context_final(audio_recorder_context_t **context)
+static inline void _context_final(audio_recorder_context_t **context_tmp)
 {
-    audio_recorder_context_t *context_tmp = *context;
-    if (NULL != context_tmp) {
-        HalSemDestroy(context_tmp->sem_thread_exit_sync);
-        HalSemDestroy(context_tmp->wait_stop);
-        HalSemDestroy(context_tmp->wait_start);
+    audio_recorder_context_t *context = *context_tmp;
+    if (NULL != context) {
+        HalSemDestroy(context->sem_thread_exit_sync);
+        HalSemDestroy(context->wait_stop);
+        HalSemDestroy(context->wait_start);
 
-        Hal_free(context_tmp);
-        context_tmp = NULL;
+        Hal_free(context);
+        *context_tmp = NULL;
     }
 }
 
@@ -190,7 +206,7 @@ void HalAudioRecorderDestroy(AudioRecorderHandle_t handle)
     _recorder_thread_break(context);
     _destroy_recorder_thread(context);
 
-    if (NULL == g_system_cb.destroy || 0 != g_system_cb.destroy(context)) {
+    if (NULL == g_system_cb.destroy || 0 != g_system_cb.destroy(context->hal_audio_handle)) {
         Hal_LogE("call final faild \n");
     }
 

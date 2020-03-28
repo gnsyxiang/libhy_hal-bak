@@ -48,6 +48,8 @@ typedef struct {
     HalAudioDataCB_t        data_cb;
 
     void                    *hal_audio_handle;
+    hal_uint32_t            period_size;
+    hal_uint32_t            period_count;
 } audio_recorder_context_t;
 #define AUDIO_RECORDER_CONTEXT_LEN (sizeof(audio_recorder_context_t))
 
