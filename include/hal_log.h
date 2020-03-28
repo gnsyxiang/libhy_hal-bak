@@ -25,11 +25,37 @@ extern "C" {
 #endif
 
 #include "hal_config.h"
+#include <errno.h>
 
-#define Hal_LogD printf
-#define Hal_LogT printf
-#define Hal_LogW printf
-#define Hal_LogE printf
+typedef enum {
+    LOG_LEVEL_VERBOSE,
+    LOG_LEVEL_DEBUG,
+    LOG_LEVEL_INFO,
+    LOG_LEVEL_WARNING,
+    LOG_LEVEL_ERROR,
+
+    LOG_LEVEL_MAX,
+} LogLevel_t;
+
+typedef enum {
+    LOG_COLOR_ON,
+    LOG_COLOR_OFF,
+
+    LOG_COLOR_MAX,
+} LogColor_t;
+
+void HalLogSetLevel(LogLevel_t level);
+void HalLogSetColor(LogColor_t color_flag);
+
+void HalLogDebug(LogLevel_t level, const hal_char_t *file, hal_uint32_t line, hal_int32_t num, const hal_char_t *fmt, ...);
+
+#define LOG_DEBUG(level, ...) HalLogDebug(level, __FILE__, __LINE__, errno, __VA_ARGS__)
+
+#define HalLogV(...)    LOG_DEBUG(LOG_LEVEL_VERBOSE, __VA_ARGS__) 
+#define HalLogD(...)    LOG_DEBUG(LOG_LEVEL_DEBUG,   __VA_ARGS__) 
+#define HalLogT(...)    LOG_DEBUG(LOG_LEVEL_INFO,    __VA_ARGS__) 
+#define HalLogW(...)    LOG_DEBUG(LOG_LEVEL_WARNING, __VA_ARGS__) 
+#define HalLogE(...)    LOG_DEBUG(LOG_LEVEL_ERROR,   __VA_ARGS__) 
 
 #ifdef __cplusplus
 }
