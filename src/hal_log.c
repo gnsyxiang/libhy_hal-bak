@@ -66,20 +66,23 @@ void HalLogDebug(LogLevel_t level, hal_int32_t num,
     if (level < l_context.level) {
         return;
     }
+    l_context.color_flag = 1;
 
-    hal_char_t *color[] = {
-        ANSI_COLOR_WHITE,
-        ANSI_COLOR_WHITE,
-        ANSI_COLOR_BLUE,
-        ANSI_COLOR_YELLOW,
-        ANSI_COLOR_RED,
-        ANSI_COLOR_GREEN,
-        ANSI_COLOR_MAGENTA,
-        ANSI_COLOR_CYAN,
+    hal_char_t *color[][2] = {
+        {"V", ANSI_COLOR_WHITE   },
+        {"T", ANSI_COLOR_WHITE   },
+        {"D", ANSI_COLOR_BLUE    },
+        {"W", ANSI_COLOR_YELLOW  },
+        {"E", ANSI_COLOR_RED     },
+        {" ", ANSI_COLOR_GREEN   },
+        {" ", ANSI_COLOR_MAGENTA },
+        {" ", ANSI_COLOR_CYAN    },
     };
 
     if (l_context.color_flag) {
-        size += snprintf(buffer + size, LOG_BUF_SIZE - size, "%s", color[level]);
+        size += snprintf(buffer + size, LOG_BUF_SIZE - size, "%s[%s]", color[level][1], color[level][0]);
+    } else {
+        size += snprintf(buffer + size, LOG_BUF_SIZE - size, "[%s]", color[level][0]);
     }
     // size = sprintf(buffer, "[%.03f]", get_sec_clk_with_boottime());
     if (level == LOG_LEVEL_ERROR) {
@@ -94,7 +97,7 @@ void HalLogDebug(LogLevel_t level, hal_int32_t num,
     va_end(var_args);
 
     if (l_context.color_flag) {
-        size += snprintf(buffer + size, LOG_BUF_SIZE - size, "%s", color[0]);
+        size += snprintf(buffer + size, LOG_BUF_SIZE - size, "%s", color[0][1]);
     }
 
     log_output(buffer);
