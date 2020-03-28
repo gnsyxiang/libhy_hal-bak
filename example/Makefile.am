@@ -38,12 +38,17 @@ demo_LDADD   	= $(hal_ld_com)
 demo_CFLAGS  	= $(AM_CFLAGS_COM) $(CFLAGS_COM)
 
 if COMPILE_WITH_LINUX_HAL
-bin_PROGRAMS   	+= thread audio
+bin_PROGRAMS   	+= dl_lib
+dl_lib_SOURCES 	= dl_lib.c
+dl_lib_LDADD   	= $(hal_ld_com)
+dl_lib_CFLAGS  	= $(AM_CFLAGS_COM) $(CFLAGS_COM)
 
+bin_PROGRAMS   	+= audio
 audio_SOURCES 	= audio.c
 audio_LDADD   	= $(hal_ld_com) -ltinyalsa
 audio_CFLAGS  	= $(AM_CFLAGS_COM) $(CFLAGS_COM)
 
+bin_PROGRAMS   	+= thread
 thread_SOURCES 	= thread.c
 thread_LDADD   	= $(hal_ld_com) -lpthread
 thread_CFLAGS  	= $(AM_CFLAGS_COM) $(CFLAGS_COM)

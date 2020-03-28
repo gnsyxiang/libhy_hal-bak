@@ -83,6 +83,9 @@ SOURCES_COM = hal_log.c \
 FUNC_MODULE_SOURCES = hal_audio_recorder.c
 
 if COMPILE_WITH_LINUX_HAL
+SOURCES_COM += hal_dl_lib.c
+LDFLAGS_COM += -ldl
+
 LDFLAGS_COM += linux/*.lo
 CFLAGS_COM 	+= -I$(top_srcdir)/include/linux
 endif

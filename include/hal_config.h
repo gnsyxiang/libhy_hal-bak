@@ -34,6 +34,7 @@ extern "C" {
 #include "hal_assert.h"
 #include "hal_thread.h"
 #include "hal_sem.h"
+#include "hal_dl_lib.h"
 
 #include "hal_audio_recorder.h"
 

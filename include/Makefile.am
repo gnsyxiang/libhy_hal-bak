@@ -35,8 +35,10 @@ noinst_HEADERS  = hal_module_cb.h \
 				  hal_audio_recorder_internal.h
 
 if COMPILE_WITH_LINUX_HAL
-noinst_HEADERS += linux/hal_linux_thread.h \
-				  linux/hal_linux_audio.h
+HEADERS_COM 	+= hal_dl_lib.h
+
+noinst_HEADERS 	+= linux/hal_linux_thread.h \
+				   linux/hal_linux_audio.h
 endif
 
 if COMPILE_WITH_RTT_HAL
