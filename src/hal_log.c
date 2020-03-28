@@ -28,6 +28,7 @@
 #define ANSI_COLOR_BLUE    "\x1b[34m"
 #define ANSI_COLOR_MAGENTA "\x1b[35m"
 #define ANSI_COLOR_CYAN    "\x1b[36m"
+#define ANSI_COLOR_WHITE   "\x1b[39m"
 #define ANSI_COLOR_RESET   "\x1b[0m"
 /*printf("\033[字体高亮;字背景颜色;字体颜色m字符串\033[0m"); */
 
@@ -52,15 +53,12 @@ void HalLogSetColor(LogColor_t color_flag)
 
 static inline void log_output(hal_char_t *buffer)
 {
-    printf("%s\n", buffer);
+    printf("%s", buffer);
 }
 
-void HalLogDebug(LogLevel_t level, 
-                 const hal_char_t *file, 
-                 hal_uint32_t line, 
-                 hal_int32_t num, 
-                 const hal_char_t *fmt, 
-                 ...)
+void HalLogDebug(LogLevel_t level, hal_int32_t num,
+                 const hal_char_t *file, hal_uint32_t line, 
+                 const hal_char_t *fmt, ...)
 {
     hal_char_t buffer[LOG_BUF_SIZE] = {0};
     hal_uint32_t size = 0;
@@ -69,27 +67,35 @@ void HalLogDebug(LogLevel_t level,
         return;
     }
 
-	if (level <= LOG_LEVEL_ERROR) {
-        size += snprintf(buffer + size, LOG_BUF_SIZE - size, ANSI_COLOR_MAGENTA);
-        /*size += snprintf(buffer + size, LOG_BUF_SIZE - size, "\033[35m");*/
+    hal_char_t *color[] = {
+        ANSI_COLOR_WHITE,
+        ANSI_COLOR_WHITE,
+        ANSI_COLOR_BLUE,
+        ANSI_COLOR_YELLOW,
+        ANSI_COLOR_RED,
+        ANSI_COLOR_GREEN,
+        ANSI_COLOR_MAGENTA,
+        ANSI_COLOR_CYAN,
+    };
+
+    if (l_context.color_flag) {
+        size += snprintf(buffer + size, LOG_BUF_SIZE - size, "%s", color[level]);
     }
-
     // size = sprintf(buffer, "[%.03f]", get_sec_clk_with_boottime());
-
-    size += sprintf(buffer + size, "[%s +%d]: ", file, line);
-
-	if (level <= LOG_LEVEL_ERROR)
-		size += snprintf(buffer + size, LOG_BUF_SIZE - size, ANSI_COLOR_RED);
+    if (level == LOG_LEVEL_ERROR) {
+        size += sprintf(buffer + size, "[%s +%d, err_str: %s]: ", file, line, strerror(num));
+    } else {
+        size += sprintf(buffer + size, "[%s +%d]: ", file, line);
+    }
 
     va_list var_args;
     va_start(var_args, fmt);
     size += vsnprintf(buffer + size, LOG_BUF_SIZE - size, fmt, var_args);
     va_end(var_args);
 
-	if (level <= LOG_LEVEL_ERROR) {
-		size += snprintf(buffer + size, LOG_BUF_SIZE - size, "\033[0m");
-		size += sprintf(buffer + size, " [errno string: %s]", strerror(num));
-	}
+    if (l_context.color_flag) {
+        size += snprintf(buffer + size, LOG_BUF_SIZE - size, "%s", color[0]);
+    }
 
     log_output(buffer);
 }
