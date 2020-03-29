@@ -19,9 +19,17 @@
  */
 #include "hal_config.h"
 
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
+static hal_int32_t fd = -1;
+
 static hal_int32_t _audio_data_cb(hal_char_t *buf, hal_uint32_t len)
 {
-    HalLogT("len: %d \n", len);
+    int ret = write(fd, buf, len);
+    HalLogV("len: %d, ret: %d \n", len, ret);
 
     return 0;
 }
@@ -47,6 +55,11 @@ hal_int32_t main(hal_int32_t argc, const hal_char_t *argv[])
 
     AudioRecorderHandle_t handle = HalAudioRecorderCreate(&audio_recorder_config);
 
+    fd = open("test.pcm", O_CREAT | O_WRONLY, 0644);
+    if (fd < 0) {
+        HalLogE("open failed \n");
+        return -1;
+    }
 
     HalAudioRecorderStart(handle);
     Hal_sleep(10);
@@ -54,6 +67,7 @@ hal_int32_t main(hal_int32_t argc, const hal_char_t *argv[])
 
     HalAudioRecorderDestroy(handle);
     HalLogFinal();
+    close(fd);
 
     return 0;
 }
