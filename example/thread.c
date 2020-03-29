@@ -23,11 +23,17 @@
 
 static void _thread_test_loop(void *args)
 {
-    Hal_LogT("the str: %s \n", (hal_char_t *)args);
+    HalLogT("the str: %s \n", (hal_char_t *)args);
 }
 
 hal_int32_t main(hal_int32_t argc, const hal_char_t *argv[])
 {
+    LogConfig_t log_config;
+    log_config.level        = LOG_LEVEL_VERBOSE;
+    log_config.color_flag   = LOG_COLOR_ON;
+
+    HalLogInit(&log_config);
+
     static hal_char_t *test_str = "test thread str";
 
     HalThreadLoopConfig_t loop_config;
@@ -44,11 +50,12 @@ hal_int32_t main(hal_int32_t argc, const hal_char_t *argv[])
 
     int cnt = 5;
     while (cnt-- > 0) {
-        Hal_LogT("main loop \n");
+        HalLogT("main loop \n");
         Hal_sleep(1);
     }
 
     HalThreadDestroy(handle);
+    HalLogFinal();
 
     return 0;
 }

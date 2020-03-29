@@ -32,10 +32,14 @@ hal_ld_com  	= -L$(top_builddir)/src/.libs
 hal_ld_com 	   	+= -lhal
 
 bin_PROGRAMS 	= demo
-
 demo_SOURCES 	= demo.c
 demo_LDADD   	= $(hal_ld_com)
 demo_CFLAGS  	= $(AM_CFLAGS_COM) $(CFLAGS_COM)
+
+bin_PROGRAMS	+= log
+log_SOURCES 	= log.c
+log_LDADD   	= $(hal_ld_com)
+log_CFLAGS  	= $(AM_CFLAGS_COM) $(CFLAGS_COM)
 
 if COMPILE_WITH_LINUX_HAL
 bin_PROGRAMS   	+= dl_lib

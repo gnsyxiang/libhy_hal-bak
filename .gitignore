@@ -39,5 +39,5 @@ rtt-build_rtt.sh
 example/demo
 example/audio
 example/thread
-
+example/log
 
