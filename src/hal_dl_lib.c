@@ -32,14 +32,14 @@ static dll_context_t *_context_init(const hal_char_t *libname)
 {
     dll_context_t *context = Hal_calloc(1, sizeof(DLL_CONTEXT_LEN));
     if (NULL == context) {
-        Hal_LogE("the Hal_calloc faild \n");
+        HalLogE("the Hal_calloc faild \n");
         return NULL;
     }
 
     hal_uint32_t len = ALIGN4(Hal_strlen(libname));
     context->libname = Hal_calloc(1, len);
     if (NULL == context->libname) {
-        Hal_LogE("the Hal_calloc faild \n");
+        HalLogE("the Hal_calloc faild \n");
         return NULL;
     }
 
@@ -66,53 +66,53 @@ static void _context_final(dll_context_t **context)
 DLLibHandle_t HalDllibOpen(const hal_char_t *libname)
 {
     if (NULL == libname) {
-        Hal_LogE("the libname is NULL \n");
+        HalLogE("the libname is NULL \n");
         return NULL;
     }
 
     dll_context_t *context = _context_init(libname);
     if (NULL == context) {
-        Hal_LogE("the libname is NULL \n");
+        HalLogE("the libname is NULL \n");
         return NULL;
     }
 
     context->handle = dlopen(context->libname, RTLD_LAZY);
     if (NULL == context->handle) {
-        Hal_LogE("dlopen failed, [%s] \n", dlerror());
+        HalLogE("dlopen failed, [%s] \n", dlerror());
     }
 
-    Hal_LogT("open %s successful \n", context->libname);
+    HalLogT("open %s successful \n", context->libname);
     return (DLLibHandle_t)context;
 }
 
 void HalDllibExit(DLLibHandle_t handle)
 {
     if (NULL == handle) {
-        Hal_LogE("the handle is NULL \n");
+        HalLogE("the handle is NULL \n");
         return;
     }
 
     dll_context_t *context = handle;
     dlclose(context->handle);
 
-    Hal_LogT("close %s successful \n", context->libname);
+    HalLogT("close %s successful \n", context->libname);
     _context_final(&context);
 }
 
 void* HalDllLoadSymbol(DLLibHandle_t handle, const hal_char_t *symbol)
 {
     if (NULL == handle || NULL == symbol) {
-        Hal_LogE("the param is NULL \n");
+        HalLogE("the param is NULL \n");
         return NULL;
     }
 
     dll_context_t *context = handle;
     void *sym = dlsym(context->handle, symbol);
     if (NULL == sym) {
-        Hal_LogE("load symbol[%s] failed, [%s] \n", symbol, dlerror());
+        HalLogE("load symbol[%s] failed, [%s] \n", symbol, dlerror());
     }
 
-    Hal_LogT("load symbol[%s] from %s successful \n", symbol, context->libname);
+    HalLogT("load symbol[%s] from %s successful \n", symbol, context->libname);
     return sym;
 }
 

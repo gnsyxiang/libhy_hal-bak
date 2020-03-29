@@ -41,7 +41,7 @@ static inline linux_audio_context_t *_context_init(void *config_tmp)
 {
     linux_audio_context_t *context = Hal_calloc(1, LINUX_AUDIO_CONTEXT_LEN);
     if (NULL == context) {
-        Hal_LogE("hal calloc failed \n");
+        HalLogE("hal calloc failed \n");
         return NULL;
     }
 
@@ -73,13 +73,13 @@ static inline void _dump_audio_recorder_config(struct pcm_config *config, AudioR
         "PCM_FORMAT_MAX",
     };
 
-    Hal_LogT("capture \n");
-    Hal_LogT("channel:\t\t%d \n",          config->channels);
-    Hal_LogT("rate:\t\t\t%d \n",           config->rate);
-    Hal_LogT("bit:\t\t\t%s \n",            format_str[bit]);
+    HalLogT("capture \n");
+    HalLogT("channel:\t\t%d \n",          config->channels);
+    HalLogT("rate:\t\t\t%d \n",           config->rate);
+    HalLogT("bit:\t\t\t%s \n",            format_str[bit]);
 
-    Hal_LogT("period_size:\t\t%d \n",      config->period_size);
-    Hal_LogT("period_count:\t\t%d \n",     config->period_count);
+    HalLogT("period_size:\t\t%d \n",      config->period_size);
+    HalLogT("period_count:\t\t%d \n",     config->period_count);
 }
 
 static hal_int32_t _tinyalsa_open(linux_audio_context_t *context, AudioRecorderConfig_t *audio_config)
@@ -114,16 +114,16 @@ static hal_int32_t _tinyalsa_open(linux_audio_context_t *context, AudioRecorderC
 
     context->pcm = pcm_open(context->card, context->device, context->pcm_flags, &pcm_config);
     if(NULL == context->pcm) {
-        Hal_LogE("failed to allocate memory for PCM \n");
+        HalLogE("failed to allocate memory for PCM \n");
         goto L_TINYALSA_OPEN_1;
     } else if (!pcm_is_ready(context->pcm)){
-        Hal_LogE("failed to open PCM, %s\n", pcm_get_error(context->pcm));
+        HalLogE("failed to open PCM, %s\n", pcm_get_error(context->pcm));
         goto L_TINYALSA_OPEN_2;
     }
 
     context->mixer = mixer_open(context->card);
     if(NULL == context->mixer){
-        Hal_LogE("mixer_open failed (%s)\n", pcm_get_error(context->pcm));
+        HalLogE("mixer_open failed (%s)\n", pcm_get_error(context->pcm));
         goto L_TINYALSA_OPEN_2;
     }
 
@@ -157,13 +157,13 @@ static hal_int32_t _linux_audio_open(void **handle, void *config_tmp)
 
     linux_audio_context_t *context = _context_init(config_tmp);
     if (NULL == context) {
-        Hal_LogE("context init faild \n");
+        HalLogE("context init faild \n");
         ret = HAL_ALLOC_MEM_ERR;
         goto L_AUDIO_OPEN_1;
     }
 
     if (HAL_NO_ERR != _tinyalsa_open(context, config_tmp)) {
-        Hal_LogE("context init faild \n");
+        HalLogE("context init faild \n");
         ret = HAL_ALLOC_MEM_ERR;
         goto L_AUDIO_OPEN_2;
     }
@@ -196,14 +196,14 @@ static hal_int32_t _linux_audio_read(void *handle, const hal_char_t *buf, hal_ui
     hal_uint32_t bytes_per_frame = context->bytes_per_frame;
 
     if(len % bytes_per_frame){
-        Hal_LogE("the len is error \n");
+        HalLogE("the len is error \n");
         return HAL_INVALID_PARAM_ERR;
     }
 
     int read_count = pcm_readi(context->pcm, (void *)buf, len / bytes_per_frame);
-    // Hal_LogD("read_count: %d, len: %d \n", read_count, len);
+    // HalLogD("read_count: %d, len: %d \n", read_count, len);
     if (read_count < 0) {
-        Hal_LogE("pcm_readi read count failed \n");
+        HalLogE("pcm_readi read count failed \n");
         return HAL_INVALID_STATE_ERR;
     }
 

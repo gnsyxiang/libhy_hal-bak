@@ -27,7 +27,7 @@ typedef void  (*HalThreadDestroy_t)(ThreadHandle_t handle);
 
 static void _thread_test_loop(void *args)
 {
-    Hal_LogT("the str: %s \n", (hal_char_t *)args);
+    HalLogT("the str: %s \n", (hal_char_t *)args);
 }
 
 static void *_create_thread(DLLibHandle_t handle)
@@ -35,7 +35,7 @@ static void *_create_thread(DLLibHandle_t handle)
     HalThreadCreate_t hal_thread_create = NULL;
     hal_thread_create = HalDllLoadSymbol(handle, SYMBOL_NAME(HalThreadCreate));
     if (NULL == hal_thread_create) {
-        Hal_LogE("HalDllLoadSymbol symbol[%s] failed \n", SYMBOL_NAME(HalThreadCreate));
+        HalLogE("HalDllLoadSymbol symbol[%s] failed \n", SYMBOL_NAME(HalThreadCreate));
         return NULL;
     }
 
@@ -59,7 +59,7 @@ static void _destroy_thread(DLLibHandle_t handle, ThreadHandle_t thread_handle)
     HalThreadDestroy_t hal_thread_destroy = NULL;
     hal_thread_destroy = HalDllLoadSymbol(handle, SYMBOL_NAME(HalThreadDestroy));
     if (NULL == hal_thread_destroy) {
-        Hal_LogE("HalDllLoadSymbol failed \n");
+        HalLogE("HalDllLoadSymbol failed \n");
     }
 
     hal_thread_destroy(thread_handle);
@@ -67,21 +67,29 @@ static void _destroy_thread(DLLibHandle_t handle, ThreadHandle_t thread_handle)
 
 hal_int32_t main(hal_int32_t argc, const hal_char_t *argv[])
 {
+    LogConfig_t log_config;
+    log_config.level        = LOG_LEVEL_VERBOSE;
+    log_config.color_flag   = LOG_COLOR_ON;
+    log_config.buf_len      = 1024;
+
+    HalLogInit(&log_config);
+
     DLLibHandle_t handle = HalDllibOpen(LIBHAL_NAME);
     if (NULL == handle) {
-        Hal_LogE("HalDllibOpen failed \n");
+        HalLogE("HalDllibOpen failed \n");
         return -1;
     }
     ThreadHandle_t thread_handle = _create_thread(handle);
 
     hal_uint32_t cnt = 5;
     while (cnt-- > 0) {
-        Hal_LogT("main loop \n");
+        HalLogT("main loop \n");
         Hal_sleep(1);
     }
 
     _destroy_thread(handle, thread_handle);
     HalDllibExit(handle);
+    HalLogFinal();
 
     return 0;
 }
