@@ -32,11 +32,10 @@
 #define ANSI_COLOR_RESET   "\x1b[0m"
 /*printf("\033[字体高亮;字背景颜色;字体颜色m字符串\033[0m"); */
 
-#define LOG_BUF_SIZE 2048
-
 typedef struct {
     LogConfig_t config;
     hal_int32_t double_line;
+    hal_char_t  *buf;
 } log_context_t;
 #define LOG_CONTEXT_LEN (sizeof(log_context_t))
 
@@ -50,13 +49,25 @@ static inline void _context_init(LogConfig_t *log_config)
         printf("calloc is failed \n");
         return ;
     }
+
     l_context->config = *log_config;
+
+    l_context->buf = Hal_calloc(1, l_context->config.buf_len);
+    if (NULL == l_context->buf) {
+        printf("calloc is failed \n");
+        return ;
+    }
 }
 
 static inline void _context_final(log_context_t **context_tmp)
 {
     log_context_t *context = *context_tmp;
     if (NULL != context) {
+        if (NULL != context->buf) {
+            Hal_free(context->buf);
+            context->buf = NULL;
+        }
+
         Hal_free(context);
         *context_tmp = NULL;
     }
@@ -73,6 +84,7 @@ void HalLogInit(LogConfig_t *log_config)
         HalLogE("hal log init already \n");
         return ;
     }
+
     _context_init(log_config);
 }
 
@@ -96,17 +108,18 @@ void HalLogSetDoubleLine(void)
     l_context->double_line = 1;
 }
 
-static inline void log_output(hal_char_t *buffer)
+static inline void log_output(hal_char_t *buf)
 {
-    printf("%s", buffer);
+    printf("%s", buf);
 }
 
 void HalLogDebug(LogLevel_t level, hal_int32_t num,
                  const hal_char_t *file, hal_uint32_t line, 
                  const hal_char_t *fmt, ...)
 {
-    hal_char_t buffer[LOG_BUF_SIZE] = {0};
     hal_uint32_t size = 0;
+    hal_char_t *buf = l_context->buf;
+    hal_uint32_t buf_len = l_context->config.buf_len;
 
     if (level < l_context->config.level) {
         return;
@@ -125,34 +138,34 @@ void HalLogDebug(LogLevel_t level, hal_int32_t num,
     };
 
     if (l_context->double_line) {
-        size += snprintf(buffer + size, LOG_BUF_SIZE - size, "\n");
+        size += snprintf(buf + size, buf_len - size, "\n");
     }
 
     if (l_context->config.color_flag) {
-        size += snprintf(buffer + size, LOG_BUF_SIZE - size, "%s[%s]", color[level][1], color[level][0]);
+        size += snprintf(buf + size, buf_len - size, "%s[%s]", color[level][1], color[level][0]);
     } else {
-        size += snprintf(buffer + size, LOG_BUF_SIZE - size, "[%s]", color[level][0]);
+        size += snprintf(buf + size, buf_len - size, "[%s]", color[level][0]);
     }
-    // size = sprintf(buffer, "[%.03f]", get_sec_clk_with_boottime());
+    // size = sprintf(buf, "[%.03f]", get_sec_clk_with_boottime());
     if (level == LOG_LEVEL_ERROR) {
-        size += sprintf(buffer + size, "[%s +%d, err_str: %s]: ", file, line, strerror(num));
+        size += sprintf(buf + size, "[%s +%d, err_str: %s]: ", file, line, strerror(num));
     } else {
-        size += sprintf(buffer + size, "[%s +%d]: ", file, line);
+        size += sprintf(buf + size, "[%s +%d]: ", file, line);
     }
 
     va_list var_args;
     va_start(var_args, fmt);
-    size += vsnprintf(buffer + size, LOG_BUF_SIZE - size, fmt, var_args);
+    size += vsnprintf(buf + size, buf_len - size, fmt, var_args);
     va_end(var_args);
 
     if (l_context->config.color_flag) {
-        size += snprintf(buffer + size, LOG_BUF_SIZE - size, "%s", color[0][1]);
+        size += snprintf(buf + size, buf_len - size, "%s", color[0][1]);
     }
 
     if (l_context->double_line) {
-        size += snprintf(buffer + size, LOG_BUF_SIZE - size, "\n");
+        size += snprintf(buf + size, buf_len - size, "\n");
     }
 
-    log_output(buffer);
+    log_output(buf);
 }
 

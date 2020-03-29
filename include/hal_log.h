@@ -47,6 +47,7 @@ typedef enum {
 typedef struct {
     LogLevel_t level;
     LogColor_t color_flag;
+    hal_uint32_t buf_len;
 } LogConfig_t;
 
 typedef void * LogHandle_t;

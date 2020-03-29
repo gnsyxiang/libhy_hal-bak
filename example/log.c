@@ -24,6 +24,7 @@ hal_int32_t main(hal_int32_t argc, const hal_char_t *argv[])
     LogConfig_t log_config;
     log_config.level        = LOG_LEVEL_VERBOSE;
     log_config.color_flag   = LOG_COLOR_ON;
+    log_config.buf_len      = 1024;
 
     HalLogInit(&log_config);
 
@@ -39,3 +40,4 @@ hal_int32_t main(hal_int32_t argc, const hal_char_t *argv[])
 
     return 0;
 }
+
