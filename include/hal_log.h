@@ -26,6 +26,7 @@ extern "C" {
 
 #include "hal_config.h"
 #include <errno.h>
+#include <libgen.h>
 
 typedef enum {
     LOG_LEVEL_VERBOSE,
@@ -59,9 +60,12 @@ void HalLogSetLevel(LogLevel_t level);
 void HalLogSetColor(LogColor_t color_flag);
 void HalLogSetDoubleLine(void);
 
-void HalLogDebug(LogLevel_t level, hal_int32_t num, const hal_char_t *file, hal_uint32_t line, const hal_char_t *fmt, ...);
+void HalLogDebug(LogLevel_t level, hal_int32_t num, 
+                 const hal_char_t *file, hal_uint32_t line, 
+                 const hal_char_t *fmt, ...);
 
-#define LOG_DEBUG(level, ...) HalLogDebug(level, errno, __FILE__, __LINE__, __VA_ARGS__)
+#define LOG_DEBUG(level, ...) \
+    HalLogDebug(level, errno, basename(__FILE__), __LINE__, __VA_ARGS__)
 
 #define HalLogV(...)    LOG_DEBUG(LOG_LEVEL_VERBOSE, __VA_ARGS__) 
 #define HalLogT(...)    LOG_DEBUG(LOG_LEVEL_INFO,    __VA_ARGS__) 
