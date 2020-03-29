@@ -56,6 +56,7 @@ void HalLogFinal(void);
 
 void HalLogSetLevel(LogLevel_t level);
 void HalLogSetColor(LogColor_t color_flag);
+void HalLogSetDoubleLine(void);
 
 void HalLogDebug(LogLevel_t level, hal_int32_t num, const hal_char_t *file, hal_uint32_t line, const hal_char_t *fmt, ...);
 

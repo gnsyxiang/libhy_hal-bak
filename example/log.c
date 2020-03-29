@@ -27,6 +27,8 @@ hal_int32_t main(hal_int32_t argc, const hal_char_t *argv[])
 
     HalLogInit(&log_config);
 
+    HalLogSetDoubleLine();
+
     HalLogV("demo test\n");
     HalLogT("demo test\n");
     HalLogD("demo test\n");

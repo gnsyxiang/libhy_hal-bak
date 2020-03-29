@@ -36,6 +36,7 @@
 
 typedef struct {
     LogConfig_t config;
+    hal_int32_t double_line;
 } log_context_t;
 #define LOG_CONTEXT_LEN (sizeof(log_context_t))
 
@@ -90,6 +91,11 @@ void HalLogSetColor(LogColor_t color_flag)
     l_context->config.color_flag = color_flag;
 }
 
+void HalLogSetDoubleLine(void)
+{
+    l_context->double_line = 1;
+}
+
 static inline void log_output(hal_char_t *buffer)
 {
     printf("%s", buffer);
@@ -118,6 +124,10 @@ void HalLogDebug(LogLevel_t level, hal_int32_t num,
         {" ", ANSI_COLOR_CYAN    },
     };
 
+    if (l_context->double_line) {
+        size += snprintf(buffer + size, LOG_BUF_SIZE - size, "\n");
+    }
+
     if (l_context->config.color_flag) {
         size += snprintf(buffer + size, LOG_BUF_SIZE - size, "%s[%s]", color[level][1], color[level][0]);
     } else {
@@ -137,6 +147,10 @@ void HalLogDebug(LogLevel_t level, hal_int32_t num,
 
     if (l_context->config.color_flag) {
         size += snprintf(buffer + size, LOG_BUF_SIZE - size, "%s", color[0][1]);
+    }
+
+    if (l_context->double_line) {
+        size += snprintf(buffer + size, LOG_BUF_SIZE - size, "\n");
     }
 
     log_output(buffer);
