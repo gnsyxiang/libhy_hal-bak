@@ -28,17 +28,21 @@ HEADERS_COM = hal_config.h \
 			  hal_thread.h \
 			  hal_sem.h
 
-HEADERS_FUNC_MODULE = hal_audio_recorder.h
+HEADERS_FUNC_MODULE =
 
 noinst_HEADERS  = hal_module_cb.h \
-				  hal_thread_internal.h \
-				  hal_audio_recorder_internal.h
+				  hal_thread_internal.h
 
 if COMPILE_WITH_LINUX_HAL
 HEADERS_COM 	+= hal_dl_lib.h
 
-noinst_HEADERS 	+= linux/hal_linux_thread.h \
-				   linux/hal_linux_audio.h
+noinst_HEADERS 	+= linux/hal_linux_thread.h
+				   
+if COMPILE_WITH_AUDIO_HAL
+HEADERS_FUNC_MODULE += hal_audio_recorder.h
+noinst_HEADERS 		+= linux/hal_linux_audio.h \
+					   hal_audio_recorder_internal.h
+endif
 endif
 
 if COMPILE_WITH_RTT_HAL

@@ -19,6 +19,7 @@ autom4te.cache/
 .deps/
 3rd_lib/
 install/
+build/
 
 # ignore file
 .clang
@@ -33,11 +34,14 @@ Makefile
 aclocal.m4
 libtool
 stamp-h1
-linux-build_linux.sh
-rtt-build_rtt.sh
+linux-build.sh
+rtt-build.sh
 
 example/demo
 example/audio
 example/thread
 example/log
+example/dl_lib
+
+
 

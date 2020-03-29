@@ -79,7 +79,13 @@ AC_ARG_ENABLE([linux],
     )
 AM_CONDITIONAL([COMPILE_WITH_LINUX_HAL], [test "x$enable_linux" = "xyes"])
 
-if test "x$enable_linux" = "xyes"; then
+AC_ARG_ENABLE([audio],
+    [AS_HELP_STRING([--enable-audio], [using audio recorder for linux] [[default=no]])],
+    [AC_DEFINE(HAVE_AUDIO_HAL, 1, [using audio recorder for linux])]
+    )
+AM_CONDITIONAL([COMPILE_WITH_AUDIO_HAL], [test "x$enable_audio" = "xyes"])
+
+if test "x$enable_audio" = "xyes"; then
     trylibtinyalsadir=""
     AC_ARG_WITH(
         [libtinyalsa],

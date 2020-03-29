@@ -25,8 +25,11 @@ CFLAGS_COM 	+= -I$(top_srcdir)/include
 CFLAGS_COM 	+= -I$(top_srcdir)/include/linux
 CFLAGS_COM 	+= -Wno-unused-parameter
 
-SOURCES_COM  = hal_linux_audio.c \
-			   hal_linux_thread.c
+SOURCES_COM  = hal_linux_thread.c
+
+if COMPILE_WITH_AUDIO_HAL
+SOURCES_COM += hal_linux_audio.c
+endif
 
 LDFLAGS_COM  = -rdynamic
 LDFLAGS_COM += -export-symbols-regex 'Hal*'
