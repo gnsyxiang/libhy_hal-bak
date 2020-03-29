@@ -19,6 +19,7 @@ autom4te.cache/
 .deps/
 3rd_lib/
 install/
+build/
 
 # ignore file
 .clang
@@ -41,4 +42,6 @@ example/audio
 example/thread
 example/log
 example/dl_lib
+
+
 

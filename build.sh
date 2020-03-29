@@ -1,7 +1,14 @@
 #!/usr/bin/env bash
 
+current_dir=`pwd`
+
 echo -n "please input install absolute path: "
 read install_path 
+echo "install path: ${install_path}"
+
+echo -en "\nplease input build path: "
+read build_path 
+echo "build path: ${build_path}"
 
 echo -e "\nsupport platform: \n"
 echo -e "\tlinux  1"
@@ -43,10 +50,12 @@ echo "---------------------------------------------"
 echo "-----------------------------------"
 echo "run configure for generate Makefile"
 echo "-----------------------------------"
-./configure \
-    ${config_str} \
+mkdir -p ${build_path}
+cd ${build_path}
+${current_dir}/configure \
     --prefix=${install_path} \
-    --program-prefix=${program_prefix}
+    --program-prefix=${program_prefix} \
+    ${config_str}
 
 echo "----------------------"
 echo " make and make install"
