@@ -33,8 +33,8 @@ Makefile
 aclocal.m4
 libtool
 stamp-h1
-linux-build_linux.sh
-rtt-build_rtt.sh
+linux-build.sh
+rtt-build.sh
 
 example/demo
 example/audio

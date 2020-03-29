@@ -47,10 +47,12 @@ dl_lib_SOURCES 	= dl_lib.c
 dl_lib_LDADD   	= $(hal_ld_com)
 dl_lib_CFLAGS  	= $(AM_CFLAGS_COM) $(CFLAGS_COM)
 
+if COMPILE_WITH_AUDIO_HAL
 bin_PROGRAMS   	+= audio
 audio_SOURCES 	= audio.c
 audio_LDADD   	= $(hal_ld_com) -ltinyalsa
 audio_CFLAGS  	= $(AM_CFLAGS_COM) $(CFLAGS_COM)
+endif
 
 bin_PROGRAMS   	+= thread
 thread_SOURCES 	= thread.c

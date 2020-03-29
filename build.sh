@@ -26,7 +26,7 @@ read support_tinyalsa
 if [[ ${support_tinyalsa} = yes ]]; then
     echo -en "\ntinyalsa install path: "
     read tinyalsa_install_path
-    config_str="${config_str} ${tinyalsa_install_path}/tinyalsa"
+    config_str="${config_str} --enable-audio --with-libtinyalsa=${tinyalsa_install_path}"
 fi
 
 GCC=${TOOLCHAINS_DIR}gcc
@@ -41,7 +41,7 @@ echo "-----------------------------------"
 echo "run configure for generate Makefile"
 echo "-----------------------------------"
 ./configure \
-    CC=${GCC} \
+    CC=${GCC} CXX=${CXX} \
     ${config_str} \
     --prefix=${install_path} \
     --program-prefix=${program_prefix}

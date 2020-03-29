@@ -36,13 +36,7 @@ export AM_CFLAGS_COM
 
 dist_doc_DATA = README.md
 
-if COMPILE_WITH_LINUX_HAL
-dist_build_SCRIPTS = build_linux.sh
-endif
-
-if COMPILE_WITH_RTT_HAL
-dist_build_SCRIPTS = build_rtt.sh
-endif
+dist_build_SCRIPTS = build.sh
 
 SUBDIRS = include src example
 

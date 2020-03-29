@@ -80,9 +80,13 @@ SOURCES_COM = hal_log.c \
 			  hal_thread.c \
 			  hal_sem.c
 
-FUNC_MODULE_SOURCES = hal_audio_recorder.c
+FUNC_MODULE_SOURCES =
 
 if COMPILE_WITH_LINUX_HAL
+if COMPILE_WITH_AUDIO_HAL
+FUNC_MODULE_SOURCES += hal_audio_recorder.c
+endif
+
 SOURCES_COM += hal_dl_lib.c
 LDFLAGS_COM += -ldl
 
