@@ -124,7 +124,6 @@ void HalLogDebug(LogLevel_t level, hal_int32_t num,
     if (level < l_context->config.level) {
         return;
     }
-    l_context->config.color_flag = 1;
 
     hal_char_t *color[][2] = {
         {"V", ANSI_COLOR_WHITE   },

@@ -27,7 +27,7 @@ hal_int32_t main(hal_int32_t argc, const hal_char_t *argv[])
     log_config.buf_len      = 1024;
 
     HalLogInit(&log_config);
-
+    HalLogSetLevel(LOG_LEVEL_VERBOSE);
     HalLogSetDoubleLine();
 
     HalLogV("demo test\n");
