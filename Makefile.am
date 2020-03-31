@@ -22,6 +22,9 @@ ACLOCAL_AMFLAGS = -I m4
 
 AM_CFLAGS_COM  = $(ACLOCAL_AMFLAGS)
 AM_CFLAGS_COM += -pipe -W -Wall -Werror
+if COMPILE_WITH_CODE_COVERAGE_HAL
+AM_CFLAGS_COM += -fprofile-arcs -ftest-coverage
+endif
 export AM_CFLAGS_COM
 
 # FIXME 下面的问题还没有解决

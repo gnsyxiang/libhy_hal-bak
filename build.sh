@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# set -x
+
 current_dir=`pwd`
 
 echo -n "please input install absolute path: "
@@ -17,6 +19,9 @@ echo -en "\nplease select platform: "
 read  num
 if [[ $num =~ ^-?[0-9]+$ ]]; then
     if [[ $num = 1 ]]; then
+        config_str="${config_str} --enable-linux"
+        program_prefix=linux-
+
         echo -en "\nwhether to support tinyalsa[yes/no, default no]: "
         read support_tinyalsa
         if [[ ${support_tinyalsa} = yes ]]; then
@@ -25,8 +30,14 @@ if [[ $num =~ ^-?[0-9]+$ ]]; then
             config_str="${config_str} --enable-audio --with-libtinyalsa=${tinyalsa_install_path}"
         fi
 
-        config_str="${config_str} --enable-linux"
-        program_prefix=linux-
+        echo -en "\nwhether to check code coverage[yes/no, default no]: "
+        read support_code_coverage
+        if [[ ${support_code_coverage} = yes ]]; then
+            cflags="-O0"
+            # cxxflags="-fprofile-arcs -ftest-coverage -g -O0"
+            # libs="-lgcov"
+            config_str="${config_str} --enable-code_coverage CFLAGS=${cflags}"
+        fi
     elif [[ $num = 2 ]]; then
         echo -en "\nthe toolchains path[/dirs/bin/arm-none-eabi-]: "
         read toolchains_dir

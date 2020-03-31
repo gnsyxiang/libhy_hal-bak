@@ -30,6 +30,9 @@ endif
 
 hal_ld_com  	= -L$(top_builddir)/src/.libs
 hal_ld_com 	   	+= -lhal
+if COMPILE_WITH_CODE_COVERAGE_HAL
+hal_ld_com 	   	+= -lgcov
+endif
 
 bin_PROGRAMS 	= demo
 demo_SOURCES 	= demo.c

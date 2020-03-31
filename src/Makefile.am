@@ -89,6 +89,9 @@ endif
 
 SOURCES_COM += hal_dl_lib.c
 LDFLAGS_COM += -ldl
+if COMPILE_WITH_CODE_COVERAGE_HAL
+LDFLAGS_COM += -lgcov
+endif
 
 LDFLAGS_COM += linux/*.lo
 CFLAGS_COM 	+= -I$(top_srcdir)/include/linux
