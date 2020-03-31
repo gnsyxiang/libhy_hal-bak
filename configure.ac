@@ -85,6 +85,12 @@ AC_ARG_ENABLE([audio],
     )
 AM_CONDITIONAL([COMPILE_WITH_AUDIO_HAL], [test "x$enable_audio" = "xyes"])
 
+AC_ARG_ENABLE([code_coverage],
+    [AS_HELP_STRING([--enable-code_coverage], [using code coverage for linux] [[default=no]])],
+    [AC_DEFINE(HAVE_CODE_COVERAGE_HAL, 1, [using code coverage for linux])]
+    )
+AM_CONDITIONAL([COMPILE_WITH_CODE_COVERAGE_HAL], [test "x$enable_code_coverage" = "xyes"])
+
 if test "x$enable_audio" = "xyes"; then
     trylibtinyalsadir=""
     AC_ARG_WITH(

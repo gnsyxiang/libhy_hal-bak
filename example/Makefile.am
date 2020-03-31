@@ -30,6 +30,18 @@ endif
 
 hal_ld_com  	= -L$(top_builddir)/src/.libs
 hal_ld_com 	   	+= -lhal
+if COMPILE_WITH_CODE_COVERAGE_HAL
+hal_ld_com 	   	+= -lgcov
+endif
+
+exampledir 	  	 = $(prefix)/example
+example_DATA  	 = demo.c log.c makefile
+if COMPILE_WITH_LINUX_HAL
+example_DATA 	+= dl_lib.c thread.c
+if COMPILE_WITH_AUDIO_HAL
+example_DATA 	+= audio.c
+endif
+endif
 
 bin_PROGRAMS 	= demo
 demo_SOURCES 	= demo.c

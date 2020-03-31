@@ -8,6 +8,8 @@ config.*
 *.la
 *.dirstamp
 .libs/
+*.gcda
+*.gcno
 
 # ignore dir
 .SpaceVim.d/
@@ -25,6 +27,7 @@ build/
 .clang
 cscope_ctags.sh
 tags
+package-lock.json
 
 configure
 configure.scan
@@ -42,6 +45,7 @@ example/audio
 example/thread
 example/log
 example/dl_lib
+
 
 
 
