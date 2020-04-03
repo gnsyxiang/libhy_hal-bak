@@ -8,6 +8,8 @@ config.*
 *.la
 *.dirstamp
 .libs/
+*.gcda
+*.gcno
 
 # ignore dir
 .SpaceVim.d/
@@ -16,12 +18,16 @@ node_modules/
 m4/
 build-aux/
 autom4te.cache/
-.deps
+.deps/
+3rd_lib/
+install/
+build/
 
 # ignore file
 .clang
 cscope_ctags.sh
 tags
+package-lock.json
 
 configure
 configure.scan
@@ -31,7 +37,14 @@ Makefile
 aclocal.m4
 libtool
 stamp-h1
+linux-build.sh
+rtt-build.sh
+
 example/demo
+example/audio
+example/thread
+example/log
+example/dl_lib
 
 
 

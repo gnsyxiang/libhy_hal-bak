@@ -32,7 +32,7 @@ static inline hal_sem_context_t *_context_init(void)
 {
     hal_sem_context_t *context = Hal_calloc(1, HAL_SEM_CONTEXT_LEN);
     if (NULL == context) {
-        Hal_LogE("hal calloc faild \n");
+        HalLogE("hal calloc faild \n");
         return NULL;
     }
     return context;
@@ -50,7 +50,7 @@ ThreadSemHandle_t HalSemInit(hal_int32_t pshared, hal_uint32_t value)
 {
     hal_sem_context_t *context = _context_init();
     if (NULL == context) {
-        Hal_LogE("context init faild \n");
+        HalLogE("context init faild \n");
         return NULL;
     }
 

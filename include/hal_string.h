@@ -26,9 +26,9 @@ extern "C" {
 
 #include "hal_config.h"
 
-hal_int8_t *Hal_strcpy(hal_int8_t *dest, const hal_int8_t *src);
-hal_int8_t *Hal_strncpy(hal_int8_t *dest, const hal_int8_t *src, size_t n);
-size_t Hal_strlen(const hal_int8_t *s);
+hal_char_t *Hal_strcpy(hal_char_t *dest, const hal_char_t *src);
+hal_char_t *Hal_strncpy(hal_char_t *dest, const hal_char_t *src, size_t n);
+size_t Hal_strlen(const hal_char_t *s);
 
 #ifdef __cplusplus
 }

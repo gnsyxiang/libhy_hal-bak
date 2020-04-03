@@ -28,25 +28,28 @@ HEADERS_COM = hal_config.h \
 			  hal_thread.h \
 			  hal_sem.h
 
-HEADERS_FUNC_MODULE = hal_audio_recorder.h
+HEADERS_FUNC_MODULE =
 
-noinst_HEADERS  = hal_thread_internal.h
+noinst_HEADERS  = hal_module_cb.h \
+				  hal_thread_internal.h
 
 if COMPILE_WITH_LINUX_HAL
-noinst_HEADERS += linux/hal_linux_thread.h
+HEADERS_COM 	+= hal_dl_lib.h
+
+noinst_HEADERS 	+= linux/hal_linux_thread.h
+				   
+if COMPILE_WITH_AUDIO_HAL
+HEADERS_FUNC_MODULE += hal_audio_recorder.h
+noinst_HEADERS 		+= linux/hal_linux_audio.h \
+					   hal_audio_recorder_internal.h
+endif
 endif
 
 if COMPILE_WITH_RTT_HAL
 noinst_HEADERS += rtt/hal_rtt_thread.h
 endif
 
-include_HEADERS = $(HEADERS_COM) $(HEADERS_FUNC_MODULE)
+halincludedir = $(includedir)/hal
 
-# FIXME 下面的问题还没有解决
-# inheaderdir = ${prefix}
-# inheader_DATA = hal_thread_internal.h \
-			  # linux/hal_linux_thread.h \
-			  # rtt/hal_rtt_thread.h
-#
-# EXTRA_DIST = $(inheader_DATA)
+halinclude_HEADERS = $(HEADERS_COM) $(HEADERS_FUNC_MODULE)
 

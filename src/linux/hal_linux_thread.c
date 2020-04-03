@@ -2,7 +2,7 @@
  * 
  * Release under GPL-3.0.
  * 
- * @file    hal_pthread.c
+ * @file    hal_linux_thread.c
  * @brief   
  * @author  gnsyxiang <gnsyxiang@163.com>
  * @date    10/01 2020 20:59
@@ -17,8 +17,8 @@
  * 
  *     last modified: 10/01 2020 20:59
  */
-
 #include "hal_config.h"
+#include "hal_linux_thread.h"
 #include "hal_thread_internal.h"
 
 /*
@@ -31,21 +31,21 @@ static inline pid_t _getpid(void)
 }
 
 // 设置的名字可以在proc文件系统中查看: cat /proc/PID/task/tid/comm
-static inline void _linux_thread_set_name(pthread_t id, hal_int8_t *name)
+static inline void _linux_thread_set_name(pthread_t id, hal_char_t *name)
 {
     // hal_int32_t ret = pthread_setname_np(id, name);
     hal_int32_t ret = prctl(PR_SET_NAME, name);
     if (0 != ret) {
-        Hal_LogE("set name faild \n");
+        HalLogE("set name faild \n");
     }
 }
 
-static inline void _linux_thread_get_name(pthread_t id, hal_int8_t *name)
+static inline void _linux_thread_get_name(pthread_t id, hal_char_t *name)
 {
     // hal_int32_t ret = pthread_getname_np(id, name, HAL_THREAD_NAME_MAX_LEN);
     hal_int32_t ret = prctl(PR_GET_NAME, name);
     if (0 != ret) {
-        Hal_LogE("set name faild \n");
+        HalLogE("set name faild \n");
     }
 }
 
@@ -66,17 +66,16 @@ static void *_loop_wrapper(void *args)
     return NULL;
 }
 
-hal_int32_t LinuxThreadCreate(HalThreadConfig_t *config, hal_thread_context_t *context)
+static hal_int32_t _linux_thread_create(void **context_tmp, void *config_tmp)
 {
-    Hal_assert(NULL != config);
-    Hal_assert(NULL != context);
+    hal_thread_context_t *context = *context_tmp;
+    HalThreadConfig_t *config = config_tmp;
 
     hal_int32_t ret = 0;
     pthread_attr_t attr;
-
     ret = pthread_attr_init(&attr);
     if (0 != ret) {
-        Hal_LogE("pthread_attr_init faild \n");
+        HalLogE("pthread_attr_init faild \n");
         goto L_ERROR_INIT_1;
     }
 
@@ -87,7 +86,7 @@ hal_int32_t LinuxThreadCreate(HalThreadConfig_t *config, hal_thread_context_t *c
     if (config->stack_size > 0) {
         ret = pthread_attr_setstacksize(&attr, config->stack_size);
         if (0 != ret) {
-            Hal_LogE("pthread_attr_setstacksize faild \n");
+            HalLogE("pthread_attr_setstacksize faild \n");
             goto L_ERROR_INIT_2;
         }
     }
@@ -105,9 +104,11 @@ hal_int32_t LinuxThreadCreate(HalThreadConfig_t *config, hal_thread_context_t *c
     param.sched_priority = sched_priority[config->priority][1];
     pthread_attr_setschedparam(&attr, &param);
 
+    context->loop_config = *config->loop_config;
+
     ret = pthread_create(&context->id, &attr, _loop_wrapper, context);
     if (0 != ret) {
-        Hal_LogE("pthread_attr_setstacksize faild \n");
+        HalLogE("pthread_attr_setstacksize faild \n");
         goto  L_ERROR_INIT_2;
     }
 
@@ -119,8 +120,9 @@ L_ERROR_INIT_1:
     return -1;
 }
 
-hal_int32_t LinuxThreadDestroy(hal_thread_context_t *context)
+static hal_int32_t _linux_thread_destroy(void *context_tmp)
 {
+    hal_thread_context_t *context = context_tmp;
     if (0 != context->id) {
         return pthread_cancel(context->id);
     } else {
@@ -143,32 +145,33 @@ static hal_linux_thread_param_cb_t _g_linux_thread_param[] = {
     {_hal_linux_thread_set_name, _hal_linux_thread_get_name},
 };
 
-hal_int32_t LinuxThreadParamSet(hal_thread_context_t *context, HalThreadParam_t type, void *args)
+static hal_int32_t _linux_thread_param_set(void *context_tmp, hal_int32_t type, void *args)
 {
     return hal_thread_param_common(_g_linux_thread_param,
-                                   context,
+                                   context_tmp,
                                    type,
                                    args,
                                    HAL_THREAD_INDEX_SET);
 }
 
-hal_int32_t LinuxThreadParamGet(hal_thread_context_t *context, HalThreadParam_t type,  void *args)
+static hal_int32_t _linux_thread_param_get(void *context_tmp, hal_int32_t type,  void *args)
 {
     return hal_thread_param_common(_g_linux_thread_param,
-                                   context,
+                                   context_tmp,
                                    type,
                                    args,
                                    HAL_THREAD_INDEX_GET);
 }
 
-void ThreadSystemInit(hal_thread_system_cb_t *system_cb)
+void ThreadSystemInit(hal_system_init_cb_t *system_cb)
 {
     Hal_assert(NULL != system_cb);
 
-    system_cb->create  = LinuxThreadCreate;
-    system_cb->destroy = LinuxThreadDestroy;
-    system_cb->get     = LinuxThreadParamGet;
-    system_cb->set     = LinuxThreadParamSet;
+    system_cb->create  = _linux_thread_create;
+    system_cb->destroy = _linux_thread_destroy;
+
+    system_cb->get     = _linux_thread_param_get;
+    system_cb->set     = _linux_thread_param_set;
 }
 
 #if 0

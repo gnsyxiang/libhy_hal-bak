@@ -25,15 +25,9 @@ extern "C" {
 #endif
 
 #include "hal_config.h"
-#include "hal_thread_internal.h"
+#include "hal_module_cb.h"
 
-void ThreadSystemInit(hal_thread_system_cb_t *system_cb);
-
-hal_int32_t RTTThreadCreate(HalThreadConfig_t *config, hal_thread_context_t *context);
-hal_int32_t RTTThreadDestroy(hal_thread_context_t *context);
-
-hal_int32_t RTTThreadParamSet(hal_thread_context_t *context, HalThreadParam_t type, void *args);
-hal_int32_t RTTThreadParamGet(hal_thread_context_t *context, HalThreadParam_t type, void *args);
+void ThreadSystemInit(hal_system_init_cb_t *system_cb);
 
 #ifdef __cplusplus
 }

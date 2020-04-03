@@ -22,6 +22,9 @@ ACLOCAL_AMFLAGS = -I m4
 
 AM_CFLAGS_COM  = $(ACLOCAL_AMFLAGS)
 AM_CFLAGS_COM += -pipe -W -Wall -Werror
+if COMPILE_WITH_CODE_COVERAGE_HAL
+AM_CFLAGS_COM += -fprofile-arcs -ftest-coverage
+endif
 export AM_CFLAGS_COM
 
 # FIXME 下面的问题还没有解决
@@ -35,6 +38,7 @@ export AM_CFLAGS_COM
 # EXTRA_DIST=conf           #在make dist打包的时候也要将扩展文件夹打包进去
 
 dist_doc_DATA = README.md
+
 dist_build_SCRIPTS = build.sh
 
 SUBDIRS = include src example

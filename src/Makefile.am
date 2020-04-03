@@ -18,6 +18,14 @@
 #     last modified: 21/12 2019 13:20
 # ===============================================================
 
+if COMPILE_WITH_LINUX_HAL
+SUBDIRS = linux
+endif
+
+if COMPILE_WITH_RTT_HAL
+SUBDIRS = rtt
+endif
+
 lib_LTLIBRARIES = libhal.la
 
 # libtool动态库的版本由三个字段组成current:revision:age: 
@@ -38,9 +46,7 @@ lib_LTLIBRARIES = libhal.la
 # 该版本的library兼容依赖于current=2（3-1）版本library的程序。
 # 将该库进行编译后，会发现库的名字为libraryname.so.2.1.12， 即编译产生的库名为libraryname.so.c-a.a.r。
 # 表示该library对于依赖于current=c-a(libraryname.so.2)到current=c(libraryname.so.3)的程序都是可用的， 运行时不会出现任何异常。
-LIB_VERSION = -version-info @current@:@revision@:@age@
-
-LDFLAGS_COM  = $(LIB_VERSION)
+LDFLAGS_COM = -version-info @current@:@revision@:@age@
 
 # 选项'-rdynamic'用来通知链接器将所有符号添加到动态符号表中（目的是能够通过使用 dlopen 来实现向后跟踪）
 LDFLAGS_COM += -rdynamic
@@ -59,9 +65,7 @@ LDFLAGS_COM += -rdynamic
 # 4, 通过libtool导出函数列表，如下参数
 LDFLAGS_COM += -export-symbols-regex 'Hal*'
 
-# 参数-fPIC表示生成与位置无关代码
 CFLAGS_COM  = $(AM_CFLAGS_COM)
-CFLAGS_COM += -fPIC
 CFLAGS_COM += -I$(top_srcdir)/include
 
 # 下面两个参数一个显示警告，一个直接通过
@@ -76,23 +80,33 @@ SOURCES_COM = hal_log.c \
 			  hal_thread.c \
 			  hal_sem.c
 
-FUNC_MODULE_SOURCES = hal_audio_recorder.c
+FUNC_MODULE_SOURCES =
 
 if COMPILE_WITH_LINUX_HAL
+if COMPILE_WITH_AUDIO_HAL
+FUNC_MODULE_SOURCES += hal_audio_recorder.c
+endif
+
+SOURCES_COM += hal_dl_lib.c
+LDFLAGS_COM += -ldl
+if COMPILE_WITH_CODE_COVERAGE_HAL
+LDFLAGS_COM += -lgcov
+endif
+
+LDFLAGS_COM += linux/*.lo
 CFLAGS_COM 	+= -I$(top_srcdir)/include/linux
-SOURCES_COM += linux/hal_linux_thread.c
 endif
 
 if COMPILE_WITH_RTT_HAL
-CFLAGS_COM += -I$(top_srcdir)/include/rtt \
-			  -I$(top_srcdir)/include/rtt/include
-SOURCES_COM += rtt/hal_rtt_thread.c
+LDFLAGS_COM += rtt/*.lo
+CFLAGS_COM  += -I$(top_srcdir)/include/rtt \
+			   -I$(top_srcdir)/include/rtt/include
 endif
+export CFLAGS_COM
 
+# AM_CPPFLAGS和AM_CFLAGS的区分
 AM_CFLAGS 		   = $(CFLAGS_COM)
 libhal_la_LDFLAGS  = $(LDFLAGS_COM)
 libhal_la_SOURCES  = $(SOURCES_COM) \
 					 $(FUNC_MODULE_SOURCES)
-
-all: libhal.la
 
