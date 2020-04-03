@@ -49,13 +49,7 @@ if COMPILE_WITH_RTT_HAL
 noinst_HEADERS += rtt/hal_rtt_thread.h
 endif
 
-include_HEADERS = $(HEADERS_COM) $(HEADERS_FUNC_MODULE)
+halincludedir = $(includedir)/hal
 
-# FIXME 下面的问题还没有解决
-# inheaderdir = ${prefix}
-# inheader_DATA = hal_thread_internal.h \
-			  # linux/hal_linux_thread.h \
-			  # rtt/hal_rtt_thread.h
-#
-# EXTRA_DIST = $(inheader_DATA)
+halinclude_HEADERS = $(HEADERS_COM) $(HEADERS_FUNC_MODULE)
 

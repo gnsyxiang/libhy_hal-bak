@@ -104,6 +104,7 @@ CFLAGS_COM  += -I$(top_srcdir)/include/rtt \
 endif
 export CFLAGS_COM
 
+# AM_CPPFLAGS和AM_CFLAGS的区分
 AM_CFLAGS 		   = $(CFLAGS_COM)
 libhal_la_LDFLAGS  = $(LDFLAGS_COM)
 libhal_la_SOURCES  = $(SOURCES_COM) \
