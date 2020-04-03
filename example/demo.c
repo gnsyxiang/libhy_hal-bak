@@ -22,6 +22,7 @@
 hal_int32_t main(hal_int32_t argc, const hal_char_t *argv[])
 {
     printf("demo test \n");
+    printf("config dir: %s \n", CONFIG_DIR);
 
     return 0;
 }

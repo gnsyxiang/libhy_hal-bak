@@ -21,6 +21,7 @@
 CFLAGS_COM  	= -I$(top_srcdir)/include
 # CFLAGS_COM += -Wno-error=unused-parameter
 CFLAGS_COM 		+= -Wno-unused-parameter
+CFLAGS_COM 		+= -DCONFIG_DIR=\"$(sysconfdir)\"
 
 if COMPILE_WITH_RTT_HAL
 CFLAGS_COM 	   	+= -I$(top_srcdir)/include/rtt \
