@@ -36,6 +36,7 @@ endif
 
 exampledir 	  	 = $(prefix)/example
 example_DATA  	 = demo.c log.c makefile
+dist_example_DATA = makefile
 if COMPILE_WITH_LINUX_HAL
 example_DATA 	+= dl_lib.c thread.c
 if COMPILE_WITH_AUDIO_HAL
