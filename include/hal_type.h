@@ -60,6 +60,7 @@ typedef unsigned short  hal_uint16_t;
 typedef unsigned int    hal_uint32_t;
 
 typedef char            hal_char_t;
+typedef double          hal_double_t;
 
 typedef enum {
   HAL_NO_ERR = 0,
