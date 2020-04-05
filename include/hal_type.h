@@ -49,6 +49,8 @@ extern "C" {
     #endif
 #endif
 
+#include <stdio.h>
+
 typedef char            hal_int8_t;
 typedef short           hal_int16_t;
 typedef int             hal_int32_t;
@@ -58,6 +60,7 @@ typedef unsigned short  hal_uint16_t;
 typedef unsigned int    hal_uint32_t;
 
 typedef char            hal_char_t;
+typedef double          hal_double_t;
 
 typedef enum {
   HAL_NO_ERR = 0,

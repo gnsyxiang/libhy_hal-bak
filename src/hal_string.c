@@ -18,7 +18,7 @@
  *     last modified: 22/02 2020 16:32
  */
 #include "config.h"
-#include "hal_config.h"
+#include "hal_string.h"
 
 #ifdef HAVE_RTT_HAL
 #include <rtthread.h>
@@ -55,6 +55,16 @@ hal_char_t *Hal_strncpy(hal_char_t *dest, const hal_char_t *src, size_t n)
 size_t Hal_strlen(const hal_char_t *s)
 {
     return strlen(s);
+}
+
+hal_char_t *Hal_strstr(const hal_char_t *haystack, const char *needle)
+{
+    return strstr(haystack, needle);
+}
+
+void *Hal_memcpy(void *dest, const void *src, size_t n)
+{
+    return memcpy(dest, src, n);
 }
 #endif
 

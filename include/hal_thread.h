@@ -24,7 +24,7 @@
 extern "C" {
 #endif
 
-#include "hal_config.h"
+#include "hal_type.h"
 
 /* THREAD STACK SIZE */
 #define STACK_SIZE                  (1024 * 1024 * 8)

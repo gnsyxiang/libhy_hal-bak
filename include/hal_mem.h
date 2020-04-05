@@ -24,7 +24,7 @@
 extern "C" {
 #endif
 
-#include "hal_config.h"
+#include "hal_type.h"
 
 void *Hal_malloc(size_t size);
 void Hal_free(void *ptr);

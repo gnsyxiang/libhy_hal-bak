@@ -24,7 +24,7 @@
 extern "C" {
 #endif
 
-#include "hal_config.h"
+#include "hal_type.h"
 
 hal_uint32_t Hal_sleep(hal_uint32_t seconds);
 

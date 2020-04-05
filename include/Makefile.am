@@ -18,8 +18,7 @@
 #     last modified: 21/12 2019 13:21
 # ===============================================================
 
-HEADERS_COM = hal_config.h \
-			  hal_type.h \
+HEADERS_COM = hal_type.h \
 			  hal_log.h \
 			  hal_mem.h \
 			  hal_time.h \

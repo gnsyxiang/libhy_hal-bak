@@ -17,7 +17,10 @@
  * 
  *     last modified: 20/03 2020 16:55
  */
-#include "hal_config.h"
+#include "hal_type.h"
+#include "hal_log.h"
+#include "hal_thread.h"
+#include "hal_time.h"
 
 #define STACK_SIZE                  (1024 * 1024 * 8)
 
