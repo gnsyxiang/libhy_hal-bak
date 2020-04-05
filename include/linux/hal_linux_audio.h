@@ -24,7 +24,6 @@
 extern "C" {
 #endif
 
-#include "hal_config.h"
 #include "hal_module_cb.h"
 
 void AudioSystemInit(hal_system_init_cb_t *system_cb);

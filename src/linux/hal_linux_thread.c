@@ -17,9 +17,10 @@
  * 
  *     last modified: 10/01 2020 20:59
  */
-#include "hal_config.h"
 #include "hal_linux_thread.h"
 #include "hal_thread_internal.h"
+#include "hal_log.h"
+#include "hal_assert.h"
 
 /*
  * pthread_t pthread_self(void)     <进程级别>是pthread 库给每个线程定义的进程内唯一标识，是 pthread 库维护的，是进程级而非系统级

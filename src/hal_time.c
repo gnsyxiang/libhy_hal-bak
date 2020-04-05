@@ -18,7 +18,7 @@
  *     last modified: 22/02 2020 16:55
  */
 #include "config.h"
-#include "hal_config.h"
+#include "hal_time.h"
 
 #ifdef HAVE_RTT_HAL
 #include <rtthread.h>

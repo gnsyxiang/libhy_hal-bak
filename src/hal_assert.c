@@ -18,13 +18,13 @@
  *     last modified: 29/02 2020 20:51
  */
 #include "config.h"
-#include "hal_config.h"
+#include "hal_assert.h"
 
 #ifdef HAVE_RTT_HAL
 #include <rtdebug.h>
 #include <rtthread.h>
 
-void Hal_assert(int expression)
+void Hal_assert(hal_int32_t expression)
 {
     RT_ASSERT(expression);
 }
@@ -33,7 +33,7 @@ void Hal_assert(int expression)
 #ifdef HAVE_LINUX_HAL
 #include <assert.h>
 
-void Hal_assert(int expression)
+void Hal_assert(hal_int32_t expression)
 {
     assert(expression);
 }

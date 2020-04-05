@@ -24,8 +24,7 @@
 extern "C" {
 #endif
 
-#include "config.h"
-#include "hal_config.h"
+#include "hal_type.h"
 
 typedef hal_int32_t (*hal_create_cb_t)(void **handle, void *config);
 typedef hal_int32_t (*hal_destroy_cb_t)(void *handle);

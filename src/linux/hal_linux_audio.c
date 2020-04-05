@@ -17,10 +17,13 @@
  * 
  *     last modified: 12/03 2020 16:36
  */
-#include "hal_config.h"
-
 #include "hal_linux_audio.h"
 #include "hal_audio_recorder_internal.h"
+#include "hal_type.h"
+#include "hal_mem.h"
+#include "hal_log.h"
+#include "hal_assert.h"
+
 #include "tinyalsa/pcm.h"
 #include "tinyalsa/mixer.h"
 

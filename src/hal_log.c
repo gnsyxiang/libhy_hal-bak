@@ -20,7 +20,8 @@
 #include <string.h>
 #include <stdarg.h>
 
-#include "hal_config.h"
+#include "hal_log.h"
+#include "hal_mem.h"
 
 #define ANSI_COLOR_RED     "\x1b[1;31m"
 #define ANSI_COLOR_GREEN   "\x1b[32m"

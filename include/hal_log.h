@@ -24,7 +24,8 @@
 extern "C" {
 #endif
 
-#include "hal_config.h"
+#include "hal_type.h"
+
 #include <errno.h>
 #include <libgen.h>
 

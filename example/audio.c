@@ -17,12 +17,14 @@
  * 
  *     last modified: 17/12 2019 20:41
  */
-#include "hal_config.h"
-
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+
+#include "hal_type.h"
+#include "hal_log.h"
+#include "hal_audio_recorder.h"
 
 static hal_int32_t fd = -1;
 

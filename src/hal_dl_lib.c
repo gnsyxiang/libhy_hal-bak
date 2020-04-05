@@ -17,10 +17,13 @@
  * 
  *     last modified: 28/03 2020 16:20
  */
+#include "hal_dl_lib.h"
+#include "hal_mem.h"
+#include "hal_log.h"
+#include "hal_string.h"
+
 #include <dlfcn.h>
 #include <gnu/lib-names.h>
-
-#include "hal_config.h"
 
 typedef struct {
     hal_char_t  *libname;

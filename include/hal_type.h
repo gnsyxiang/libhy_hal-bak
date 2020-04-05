@@ -49,6 +49,8 @@ extern "C" {
     #endif
 #endif
 
+#include <stdio.h>
+
 typedef char            hal_int8_t;
 typedef short           hal_int16_t;
 typedef int             hal_int32_t;
