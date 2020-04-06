@@ -55,6 +55,11 @@ log_SOURCES 	= log.c
 log_LDADD   	= $(hal_ld_com)
 log_CFLAGS  	= $(AM_CFLAGS_COM) $(CFLAGS_COM)
 
+bin_PROGRAMS	+= file
+file_SOURCES 	= file.c
+file_LDADD   	= $(hal_ld_com)
+file_CFLAGS  	= $(AM_CFLAGS_COM) $(CFLAGS_COM)
+
 if COMPILE_WITH_LINUX_HAL
 bin_PROGRAMS   	+= dl_lib
 dl_lib_SOURCES 	= dl_lib.c
