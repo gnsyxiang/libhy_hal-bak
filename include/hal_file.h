@@ -24,12 +24,7 @@
 extern "C" {
 #endif
 
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <fcntl.h>
-
-#include <unistd.h>
-
 #include "hal_type.h"
 
 hal_int32_t Hal_open(const hal_char_t *pathname, hal_int32_t flags, mode_t mode);

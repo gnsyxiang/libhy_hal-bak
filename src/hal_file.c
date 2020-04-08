@@ -17,6 +17,10 @@
  * 
  *     last modified: 06/04 2020 18:24
  */
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 #include "hal_file.h"
 
 hal_int32_t Hal_open(const char *pathname, int flags, mode_t mode)
