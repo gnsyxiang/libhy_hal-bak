@@ -50,6 +50,8 @@ extern "C" {
 #endif
 
 #include <stdio.h>
+#include <sys/types.h>
+
 
 typedef char            hal_int8_t;
 typedef short           hal_int16_t;

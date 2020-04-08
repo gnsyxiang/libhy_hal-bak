@@ -25,7 +25,8 @@ HEADERS_COM = hal_type.h \
 			  hal_string.h \
 			  hal_assert.h \
 			  hal_thread.h \
-			  hal_sem.h
+			  hal_sem.h \
+			  hal_file.h
 
 HEADERS_FUNC_MODULE =
 
