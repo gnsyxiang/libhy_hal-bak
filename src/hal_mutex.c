@@ -17,7 +17,11 @@
  * 
  *     last modified: 09/04 2020 17:42
  */
+#include "config.h"
+
 #include "hal_mutex.h"
+#include "hal_mem.h"
+#include "hal_log.h"
 
 #ifdef HAVE_LINUX_HAL
 #include <pthread.h>
