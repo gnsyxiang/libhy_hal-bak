@@ -50,6 +50,11 @@ demo_SOURCES 	= demo.c
 demo_LDADD   	= $(hal_ld_com)
 demo_CFLAGS  	= $(AM_CFLAGS_COM) $(CFLAGS_COM)
 
+bin_PROGRAMS	+= mutex
+mutex_SOURCES 	= mutex.c
+mutex_LDADD   	= $(hal_ld_com)
+mutex_CFLAGS  	= $(AM_CFLAGS_COM) $(CFLAGS_COM)
+
 bin_PROGRAMS	+= log
 log_SOURCES 	= log.c
 log_LDADD   	= $(hal_ld_com)
