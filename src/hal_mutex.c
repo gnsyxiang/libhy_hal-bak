@@ -72,6 +72,8 @@ hal_int32_t HalMutexDestroy(ThreadMutexHandle_t handle)
 
     pthread_mutex_destroy(&context->mutex);
 
+    _context_final(&context);
+
     return 0;
 }
 

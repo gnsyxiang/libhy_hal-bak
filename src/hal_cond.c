@@ -74,6 +74,8 @@ hal_int32_t HalCondDestroy(ThreadCondHandle_t handle)
 
     pthread_cond_destroy(&context->cond);
 
+    _context_final(&context);
+
     return 0;
 }
 
