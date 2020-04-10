@@ -17,7 +17,12 @@
  * 
  *     last modified: 10/04 2020 09:43
  */
+#include "config.h"
+
 #include "hal_cond.h"
+#include "hal_mutex.h"
+#include "hal_mem.h"
+#include "hal_log.h"
 
 #ifdef HAVE_LINUX_HAL
 #include <pthread.h>
@@ -66,7 +71,7 @@ hal_int32_t HalCondDestroy(ThreadCondHandle_t handle)
     }
     hal_cond_context_t *context = handle;
 
-    pthread_mutex_destroy(&context->cond);
+    pthread_cond_destroy(&context->cond);
 
     return 0;
 }
@@ -97,7 +102,7 @@ hal_int32_t HalCondBroadcast(ThreadCondHandle_t handle)
     return 0;
 }
 
-hal_int32_t HalCondWait(ThreadCondHandle_t handle)
+hal_int32_t HalCondWait(ThreadCondHandle_t handle, ThreadMutexHandle_t mutex, hal_uint32_t timeout_ms)
 {
     if (NULL == handle) {
         HalLogE("the handle is NULL \n");
@@ -105,7 +110,7 @@ hal_int32_t HalCondWait(ThreadCondHandle_t handle)
     }
     hal_cond_context_t *context = handle;
 
-    pthread_cond_wait(&context->cond);
+    pthread_cond_wait(&context->cond, HalMutexGetLock(mutex));
 
     return 0;
 }

@@ -25,6 +25,7 @@ extern "C" {
 #endif
 
 #include "hal_type.h"
+#include "hal_mutex.h"
 
 typedef void *ThreadCondHandle_t;
 
@@ -33,7 +34,7 @@ hal_int32_t HalCondDestroy(ThreadCondHandle_t handle);
 
 hal_int32_t HalCondSignal(ThreadCondHandle_t handle);
 hal_int32_t HalCondBroadcast(ThreadCondHandle_t handle);
-hal_int32_t HalCondWait(ThreadCondHandle_t handle);
+hal_int32_t HalCondWait(ThreadCondHandle_t handle, ThreadMutexHandle_t mutex, hal_uint32_t timeout_ms);
 
 #ifdef __cplusplus
 }
