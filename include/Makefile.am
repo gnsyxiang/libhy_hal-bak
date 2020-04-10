@@ -26,7 +26,9 @@ HEADERS_COM = hal_type.h \
 			  hal_assert.h \
 			  hal_thread.h \
 			  hal_sem.h \
-			  hal_file.h
+			  hal_file.h \
+			  hal_mutex.h \
+			  hal_cond.h
 
 HEADERS_FUNC_MODULE =
 
