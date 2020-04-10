@@ -36,6 +36,8 @@ hal_int32_t HalMutexTryLock(ThreadMutexHandle_t handle);
 
 hal_int32_t HalMutexUnLock(ThreadMutexHandle_t handle);
 
+void *HalMutexGetLock(ThreadMutexHandle_t handle);
+
 #ifdef __cplusplus
 }
 #endif

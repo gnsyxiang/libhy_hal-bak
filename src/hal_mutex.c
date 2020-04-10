@@ -113,5 +113,17 @@ hal_int32_t HalMutexUnLock(ThreadMutexHandle_t handle)
 
     return 0;
 }
+
+void *HalMutexGetLock(ThreadMutexHandle_t handle)
+{
+    if (NULL == handle) {
+        HalLogE("the handle is NULL \n");
+        return NULL;
+    }
+    hal_mutex_context_t *context = handle;
+
+    return &context->mutex;
+}
+
 #endif
 
