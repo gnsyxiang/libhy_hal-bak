@@ -23,6 +23,7 @@
 #include "hal_mutex.h"
 #include "hal_mem.h"
 #include "hal_log.h"
+#include "hal_time.h"
 
 #ifdef HAVE_LINUX_HAL
 #include <pthread.h>
@@ -110,7 +111,12 @@ hal_int32_t HalCondWait(ThreadCondHandle_t handle, ThreadMutexHandle_t mutex, ha
     }
     hal_cond_context_t *context = handle;
 
-    pthread_cond_wait(&context->cond, HalMutexGetLock(mutex));
+    if (0 == timeout_ms) {
+        pthread_cond_wait(&context->cond, HalMutexGetLock(mutex));
+    } else {
+        struct timespec timeout = HalGetTimespecOut(timeout_ms);
+        pthread_cond_timedwait(&context->cond, HalMutexGetLock(mutex), &timeout);
+    }
 
     return 0;
 }
