@@ -17,11 +17,12 @@
  * 
  *     last modified: 10/03 2020 15:10
  */
-#include "config.h"
-#include "hal_config.h"
+#include "hal_audio_recorder.h"
+#include "hal_audio_recorder_internal.h"
+#include "hal_log.h"
+#include "hal_mem.h"
 
 #include "hal_linux_audio.h"
-#include "hal_audio_recorder_internal.h"
 
 static hal_int32_t audio_recorder_is_init = 0;
 static hal_system_init_cb_t g_system_cb;

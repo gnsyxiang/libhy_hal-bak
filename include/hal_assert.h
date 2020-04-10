@@ -24,9 +24,9 @@
 extern "C" {
 #endif
 
-#include "hal_config.h"
+#include "hal_type.h"
 
-void Hal_assert(int expression);
+void Hal_assert(hal_int32_t expression);
 
 #ifdef __cplusplus
 }

@@ -17,7 +17,11 @@
  * 
  *     last modified: 28/03 2020 16:24
  */
-#include "hal_config.h"
+#include "hal_type.h"
+#include "hal_thread.h"
+#include "hal_log.h"
+#include "hal_dl_lib.h"
+#include "hal_time.h"
 
 #define LIBHAL_NAME     "install/lib/libhal.so"
 #define STACK_SIZE      (1024 * 1024 * 8)

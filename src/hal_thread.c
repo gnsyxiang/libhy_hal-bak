@@ -18,8 +18,11 @@
  *     last modified: 20/01 2020 16:51
  */
 #include "config.h"
-#include "hal_config.h"
+#include "hal_thread.h"
 #include "hal_thread_internal.h"
+#include "hal_mem.h"
+#include "hal_string.h"
+#include "hal_log.h"
 
 #ifdef HAVE_RTT_HAL
 #include "hal_rtt_thread.h"

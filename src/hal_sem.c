@@ -18,7 +18,11 @@
  *     last modified: 10/03 2020 16:37
  */
 #include "config.h"
-#include "hal_config.h"
+
+#include "hal_sem.h"
+#include "hal_mem.h"
+#include "hal_log.h"
+#include "hal_assert.h"
 
 #ifdef HAVE_LINUX_HAL
 #include <semaphore.h>

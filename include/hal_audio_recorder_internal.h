@@ -24,8 +24,10 @@
 extern "C" {
 #endif
 
-#include "config.h"
-#include "hal_config.h"
+#include "hal_type.h"
+#include "hal_thread.h"
+#include "hal_sem.h"
+#include "hal_audio_recorder.h"
 
 typedef enum {
     AUDIO_RECORDER_STATE_IDLE,

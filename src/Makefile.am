@@ -78,7 +78,10 @@ SOURCES_COM = hal_log.c \
 			  hal_string.c \
 			  hal_assert.c \
 			  hal_thread.c \
-			  hal_sem.c
+			  hal_sem.c \
+			  hal_file.c \
+			  hal_mutex.c \
+			  hal_cond.c
 
 FUNC_MODULE_SOURCES =
 

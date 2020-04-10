@@ -49,6 +49,10 @@ extern "C" {
     #endif
 #endif
 
+#include <stdio.h>
+#include <sys/types.h>
+
+
 typedef char            hal_int8_t;
 typedef short           hal_int16_t;
 typedef int             hal_int32_t;
@@ -58,6 +62,7 @@ typedef unsigned short  hal_uint16_t;
 typedef unsigned int    hal_uint32_t;
 
 typedef char            hal_char_t;
+typedef double          hal_double_t;
 
 typedef enum {
   HAL_NO_ERR = 0,
@@ -77,10 +82,16 @@ typedef enum {
   HAL_ERR_NUM_END
 } HalErr_t;
 
-#define BYTE_ALIGN(len, align) (((len) + (align) - 1) & ~((align) - 1))
-
-#define ALIGN4(len)     BYTE_ALIGN(len, 4)
-#define ALIGN2(len)     BYTE_ALIGN(len, 2)
+/* 
+ * BYTE_ALIGN:  字节对齐
+ * ALIGN4:      4字节对齐
+ * ALIGN2:      2字节对齐
+ * ALIGN4_UP:   绝对字节对齐(原来已经事4字节对齐，使用后再增加4个字节)
+ */
+#define BYTE_ALIGN(len, align)  (((len) + (align) - 1) & ~((align) - 1))
+#define ALIGN4(len)             BYTE_ALIGN(len, 4)
+#define ALIGN2(len)             BYTE_ALIGN(len, 2)
+#define ALIGN4_UP(len)          (BYTE_ALIGN(len, 4) + ALIGN4(1))
 
 #ifdef __cplusplus
 }

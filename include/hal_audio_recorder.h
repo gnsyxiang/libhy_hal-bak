@@ -24,7 +24,7 @@
 extern "C" {
 #endif
 
-#include "hal_config.h"
+#include "hal_type.h"
 
 typedef enum {
     AUDIO_RECORDER_PARAM_RATE,
