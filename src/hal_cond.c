@@ -109,15 +109,15 @@ hal_int32_t HalCondWait(ThreadCondHandle_t handle, ThreadMutexHandle_t mutex, ha
         HalLogE("the handle is NULL \n");
         return -1;
     }
+    hal_int32_t ret = 0;
     hal_cond_context_t *context = handle;
 
     if (0 == timeout_ms) {
-        pthread_cond_wait(&context->cond, HalMutexGetLock(mutex));
+        ret = pthread_cond_wait(&context->cond, HalMutexGetLock(mutex));
     } else {
         struct timespec timeout = HalGetTimespecOut(timeout_ms);
-        pthread_cond_timedwait(&context->cond, HalMutexGetLock(mutex), &timeout);
+        ret = pthread_cond_timedwait(&context->cond, HalMutexGetLock(mutex), &timeout);
     }
-
-    return 0;
+    return ret;
 }
 #endif
