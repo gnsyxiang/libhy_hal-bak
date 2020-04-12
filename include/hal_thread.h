@@ -66,10 +66,13 @@ typedef struct HalThreadConfig {
 } HalThreadConfig_t;
 #define HAL_THREAD_CONFIG_LEN (sizeof(HalThreadConfig_t))
 
+typedef unsigned long int ThreadID_t;
 typedef void * ThreadHandle_t;
 
 void *HalThreadCreate(HalThreadConfig_t *config);
 void HalThreadDestroy(ThreadHandle_t handle);
+
+ThreadID_t HalThreadGetID(void);
 
 hal_int32_t HalThreadParamSet(ThreadHandle_t handle, HalThreadParam_t type, void *args);
 hal_int32_t HalThreadParamGet(ThreadHandle_t handle, HalThreadParam_t type, void *args);

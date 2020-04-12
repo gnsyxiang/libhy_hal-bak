@@ -27,6 +27,7 @@ extern "C" {
 #include "config.h"
 #include "hal_type.h"
 #include "hal_thread.h"
+#include "hal_module_cb.h"
 
 #ifdef HAVE_LINUX_HAL
 #include <pthread.h>
@@ -92,6 +93,18 @@ typedef struct {
     }                                                                         \
     ret;                                                                      \
   })
+
+typedef ThreadID_t (*hal_thread_get_id_cb_t)(void);
+
+typedef struct {
+    hal_create_cb_t         create;
+    hal_destroy_cb_t        destroy;
+
+    hal_param_cb_t          get;
+    hal_param_cb_t          set;
+
+    hal_thread_get_id_cb_t  get_id;
+} thread_init_cb_t;
 
 #ifdef __cplusplus
 }

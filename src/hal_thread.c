@@ -31,7 +31,7 @@
 #include "hal_linux_thread.h"
 #endif
 
-static hal_system_init_cb_t g_system_cb;
+static thread_init_cb_t g_system_cb;
 static hal_int32_t g_init_flag = 0;
 
 static inline hal_thread_context_t *_context_init(HalThreadConfig_t *config)
@@ -110,6 +110,16 @@ void HalThreadDestroy(ThreadHandle_t handle)
     }
 
     _context_final(&context);
+}
+
+ThreadID_t HalThreadGetID(void)
+{
+    if (NULL != g_system_cb.get_id) {
+        return g_system_cb.get_id();
+    } else {
+        HalLogE("call get_id faild \n");
+    }
+    return 0;
 }
 
 static hal_int32_t _hal_thread_param_common(ThreadHandle_t handle,

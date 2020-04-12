@@ -24,9 +24,9 @@
 extern "C" {
 #endif
 
-#include "hal_module_cb.h"
+#include "hal_thread_internal.h"
 
-void ThreadSystemInit(hal_system_init_cb_t *system_cb);
+void ThreadSystemInit(thread_init_cb_t *thread_cb);
 
 #ifdef __cplusplus
 }
