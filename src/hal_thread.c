@@ -129,11 +129,6 @@ static hal_int32_t _hal_thread_param_common(ThreadHandle_t handle,
 {
     hal_thread_context_t *context = (hal_thread_context_t *) handle;
 
-    if (HAL_THREAD_RUNNING != context->state) {
-        HalLogE("can't set hal thread param with wrong state");
-        return HAL_INVALID_STATE_ERR;
-    }
-
     if (index == HAL_THREAD_INDEX_GET) {
         if (NULL == g_system_cb.get || 0 != g_system_cb.get(context, type, args)) {
             HalLogE("call get faild \n");

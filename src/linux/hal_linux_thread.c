@@ -147,8 +147,15 @@ static hal_int32_t _hal_linux_thread_get_name(hal_thread_context_t *context, voi
     return 0;
 }
 
+static hal_int32_t _hal_linux_thread_get_id(hal_thread_context_t *context, void *args)
+{
+    *(pthread_t *)args = context->id;
+    return 0;
+}
+
 static hal_linux_thread_param_cb_t _g_linux_thread_param[] = {
     {_hal_linux_thread_set_name, _hal_linux_thread_get_name},
+    {NULL,                       _hal_linux_thread_get_id},
 };
 
 static hal_int32_t _linux_thread_param_set(void *context_tmp, hal_int32_t type, void *args)

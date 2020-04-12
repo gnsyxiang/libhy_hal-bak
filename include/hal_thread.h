@@ -44,6 +44,7 @@ typedef enum {
 
 typedef enum {
     HAL_THREAD_PARAM_NAME,
+    HAL_THREAD_PARAM_ID,
     HAL_THREAD_PARAM_MAX,
 } HalThreadParam_t;
 
