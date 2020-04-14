@@ -32,6 +32,7 @@ size_t Hal_strlen(const hal_char_t *s);
 hal_char_t *Hal_strstr(const hal_char_t *haystack, const char *needle);
 void *Hal_memcpy(void *dest, const void *src, size_t n);
 void *Hal_memset(void *s, int c, size_t n);
+hal_int32_t Hal_memcmp(const void *s1, const void *s2, size_t n);
 
 #ifdef __cplusplus
 }
