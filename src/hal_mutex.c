@@ -38,14 +38,21 @@ static inline hal_mutex_context_t *_context_init(void)
         HalLogE("hal calloc faild \n");
         return NULL;
     }
+
+    pthread_mutex_init(&context->mutex, NULL);
+
     return context;
 }
 
-static inline void _context_final(hal_mutex_context_t **context)
+static inline void _context_final(hal_mutex_context_t **context_tmp)
 {
-    if (NULL != *context) {
-        Hal_free(*context);
-        *context = NULL;
+    hal_mutex_context_t *context = *context_tmp;
+
+    if (NULL != context) {
+        pthread_mutex_destroy(&context->mutex);
+
+        Hal_free(context);
+        *context_tmp = NULL;
     }
 }
 
@@ -57,8 +64,6 @@ ThreadMutexHandle_t HalMutexInit(void)
         return NULL;
     }
 
-    pthread_mutex_init(&context->mutex, NULL);
-
     return context;
 }
 
@@ -68,10 +73,8 @@ hal_int32_t HalMutexDestroy(ThreadMutexHandle_t handle)
         HalLogE("the handle is NULL \n");
         return -1;
     }
+
     hal_mutex_context_t *context = handle;
-
-    pthread_mutex_destroy(&context->mutex);
-
     _context_final(&context);
 
     return 0;
@@ -83,8 +86,8 @@ hal_int32_t HalMutexLock(ThreadMutexHandle_t handle)
         HalLogE("the handle is NULL \n");
         return -1;
     }
-    hal_mutex_context_t *context = handle;
 
+    hal_mutex_context_t *context = handle;
     pthread_mutex_lock(&context->mutex);
 
     return 0;
@@ -96,8 +99,8 @@ hal_int32_t HalMutexTryLock(ThreadMutexHandle_t handle)
         HalLogE("the handle is NULL \n");
         return -1;
     }
-    hal_mutex_context_t *context = handle;
 
+    hal_mutex_context_t *context = handle;
     pthread_mutex_trylock(&context->mutex);
 
     return 0;
@@ -109,8 +112,8 @@ hal_int32_t HalMutexUnLock(ThreadMutexHandle_t handle)
         HalLogE("the handle is NULL \n");
         return -1;
     }
-    hal_mutex_context_t *context = handle;
 
+    hal_mutex_context_t *context = handle;
     pthread_mutex_unlock(&context->mutex);
 
     return 0;
@@ -122,8 +125,8 @@ void *HalMutexGetLock(ThreadMutexHandle_t handle)
         HalLogE("the handle is NULL \n");
         return NULL;
     }
-    hal_mutex_context_t *context = handle;
 
+    hal_mutex_context_t *context = handle;
     return &context->mutex;
 }
 
