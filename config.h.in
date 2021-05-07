@@ -26,6 +26,18 @@
    and to 0 otherwise. */
 #undef HAVE_REALLOC
 
+/* select linux system */
+#undef HAVE_SELECT_SYSTEM_OS_LINUX
+
+/* select mac system */
+#undef HAVE_SELECT_SYSTEM_OS_MAC
+
+/* select rtt system */
+#undef HAVE_SELECT_SYSTEM_OS_RTT
+
+/* select window system */
+#undef HAVE_SELECT_SYSTEM_OS_WINDOW
+
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
 
