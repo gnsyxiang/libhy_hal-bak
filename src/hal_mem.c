@@ -46,7 +46,6 @@ void *Hal_realloc(void *ptr, size_t size)
 
 #ifdef HAVE_LINUX_HAL
 #include <stdlib.h>
-#include <string.h>
 
 void *Hal_malloc(size_t size)
 {
@@ -66,11 +65,6 @@ void *Hal_calloc(size_t nmemb, size_t size)
 void *Hal_realloc(void *ptr, size_t size)
 {
     return realloc(ptr, size);
-}
-
-void *Hal_memset(void *s, int c, size_t n)
-{
-    return memset(s, c, n);
 }
 
 #endif

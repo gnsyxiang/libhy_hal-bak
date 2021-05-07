@@ -17,7 +17,7 @@
  * 
  *     last modified: 10/01 2020 20:59
  */
-#include "hal_linux_thread.h"
+#include "linux/hal_linux_thread.h"
 #include "hal_thread_internal.h"
 #include "hal_log.h"
 #include "hal_assert.h"
@@ -131,6 +131,11 @@ static hal_int32_t _linux_thread_destroy(void *context_tmp)
     }
 }
 
+static ThreadID_t _linux_thread_get_id(void)
+{
+    return pthread_self();
+}
+
 //FIXME 初始化后一般不需要修改名字(去掉)
 static hal_int32_t _hal_linux_thread_set_name(hal_thread_context_t *context, void *args)
 {
@@ -142,8 +147,15 @@ static hal_int32_t _hal_linux_thread_get_name(hal_thread_context_t *context, voi
     return 0;
 }
 
+static hal_int32_t _hal_linux_thread_get_id(hal_thread_context_t *context, void *args)
+{
+    *(pthread_t *)args = context->id;
+    return 0;
+}
+
 static hal_linux_thread_param_cb_t _g_linux_thread_param[] = {
     {_hal_linux_thread_set_name, _hal_linux_thread_get_name},
+    {NULL,                       _hal_linux_thread_get_id},
 };
 
 static hal_int32_t _linux_thread_param_set(void *context_tmp, hal_int32_t type, void *args)
@@ -164,15 +176,17 @@ static hal_int32_t _linux_thread_param_get(void *context_tmp, hal_int32_t type, 
                                    HAL_THREAD_INDEX_GET);
 }
 
-void ThreadSystemInit(hal_system_init_cb_t *system_cb)
+void ThreadSystemInit(thread_init_cb_t *thread_cb)
 {
-    Hal_assert(NULL != system_cb);
+    Hal_assert(NULL != thread_cb);
 
-    system_cb->create  = _linux_thread_create;
-    system_cb->destroy = _linux_thread_destroy;
+    thread_cb->create  = _linux_thread_create;
+    thread_cb->destroy = _linux_thread_destroy;
 
-    system_cb->get     = _linux_thread_param_get;
-    system_cb->set     = _linux_thread_param_set;
+    thread_cb->get_id  = _linux_thread_get_id;
+
+    thread_cb->get     = _linux_thread_param_get;
+    thread_cb->set     = _linux_thread_param_set;
 }
 
 #if 0

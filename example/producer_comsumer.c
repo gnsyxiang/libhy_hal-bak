@@ -64,33 +64,6 @@ static void _consumer_loop(void *args)
     HalCondSignal(consumer_exit_cond_handle);
 }
 
-static ThreadHandle_t _create_thread(hal_char_t *name, HalThreadLoop_t loop, void *args)
-{
-    Hal_assert(NULL != name);
-    Hal_assert(NULL != loop);
-
-    HalThreadLoopConfig_t loop_config;
-    Hal_memset(&loop_config, '\0', HAL_THREAD_LOOP_CONFIG_LEN);
-    loop_config.loop = loop;
-    loop_config.args = args;
-
-    HalThreadConfig_t config;
-    Hal_memset(&config, '\0', HAL_THREAD_CONFIG_LEN);
-    config.name         = name;
-    config.stack_size   = STACK_SIZE;
-    config.priority     = HAL_THREAD_PRIORITY_NORMAL;
-    config.loop_config  = &loop_config;
-
-    return HalThreadCreate(&config);
-}
-
-static inline void _destroy_thread(ThreadHandle_t handle)
-{
-    Hal_assert(NULL != handle);
-
-    HalThreadDestroy(handle);
-}
-
 hal_int32_t main(hal_int32_t argc, const hal_char_t *argv[])
 {
     LogConfig_t log_config;
@@ -109,32 +82,31 @@ hal_int32_t main(hal_int32_t argc, const hal_char_t *argv[])
     ThreadHandle_t producer_handle = NULL;
     ThreadHandle_t consumer_handle = NULL;
 
-    producer_handle = _create_thread("producer", _producer_loop, NULL);
-    consumer_handle = _create_thread("consumer", _consumer_loop, NULL);
+    producer_handle = CREATE_THREAD("producer", _producer_loop, NULL);
+    consumer_handle = CREATE_THREAD("consumer", _consumer_loop, NULL);
 
     int cnt = 3;
     while (cnt-- > 0) {
         Hal_sleep(1);
     }
     is_running = 1;
-    hal_int32_t ret = 0;
 
     HalMutexLock(mutex_handle);
-    ret = HalCondWait(producer_exit_cond_handle, mutex_handle, 3000);
+    HalCondWait(producer_exit_cond_handle, mutex_handle, 3000);
     HalMutexUnLock(mutex_handle);
 
     HalSemPost(sem_handle);
 
     HalMutexLock(mutex_handle);
-    ret = HalCondWait(consumer_exit_cond_handle, mutex_handle, 3000);
+    HalCondWait(consumer_exit_cond_handle, mutex_handle, 3000);
     HalMutexUnLock(mutex_handle);
 
     HalMutexDestroy(mutex_handle);
     HalCondDestroy(producer_exit_cond_handle);
     HalCondDestroy(consumer_exit_cond_handle);
 
-    _destroy_thread(producer_handle);
-    _destroy_thread(consumer_handle);
+    DESTROY_THREAD(producer_handle);
+    DESTROY_THREAD(consumer_handle);
 
     HalSemDestroy(sem_handle);
 
