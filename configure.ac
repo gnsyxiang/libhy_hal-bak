@@ -60,5 +60,7 @@ AC_CONFIG_FILES([Makefile
                  example/Makefile
                  include/Makefile
                  res/Makefile
-                 src/Makefile])
+                 src/Makefile
+                 src/linux/Makefile
+                 src/rtt/Makefile])
 AC_OUTPUT

@@ -18,23 +18,38 @@
 #     last modified: 21/03 2020 22:57
 # ===============================================================
 
-noinst_LTLIBRARIES = libhal_linux.la          
+noinst_LTLIBRARIES = libhy_os_linux.la
 
-CFLAGS_COM 	 = $(AM_CFLAGS_COM)
-CFLAGS_COM 	+= -I$(top_srcdir)/include
-CFLAGS_COM 	+= -I$(top_srcdir)/include/linux
-CFLAGS_COM 	+= -Wno-unused-parameter
+_include_com  	=
+_sources_com 	=
+_cppflags_com 	=
+_cflags_com 	=
+_cxxflags_com 	=
+_ldflags_com 	=
+_ldadd_com 		=
 
-SOURCES_COM  = hal_linux_thread.c
+# ---------------------
+# add necessary content
+# ---------------------
+_include_com 	+= -I$(top_srcdir)/include
 
-if COMPILE_WITH_AUDIO_HAL
-SOURCES_COM += hal_linux_audio.c
-endif
+_sources_com 	+= hy_time.c
 
-LDFLAGS_COM  = -rdynamic
-LDFLAGS_COM += -export-symbols-regex 'Hal*'
+_cppflags_com 	+= $(CPPFLAGS_COM) \
+				   $(_include_com)
 
-AM_CFLAGS 		   	   	 = $(CFLAGS_COM)
-libhal_linux_la_LDFLAGS  = $(LDFLAGS_COM)
-libhal_linux_la_SOURCES  = $(SOURCES_COM)
+_cflags_com 	+= $(CFLAGS_COM)
+
+_cxxflags_com 	+= $(CXXFLAGS_COM)
+
+_ldflags_com 	+= $(LIB_LDFLAGS_COM)
+
+_ldadd_com 		+=
+
+libhy_os_linux_la_SOURCES  	= $(_sources_com)
+libhy_os_linux_la_CPPFLAGS 	= $(_cppflags_com)
+libhy_os_linux_la_CFLAGS 	= $(_cflags_com)
+libhy_os_linux_la_CXXFLAGS 	= $(_cxxflags_com)
+libhy_os_linux_la_LDFLAGS  	= $(_ldflags_com)
+libhy_os_linux_la_LIBADD   	= $(_ldadd_com)
 

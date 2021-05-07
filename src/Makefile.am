@@ -18,6 +18,8 @@
 #     last modified: 21/12 2019 13:20
 # ===============================================================
 
+SUBDIRS = linux
+
 lib_LTLIBRARIES = lib@project_name@.la
 
 _include_com  	=
@@ -33,7 +35,7 @@ _ldadd_com 		=
 # ---------------------
 _include_com 	+= -I$(top_srcdir)/include
 
-_sources_com 	+= module_a.c
+_sources_com 	+=
 
 _cppflags_com 	+= $(CPPFLAGS_COM) \
 				   $(_include_com)
@@ -78,7 +80,7 @@ _ldflags_com 	+= -export-symbols-regex 'Hy*'
 # 表示该library对于依赖于current=c-a(libraryname.so.2)到current=c(libraryname.so.3)的程序都是可用的， 运行时不会出现任何异常。
 _ldflags_com 	+= -version-info @current@:@revision@:@age@
 
-_ldadd_com 		+=
+_ldadd_com 		+= $(top_builddir)/src/linux/libhy_os_linux.la
 
 lib@project_name@_la_SOURCES  	= $(_sources_com)
 lib@project_name@_la_CPPFLAGS 	= $(_cppflags_com)

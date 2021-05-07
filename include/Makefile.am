@@ -21,7 +21,7 @@
 NO_INSTALL_HEADERS_COM 	=
 noinst_HEADERS  		= $(NO_INSTALL_HEADERS_COM)
 
-INSTALL_HEADERS_COM 	= module_a.h
+INSTALL_HEADERS_COM 	= hy_time.h \
+						  hy_type.h
 install_includedir 		= $(includedir)/@project_name@
 install_include_HEADERS = $(INSTALL_HEADERS_COM)
-

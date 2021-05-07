@@ -17,8 +17,11 @@
  * 
  *     last modified: 22/02 2020 16:55
  */
-#include "config.h"
-#include "hal_time.h"
+#include <stdio.h>
+
+#include "hy_time.h"
+#include <sys/time.h>
+
 
 #ifdef HAVE_RTT_HAL
 #include <rtthread.h>
@@ -54,4 +57,20 @@ struct timespec HalGetTimespecOut(hal_uint32_t timeout_ms)
 }
 
 #endif
+
+hy_uint64_t HyTimeGetCurrentTime2Us(void)
+{
+    struct timeval time;
+    gettimeofday(&time, NULL);
+
+    return (time.tv_sec * 1000 * 1000 + time.tv_usec);
+}
+
+hy_uint64_t HyTimeGetTimeInterval(hy_uint64_t us)
+{
+    struct timeval time;
+    gettimeofday(&time, NULL);
+
+    return (time.tv_sec * 1000 * 1000 + time.tv_usec - us);
+}
 

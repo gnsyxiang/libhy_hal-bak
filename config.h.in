@@ -3,9 +3,6 @@
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
-/* feature xxx */
-#undef HAVE_ENABLE_FEATURE_XXX
-
 /* Define to 1 if you have the <fcntl.h> header file. */
 #undef HAVE_FCNTL_H
 
@@ -28,15 +25,6 @@
 /* Define to 1 if your system has a GNU libc compatible `realloc' function,
    and to 0 otherwise. */
 #undef HAVE_REALLOC
-
-/* select feature xxx a */
-#undef HAVE_SELECT_FEATURE_XXX_A
-
-/* select feature xxx b */
-#undef HAVE_SELECT_FEATURE_XXX_B
-
-/* select feature xxx c */
-#undef HAVE_SELECT_FEATURE_XXX_C
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H

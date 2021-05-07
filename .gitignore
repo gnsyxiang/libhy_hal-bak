@@ -52,7 +52,7 @@ aclocal.m4
 configure
 config.h.in~
 
-*.in
+Makefile.in
 
 # ignore for configure
 .deps/

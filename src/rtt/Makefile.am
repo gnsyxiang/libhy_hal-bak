@@ -18,21 +18,38 @@
 #     last modified: 21/03 2020 23:41
 # ===============================================================
 
-noinst_LTLIBRARIES = libhal_rtt.la          
+lib_LTLIBRARIES = libhy_os_rtt.la
 
-CFLAGS_COM 	 = $(AM_CFLAGS_COM)
-CFLAGS_COM  += -I$(top_srcdir)/include
-CFLAGS_COM  += -I$(top_srcdir)/include/rtt \
-		       -I$(top_srcdir)/include/rtt/include
-CFLAGS_COM  += -Wno-unused-parameter
-CFLAGS_COM  += -Wno-error=type-limits
+_include_com  	=
+_sources_com 	=
+_cppflags_com 	=
+_cflags_com 	=
+_cxxflags_com 	=
+_ldflags_com 	=
+_ldadd_com 		=
 
-SOURCES_COM  = hal_rtt_thread.c
+# ---------------------
+# add necessary content
+# ---------------------
+_include_com 	+= -I$(top_srcdir)/include
 
-LDFLAGS_COM	 = -rdynamic
-LDFLAGS_COM += -export-symbols-regex 'Hal*'
+_sources_com 	+= hy_time.c
 
-AM_CFLAGS 		   	   = $(CFLAGS_COM)
-libhal_rtt_la_LDFLAGS  = $(LDFLAGS_COM)
-libhal_rtt_la_SOURCES  = $(SOURCES_COM)
+_cppflags_com 	+= $(CPPFLAGS_COM) \
+				   $(_include_com)
+
+_cflags_com 	+= $(CFLAGS_COM)
+
+_cxxflags_com 	+= $(CXXFLAGS_COM)
+
+_ldflags_com 	+= $(LIB_LDFLAGS_COM)
+
+_ldadd_com 		+=
+
+libhy_os_rtt_la_SOURCES  	= $(_sources_com)
+libhy_os_rtt_la_CPPFLAGS 	= $(_cppflags_com)
+libhy_os_rtt_la_CFLAGS 		= $(_cflags_com)
+libhy_os_rtt_la_CXXFLAGS 	= $(_cxxflags_com)
+libhy_os_rtt_la_LDFLAGS  	= $(_ldflags_com)
+libhy_os_rtt_la_LIBADD   	= $(_ldadd_com)
 
