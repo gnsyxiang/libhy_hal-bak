@@ -18,15 +18,45 @@
 #     last modified: 21/12 2019 13:20
 # ===============================================================
 
-if COMPILE_WITH_LINUX_HAL
-SUBDIRS = linux
-endif
+lib_LTLIBRARIES = lib@project_name@.la
 
-if COMPILE_WITH_RTT_HAL
-SUBDIRS = rtt
-endif
+_include_com  	=
+_sources_com 	=
+_cppflags_com 	=
+_cflags_com 	=
+_cxxflags_com 	=
+_ldflags_com 	=
+_ldadd_com 		=
 
-lib_LTLIBRARIES = libhal.la
+# ---------------------
+# add necessary content
+# ---------------------
+_include_com 	+= -I$(top_srcdir)/include
+
+_sources_com 	+= module_a.c
+
+_cppflags_com 	+= $(CPPFLAGS_COM) \
+				   $(_include_com)
+
+_cflags_com 	+= $(CFLAGS_COM)
+
+_cxxflags_com 	+= $(CXXFLAGS_COM)
+
+_ldflags_com 	+= $(LIB_LDFLAGS_COM)
+
+# 导出函数列表方法：
+# 1，直接添加__attribute__((visibility("hidden")))到函数上
+# 2，在CFLAG中添加-fvisibility=hidden参数，全部不导出，然后配合EXPORT_FUNC导出需要导出的函数
+# 3，通过文件指定需要导出的函数，
+#    在gcc中添加参数(两种实现方式): "-Wl,-version-script -Wl,.libs/libhal.ver"
+#                                   "-Wl,--version-script=.libs/libhal.ver"
+#  cat libhal.ver
+#  { global:
+#  Hal_strlen;
+#  Hal_strncpy;
+#  local: *; };
+# 4, 通过libtool导出函数列表，如下参数
+_ldflags_com 	+= -export-symbols-regex 'Hy*'
 
 # libtool动态库的版本由三个字段组成current:revision:age: 
 #
@@ -46,70 +76,14 @@ lib_LTLIBRARIES = libhal.la
 # 该版本的library兼容依赖于current=2（3-1）版本library的程序。
 # 将该库进行编译后，会发现库的名字为libraryname.so.2.1.12， 即编译产生的库名为libraryname.so.c-a.a.r。
 # 表示该library对于依赖于current=c-a(libraryname.so.2)到current=c(libraryname.so.3)的程序都是可用的， 运行时不会出现任何异常。
-LDFLAGS_COM = -version-info @current@:@revision@:@age@
+_ldflags_com 	+= -version-info @current@:@revision@:@age@
 
-# 选项'-rdynamic'用来通知链接器将所有符号添加到动态符号表中（目的是能够通过使用 dlopen 来实现向后跟踪）
-LDFLAGS_COM += -rdynamic
+_ldadd_com 		+=
 
-# 导出函数列表方法：
-# 1，直接添加__attribute__((visibility("hidden")))到函数上
-# 2，在CFLAG中添加-fvisibility=hidden参数，全部不导出，然后配合EXPORT_FUNC导出需要导出的函数
-# 3，通过文件指定需要导出的函数，
-#    在gcc中添加参数(两种实现方式): "-Wl,-version-script -Wl,.libs/libhal.ver"
-#                                   "-Wl,--version-script=.libs/libhal.ver"
-#  cat libhal.ver
-#  { global:
-#  Hal_strlen;
-#  Hal_strncpy;
-#  local: *; };
-# 4, 通过libtool导出函数列表，如下参数
-LDFLAGS_COM += -export-symbols-regex 'Hal*'
-
-CFLAGS_COM  = $(AM_CFLAGS_COM)
-CFLAGS_COM += -I$(top_srcdir)/include
-
-# 下面两个参数一个显示警告，一个直接通过
-# CFLAGS_COM += -Wno-error=unused-parameter
-CFLAGS_COM += -Wno-unused-parameter
-
-SOURCES_COM = hal_log.c \
-			  hal_mem.c \
-			  hal_time.c \
-			  hal_string.c \
-			  hal_assert.c \
-			  hal_thread.c \
-			  hal_sem.c \
-			  hal_file.c \
-			  hal_mutex.c \
-			  hal_cond.c
-
-FUNC_MODULE_SOURCES =
-
-if COMPILE_WITH_LINUX_HAL
-if COMPILE_WITH_AUDIO_HAL
-FUNC_MODULE_SOURCES += hal_audio_recorder.c
-endif
-
-SOURCES_COM += hal_dl_lib.c
-LDFLAGS_COM += -ldl
-if COMPILE_WITH_CODE_COVERAGE_HAL
-LDFLAGS_COM += -lgcov
-endif
-
-LDFLAGS_COM += linux/*.lo
-CFLAGS_COM 	+= -I$(top_srcdir)/include/linux
-endif
-
-if COMPILE_WITH_RTT_HAL
-LDFLAGS_COM += rtt/*.lo
-CFLAGS_COM  += -I$(top_srcdir)/include/rtt \
-			   -I$(top_srcdir)/include/rtt/include
-endif
-export CFLAGS_COM
-
-# AM_CPPFLAGS和AM_CFLAGS的区分
-AM_CFLAGS 		   = $(CFLAGS_COM)
-libhal_la_LDFLAGS  = $(LDFLAGS_COM)
-libhal_la_SOURCES  = $(SOURCES_COM) \
-					 $(FUNC_MODULE_SOURCES)
+lib@project_name@_la_SOURCES  	= $(_sources_com)
+lib@project_name@_la_CPPFLAGS 	= $(_cppflags_com)
+lib@project_name@_la_CFLAGS 	= $(_cflags_com)
+lib@project_name@_la_CXXFLAGS 	= $(_cxxflags_com)
+lib@project_name@_la_LDFLAGS  	= $(_ldflags_com)
+lib@project_name@_la_LIBADD   	= $(_ldadd_com)
 

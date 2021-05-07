@@ -1,11 +1,11 @@
 # ===============================================================
 # 
-# Release under GPL-3.0.
+# Release under GPLv-3.0.
 # 
 # @file    Makefile.am
 # @brief   
 # @author  gnsyxiang <gnsyxiang@163.com>
-# @date    21/12 2019 13:20
+# @date    05/03 2021 10:32
 # @version v0.0.1
 # 
 # @since    note
@@ -13,33 +13,70 @@
 # 
 #     change log:
 #     NO.     Author              Date            Modified
-#     00      zhenquan.qiu        21/12 2019      create the file
+#     00      zhenquan.qiu        05/03 2021      create the file
 # 
-#     last modified: 21/12 2019 13:20
+#     last modified: 05/03 2021 10:32
 # ===============================================================
 
-ACLOCAL_AMFLAGS = -I m4
+include res/doxygen.am
 
-AM_CFLAGS_COM  = $(ACLOCAL_AMFLAGS)
-AM_CFLAGS_COM += -pipe -W -Wall -Werror
-if COMPILE_WITH_CODE_COVERAGE_HAL
-AM_CFLAGS_COM += -fprofile-arcs -ftest-coverage
-endif
-export AM_CFLAGS_COM
+SUBDIRS = include \
+		  src \
+		  example \
+		  docs \
+		  res
 
-# FIXME 下面的问题还没有解决
-# script_SCRIPTS: 指定"make install"时安装的脚本
-# dist_script_DATA: 指定"make dist"时安装的脚本
-# scriptdir = ${prefix}
-# script_SCRIPTS = build.sh
-# dist_script_DATA = build.sh
-# tinyalsalibdir = ${prefix}/3rd_lib/tinyalsa
-# tinyalsalib_DATA = 3rd_lib/tinyalsa/*
-# EXTRA_DIST=conf           #在make dist打包的时候也要将扩展文件夹打包进去
+# -----
+# flags
+# -----
+ACLOCAL_AMFLAGS 	= -I m4
 
-dist_doc_DATA = README.md
+_no_error_com 		= -W -Wall -Werror \
+					  -Wno-error=unused-result \
+					  -Wno-unused-parameter \
+					  -Wno-error=unused-but-set-variable
 
-dist_build_SCRIPTS = build.sh
+# 下面两个参数一个显示警告，一个直接通过
+_no_error_com 		+= -Wno-error=unused-parameter
+# _no_error_com 		+= -Wno-unused-parameter
 
-SUBDIRS = include src example
+_remove_unuse_func 	= -ffunction-sections \
+					  -fdata-sections
+
+CPPFLAGS_COM 		= -pipe \
+					  $(_no_error_com) \
+					  $(ACLOCAL_AMFLAGS)
+
+CFLAGS_COM 			= $(_remove_unuse_func)
+
+CXXFLAGS_COM 		= $(_remove_unuse_func)
+
+# 用来通知链接器将所有符号添加到动态符号表中
+#（目的是能够通过使用 dlopen 来实现向后跟踪）
+LIB_LDFLAGS_COM 	= -rdynamic
+
+BIN_LDFLAGS_COM 	= -Wl,--gc-sections
+
+export CPPFLAGS_COM
+export CFLAGS_COM
+export CXXFLAGS_COM
+export LIB_LDFLAGS_COM
+export BIN_LDFLAGS_COM
+
+# ------------------
+# make install files
+# ------------------
+_install_files_com 	= LICENSE \
+					  README.md
+dist_doc_DATA 		= $(_install_files_com)
+
+pkgconfigdir 		= $(libdir)/pkgconfig
+pkgconfig_DATA 		= @PACKAGE_NAME@.pc
+
+# ---------------
+# make dist files
+# ---------------
+_dist_files_com 	= autogen.sh \
+					  @PACKAGE_NAME@.pc.in
+EXTRA_DIST 			= $(_dist_files_com)
 

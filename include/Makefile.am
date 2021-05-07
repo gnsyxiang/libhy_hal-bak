@@ -18,40 +18,10 @@
 #     last modified: 21/12 2019 13:21
 # ===============================================================
 
-HEADERS_COM = hal_type.h \
-			  hal_log.h \
-			  hal_mem.h \
-			  hal_time.h \
-			  hal_string.h \
-			  hal_assert.h \
-			  hal_thread.h \
-			  hal_sem.h \
-			  hal_file.h \
-			  hal_mutex.h \
-			  hal_cond.h
+NO_INSTALL_HEADERS_COM 	=
+noinst_HEADERS  		= $(NO_INSTALL_HEADERS_COM)
 
-HEADERS_FUNC_MODULE =
-
-noinst_HEADERS  = hal_module_cb.h \
-				  hal_thread_internal.h
-
-if COMPILE_WITH_LINUX_HAL
-HEADERS_COM 	+= hal_dl_lib.h
-
-noinst_HEADERS 	+= linux/hal_linux_thread.h
-				   
-if COMPILE_WITH_AUDIO_HAL
-HEADERS_FUNC_MODULE += hal_audio_recorder.h
-noinst_HEADERS 		+= linux/hal_linux_audio.h \
-					   hal_audio_recorder_internal.h
-endif
-endif
-
-if COMPILE_WITH_RTT_HAL
-noinst_HEADERS += rtt/hal_rtt_thread.h
-endif
-
-halincludedir = $(includedir)/hal
-
-halinclude_HEADERS = $(HEADERS_COM) $(HEADERS_FUNC_MODULE)
+INSTALL_HEADERS_COM 	= module_a.h
+install_includedir 		= $(includedir)/@project_name@
+install_include_HEADERS = $(INSTALL_HEADERS_COM)
 
