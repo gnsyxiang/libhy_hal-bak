@@ -35,10 +35,10 @@ AC_DEFUN([CHECK_LIBHY_UTILS],
             if test x"$LIBHY_UTILS_CFLAGS" != x -a x"$LIBHY_UTILS_LIBS" != x; then
                 CPPFLAGS="$LIBHY_UTILS_CFLAGS $CPPFLAGS"
                 LDFLAGS="$LIBHY_UTILS_LIBS $LDFLAGS"
-                LIBS="$LIBS -llibhy_utils"
+                LIBS="$LIBS -lhy_utils"
 
                 # Can I compile and link it?
-                AC_TRY_LINK([#include "libhy_utils/hy_log.h"],
+                AC_TRY_LINK([#include "hy_utils/hy_log.h"],
                             [HyLogDestroy();],
                             [libhy_utils_linked=yes],
                             [libhy_utils_linked=no])
@@ -58,10 +58,10 @@ AC_DEFUN([CHECK_LIBHY_UTILS],
                     LDFLAGS="$LIBHY_UTILS_LIBS $LDFLAGS"
                 else
                     # fall back to standard autoconf test
-                    AC_CHECK_LIB([libhy_utils],
+                    AC_CHECK_LIB([hy_utils],
                                  [HyLogDestroy],
                                  [
-                                    AC_CHECK_HEADER([libhy_utils/hy_log.h],
+                                    AC_CHECK_HEADER([hy_utils/hy_log.h],
                                                     [have_libhy_utils="yes (autoconf test)"])
                                  ])
                 fi
