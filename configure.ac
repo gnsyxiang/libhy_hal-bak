@@ -26,7 +26,6 @@ CHECK_DOXYGEN
 CHECK_JAVA
 
 SELECT_OS
-CHECK_LIBHY_UTILS
 
 # Checks for programs.
 AC_PROG_CXX
@@ -57,8 +56,7 @@ AC_FUNC_MALLOC
 AC_FUNC_REALLOC
 AC_CHECK_FUNCS([gettimeofday memset strdup strerror strstr])
 
-AC_CONFIG_FILES([3rd_lib/Makefile
-                 Makefile
+AC_CONFIG_FILES([Makefile
                  $PACKAGE_NAME.pc
                  doc/Makefile
                  example/Makefile

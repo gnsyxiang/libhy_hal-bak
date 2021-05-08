@@ -21,15 +21,8 @@
 
 #include "hy_time.h"
 
-#include "hy_utils/hy_log.h"
-
-#define ALONE_DEBUG 1
-#define LOG_CATEGORY_TAG "main"
-
 int main(int argc, char *argv[])
 {
-    HyLogCreate(HY_LOG_LEVEL_INFO, 512);
-
     hy_uint64_t start_us = HyTimeGetCurrentTime2Us();
 
     for (int i = 0; i < 10; ++i) {
@@ -39,19 +32,7 @@ int main(int argc, char *argv[])
 
     hy_uint64_t interval = HyTimeGetTimeInterval(start_us);
 
-    LOGD("interval: %lldus\n", interval);
-    LOGD("interval: %lldus\n", interval);
-    LOGD("interval: %lldus\n", interval);
-    LOGD("interval: %lldus\n", interval);
-    LOGD("interval: %lldus\n", interval);
-    LOGD("interval: %lldus\n", interval);
-    LOGD("interval: %lldus\n", interval);
-    LOGD("interval: %lldus\n", interval);
-    LOGD("interval: %lldus\n", interval);
-    LOGD("interval: %lldus\n", interval);
-    LOGD("interval: %lldus\n", interval);
-
-    HyLogDestroy();
+    printf("interval: %lldus\n", interval);
 
     return 0;
 }
