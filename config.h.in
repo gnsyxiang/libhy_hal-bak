@@ -26,6 +26,15 @@
    and to 0 otherwise. */
 #undef HAVE_REALLOC
 
+/* select linux build system */
+#undef HAVE_SELECT_BUILD_SYSTEM_OS_LINUX
+
+/* select mac build system */
+#undef HAVE_SELECT_BUILD_SYSTEM_OS_MAC
+
+/* select window build system */
+#undef HAVE_SELECT_BUILD_SYSTEM_OS_WINDOW
+
 /* select linux system */
 #undef HAVE_SELECT_SYSTEM_OS_LINUX
 
