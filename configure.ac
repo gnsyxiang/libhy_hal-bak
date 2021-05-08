@@ -60,7 +60,7 @@ AC_CHECK_FUNCS([gettimeofday memset strdup strerror strstr])
 AC_CONFIG_FILES([3rd_lib/Makefile
                  Makefile
                  $PACKAGE_NAME.pc
-                 docs/Makefile
+                 doc/Makefile
                  example/Makefile
                  include/Makefile
                  res/Makefile

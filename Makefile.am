@@ -23,9 +23,9 @@ include res/doxygen.am
 SUBDIRS = include \
 		  src \
 		  example \
-		  docs \
 		  3rd_lib \
-		  res
+		  res \
+		  doc
 
 # -----
 # flags
