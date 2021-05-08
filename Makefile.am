@@ -24,6 +24,7 @@ SUBDIRS = include \
 		  src \
 		  example \
 		  docs \
+		  3rd_lib \
 		  res
 
 # -----

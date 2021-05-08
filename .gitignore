@@ -70,6 +70,11 @@ stamp-h1
 #--------------------
 *.svg
 
+#------------------
+# 3rd_lib soft link
+#------------------
+3rd_lib/libhy_utils
+
 #--------------------
 # ignore for building
 #--------------------
@@ -86,5 +91,6 @@ libhy_hal.pc
 
 example/main
 example/test
+example/hy_time_test
 
 

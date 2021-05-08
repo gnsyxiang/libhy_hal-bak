@@ -24,12 +24,7 @@
 extern "C" {
 #endif
 
-#include "hy_type.h"
-
-// #include <sys/time.h>
-//
-// hy_uint32_t Hal_sleep(hy_uint32_t seconds);
-// struct timespec HalGetTimespecOut(hy_uint32_t timeout_ms);
+#include "hy_utils/hy_type.h"
 
 /**
  * @brief 获取当前时间的微秒数
@@ -51,5 +46,5 @@ hy_uint64_t HyTimeGetTimeInterval(hy_uint64_t us);
 }
 #endif
 
-#endif // __LIBHAL_INCLUDE_HAL_TIME_H_
+#endif
 

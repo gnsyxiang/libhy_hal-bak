@@ -18,10 +18,9 @@
  *     last modified: 22/02 2020 16:55
  */
 #include <stdio.h>
-
-#include "hy_time.h"
 #include <sys/time.h>
 
+#include "hy_time.h"
 
 #ifdef HAVE_RTT_HAL
 #include <rtthread.h>
