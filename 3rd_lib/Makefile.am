@@ -23,7 +23,7 @@ libs_3rd_src_path 	= $(top_srcdir)/3rd_lib/install
 
 install-exec-hook:
 	${MKDIR_P} ${libs_3rd_dst_path};
-	cp -ar ${libs_3rd_src_path}/* ${libs_3rd_dst_path};
+	-cp -ar ${libs_3rd_src_path}/* ${libs_3rd_dst_path};
 
 uninstall-hook:
 	rm -rf ${libs_3rd_dst_path}/*
