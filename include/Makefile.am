@@ -27,11 +27,9 @@ install_includedir      = $(includedir)/@project_name@
 # ----------------------------------------------------
 NO_INSTALL_HEADERS_COM  +=
 
-# hy_type.h文件与libhy_utils/include/hy_type.h同步
 INSTALL_HEADERS_COM     += \
                            hy_time.h \
                            hy_mem.h \
-                           \
                            hy_type.h
 
 noinst_HEADERS          = $(NO_INSTALL_HEADERS_COM)
