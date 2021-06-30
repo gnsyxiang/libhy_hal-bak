@@ -1,11 +1,11 @@
 # ===============================================================
 # 
-# Release under GPL-3.0.
+# Release under GPLv-3.0.
 # 
 # @file    Makefile.am
 # @brief   
 # @author  gnsyxiang <gnsyxiang@163.com>
-# @date    21/12 2019 13:21
+# @date    30/06 2021 17:03
 # @version v0.0.1
 # 
 # @since    note
@@ -13,26 +13,21 @@
 # 
 #     change log:
 #     NO.     Author              Date            Modified
-#     00      zhenquan.qiu        21/12 2019      create the file
+#     00      zhenquan.qiu        30/06 2021      create the file
 # 
-#     last modified: 21/12 2019 13:21
+#     last modified: 30/06 2021 17:03
 # ===============================================================
-
-SUBDIRS = wrapper
 
 NO_INSTALL_HEADERS_COM  =
 INSTALL_HEADERS_COM     =
 install_includedir      = $(includedir)/@project_name@
 
 # ----------------------------------------------------
-NO_INSTALL_HEADERS_COM  +=
+NO_INSTALL_HEADERS_COM  += \
+                           hy_time_wrapper.h \
+                           hy_mem_wrapper.h
 
-# hy_type.h文件与libhy_utils/include/hy_type.h同步
-INSTALL_HEADERS_COM     += \
-                           hy_time.h \
-                           hy_mem.h \
-                           \
-                           hy_type.h
+INSTALL_HEADERS_COM     +=
 
 noinst_HEADERS          = $(NO_INSTALL_HEADERS_COM)
 install_include_HEADERS = $(INSTALL_HEADERS_COM)

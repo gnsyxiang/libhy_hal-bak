@@ -17,8 +17,10 @@
  * 
  *     last modified: 20/01 2020 15:34
  */
-#ifndef __LIB_COMMON_INCLUDE_HY_TYPE_H_
-#define __LIB_COMMON_INCLUDE_HY_TYPE_H_
+#ifndef __LIBHY_HAL_INCLUDE_HY_TYPE_H_
+#define __LIBHY_HAL_INCLUDE_HY_TYPE_H_
+
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {

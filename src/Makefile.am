@@ -18,60 +18,49 @@
 #     last modified: 21/12 2019 13:20
 # ===============================================================
 
+if COMPILE_SELECT_TARGET_OS_LINUX
+SUBDIRS = linux
+select_target_os = linux
+endif
+
 lib_LTLIBRARIES = lib@project_name@.la
 
-_include_com  	=
-_sources_com 	=
-_cppflags_com 	=
-_cflags_com 	=
-_cxxflags_com 	=
-_ldflags_com 	=
-_ldadd_com 		=
-
-if COMPILE_SELECT_SYSTEM_OS_LINUX
-SUBDIRS 		= linux
-_ldadd_com 		+= $(top_builddir)/src/linux/libhy_os_linux.la
-endif
-
-if COMPILE_SELECT_SYSTEM_OS_MAC
-SUBDIRS 		= mac
-_ldadd_com 		+=
-endif
-
-if COMPILE_SELECT_SYSTEM_OS_WINDOW
-SUBDIRS 		= window
-_ldadd_com 		+=
-endif
-
-if COMPILE_SELECT_SYSTEM_OS_RTT
-SUBDIRS 		= rtt
-_ldadd_com 		+=
-endif
+_include_com    =
+_sources_com    =
+_cppflags_com   =
+_cflags_com     =
+_cxxflags_com   =
+_ldflags_com    =
+_ldadd_com      =
 
 # ---------------------
 # add necessary content
 # ---------------------
-_include_com 	+= -I$(top_srcdir)/include
+_include_com    += \
+                   -I$(top_srcdir)/include/wrapper \
+                   -I$(top_srcdir)/include
 
-_sources_com 	+=
+_sources_com    += \
+                   hy_time.c \
+                   hy_mem.c
 
-_cppflags_com 	+= $(CPPFLAGS_COM) \
-				   $(_include_com)
+_cppflags_com   += $(CPPFLAGS_COM) \
+                   $(_include_com)
 
-_cflags_com 	+= $(CFLAGS_COM)
+_cflags_com     += $(CFLAGS_COM)
 
-_cxxflags_com 	+= $(CXXFLAGS_COM)
+_cxxflags_com   += $(CXXFLAGS_COM)
 
-_ldflags_com 	+= $(LIB_LDFLAGS_COM) \
-				   -export-symbols-regex 'Hy*' \
-				   -version-info @current@:@revision@:@age@
+_ldflags_com    += $(LIB_LDFLAGS_COM) \
+                   -export-symbols-regex 'Hy*' \
+                   -version-info @current@:@revision@:@age@
 
-_ldadd_com 		+=
+_ldadd_com      += $(top_builddir)/src/$(select_target_os)/libhy_os.la
 
-lib@project_name@_la_SOURCES  	= $(_sources_com)
-lib@project_name@_la_CPPFLAGS 	= $(_cppflags_com)
-lib@project_name@_la_CFLAGS 	= $(_cflags_com)
-lib@project_name@_la_CXXFLAGS 	= $(_cxxflags_com)
-lib@project_name@_la_LDFLAGS  	= $(_ldflags_com)
-lib@project_name@_la_LIBADD   	= $(_ldadd_com)
+lib@project_name@_la_SOURCES    = $(_sources_com)
+lib@project_name@_la_CPPFLAGS   = $(_cppflags_com)
+lib@project_name@_la_CFLAGS     = $(_cflags_com)
+lib@project_name@_la_CXXFLAGS   = $(_cxxflags_com)
+lib@project_name@_la_LDFLAGS    = $(_ldflags_com)
+lib@project_name@_la_LIBADD     = $(_ldadd_com)
 

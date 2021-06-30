@@ -2,7 +2,7 @@
  *
  * Release under GPL-3.0.
  * 
- * @file    hal_mem.h
+ * @file    hy_mem.h
  * @brief   
  * @author  gnsyxiang <gnsyxiang@163.com>
  * @date    20/01 2020 17:50
@@ -17,19 +17,22 @@
  * 
  *     last modified: 20/01 2020 17:50
  */
-#ifndef __LIBHAL_INCLUDE_HAL_MEM_H_
-#define __LIBHAL_INCLUDE_HAL_MEM_H_
+#ifndef __LIBHY_HAL_INCLUDE_HY_MEM_H_
+#define __LIBHY_HAL_INCLUDE_HY_MEM_H_
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include "hal_type.h"
+#include <stdio.h>
 
-void *Hal_malloc(size_t size);
-void Hal_free(void *ptr);
-void *Hal_calloc(size_t nmemb, size_t size);
-void *Hal_realloc(void *ptr, size_t size);
+void *HyMalloc(size_t size);
+
+void HyFree(void *ptr);
+
+void *HyCalloc(size_t nmemb, size_t size);
+
+void *HyRealloc(void *ptr, size_t size);
 
 #ifdef __cplusplus
 }

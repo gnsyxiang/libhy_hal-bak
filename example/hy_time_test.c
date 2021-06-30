@@ -23,16 +23,16 @@
 
 int main(int argc, char *argv[])
 {
-    hy_uint64_t start_us = HyTimeGetCurrentTime2Us();
+    time_t start = HyTimeGetCurUs();
 
     for (int i = 0; i < 10; ++i) {
         printf("ha");
     }
     printf("\n");
 
-    hy_uint64_t interval = HyTimeGetTimeInterval(start_us);
+    time_t end = HyTimeGetCurUs();
 
-    printf("interval: %lldus\n", interval);
+    printf("interval: %ldus\n", end - start);
 
     return 0;
 }

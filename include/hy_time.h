@@ -24,23 +24,17 @@
 extern "C" {
 #endif
 
+#include <time.h>
+
 #include "hy_type.h"
 
-/**
- * @brief 获取当前时间的微秒数
- *
- * @return 微秒数
- */
-hy_uint64_t HyTimeGetCurrentTime2Us(void);
+time_t HyTimeGetTick(void);
 
-/**
- * @brief 获取相对上次时间的时间间隔
- *
- * @param us 微秒数
- *
- * @return 返回时间间隔微秒数
- */
-hy_uint64_t HyTimeGetTimeInterval(hy_uint64_t us);
+time_t HyTimeGetCurUs(void);
+
+void HyTimeDelayMs(hy_uint32_t ms);
+
+void HyTimeDelayUs(hy_uint32_t us);
 
 #ifdef __cplusplus
 }
