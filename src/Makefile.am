@@ -23,6 +23,21 @@ SUBDIRS = linux
 select_target_os = linux
 endif
 
+if COMPILE_SELECT_TARGET_OS_MAC
+SUBDIRS = mac
+select_target_os = mac
+endif
+
+if COMPILE_SELECT_TARGET_OS_WINDOW
+SUBDIRS = window
+select_target_os = window
+endif
+
+if COMPILE_SELECT_TARGET_OS_RTOS
+SUBDIRS = rtos
+select_target_os = rtos
+endif
+
 lib_LTLIBRARIES = lib@project_name@.la
 
 _include_com    =

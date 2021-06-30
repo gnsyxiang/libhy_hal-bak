@@ -65,5 +65,8 @@ AC_CONFIG_FILES([Makefile
                  include/wrapper/Makefile
                  res/Makefile
                  src/Makefile
-                 src/linux/Makefile])
+                 src/linux/Makefile
+                 src/mac/Makefile
+                 src/rtos/Makefile
+                 src/window/Makefile])
 AC_OUTPUT
