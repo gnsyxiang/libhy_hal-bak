@@ -36,6 +36,7 @@ _include_com    += \
                    -I$(top_srcdir)/include
 
 _sources_com    += \
+                   hy_socket_linux.c \
                    hy_time_linux.c \
                    hy_mem_linux.c
 

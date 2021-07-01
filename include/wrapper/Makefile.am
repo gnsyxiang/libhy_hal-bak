@@ -24,6 +24,7 @@ install_includedir      = $(includedir)/@project_name@
 
 # ----------------------------------------------------
 NO_INSTALL_HEADERS_COM  += \
+                           hy_socket_wrapper.h \
                            hy_time_wrapper.h \
                            hy_mem_wrapper.h
 

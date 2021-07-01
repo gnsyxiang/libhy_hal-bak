@@ -28,6 +28,7 @@ install_includedir      = $(includedir)/@project_name@
 NO_INSTALL_HEADERS_COM  +=
 
 INSTALL_HEADERS_COM     += \
+                           hy_socket.h \
                            hy_time.h \
                            hy_mem.h \
                            hy_type.h \
