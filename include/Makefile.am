@@ -30,7 +30,9 @@ NO_INSTALL_HEADERS_COM  +=
 INSTALL_HEADERS_COM     += \
                            hy_time.h \
                            hy_mem.h \
-                           hy_type.h
+                           hy_type.h \
+                           hy_compile.h \
+                           hy_log.h
 
 noinst_HEADERS          = $(NO_INSTALL_HEADERS_COM)
 install_include_HEADERS = $(INSTALL_HEADERS_COM)

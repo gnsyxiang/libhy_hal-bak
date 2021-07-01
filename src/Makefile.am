@@ -57,7 +57,8 @@ _include_com    += \
 
 _sources_com    += \
                    hy_time.c \
-                   hy_mem.c
+                   hy_mem.c \
+                   hy_log.c
 
 _cppflags_com   += $(CPPFLAGS_COM) \
                    $(_include_com)
@@ -70,7 +71,8 @@ _ldflags_com    += $(LIB_LDFLAGS_COM) \
                    -export-symbols-regex 'Hy*' \
                    -version-info @current@:@revision@:@age@
 
-_ldadd_com      += $(top_builddir)/src/$(select_target_os)/libhy_os.la
+_ldadd_com      += \
+                   $(top_builddir)/src/$(select_target_os)/libhy_os.la
 
 lib@project_name@_la_SOURCES    = $(_sources_com)
 lib@project_name@_la_CPPFLAGS   = $(_cppflags_com)
