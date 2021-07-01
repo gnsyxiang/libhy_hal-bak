@@ -67,7 +67,7 @@ _install_files_com  = LICENSE \
 dist_doc_DATA       = $(_install_files_com)
 
 pkgconfigdir        = $(libdir)/pkgconfig
-pkgconfig_DATA      = @PACKAGE_NAME@.pc
+pkgconfig_DATA      = @project_name@.pc
 
 # ---------------
 # make dist files

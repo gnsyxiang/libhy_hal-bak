@@ -58,7 +58,7 @@ AC_FUNC_REALLOC
 AC_CHECK_FUNCS([gettimeofday memset select strdup strerror strstr])
 
 AC_CONFIG_FILES([Makefile
-                 $PACKAGE_NAME.pc
+                 $project_name.pc
                  doc/Makefile
                  example/Makefile
                  include/Makefile

@@ -83,7 +83,7 @@ _build/
 install/
 doxygen/
 
-libhy_hal.pc
+hy_hal.pc
 
 *.o
 *.lo
