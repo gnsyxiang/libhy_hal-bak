@@ -32,6 +32,7 @@ INSTALL_HEADERS_COM     += \
                            hy_mem.h \
                            hy_type.h \
                            hy_compile.h \
+                           hy_error.h \
                            hy_log.h
 
 noinst_HEADERS          = $(NO_INSTALL_HEADERS_COM)
