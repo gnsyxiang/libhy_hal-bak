@@ -32,6 +32,8 @@ time_t time_get_tick(void);
 
 time_t time_get_cur_us(void);
 
+time_t time_get_cur_ms(void);
+
 void time_delay_ms(hy_uint32_t ms);
 
 void time_delay_us(hy_uint32_t us);

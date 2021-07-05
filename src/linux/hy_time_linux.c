@@ -57,6 +57,11 @@ time_t time_get_cur_us(void)
     return (tv.tv_sec * 1000 * 1000 + tv.tv_usec);
 }
 
+time_t time_get_cur_ms(void)
+{
+    return time_get_cur_us() / 1000;
+}
+
 void time_delay_ms(hy_uint32_t ms)
 {
     _delay_com(ms * BASE_NUM);

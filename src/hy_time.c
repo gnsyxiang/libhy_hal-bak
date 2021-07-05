@@ -32,6 +32,11 @@ time_t HyTimeGetCurUs(void)
     return time_get_cur_us();
 }
 
+time_t HyTimeGetCurMs(void)
+{
+    return time_get_cur_ms();
+}
+
 void HyTimeDelayMs(hy_uint32_t ms)
 {
     time_delay_ms(ms);

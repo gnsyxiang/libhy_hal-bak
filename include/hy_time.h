@@ -39,6 +39,7 @@ extern "C" {
 time_t HyTimeGetTick(void);
 
 time_t HyTimeGetCurUs(void);
+time_t HyTimeGetCurMs(void);
 
 void HyTimeDelayMs(hy_uint32_t ms);
 
