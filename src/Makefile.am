@@ -40,6 +40,9 @@ endif
 
 lib_LTLIBRARIES = lib@project_name@.la
 
+# ------------------
+# defining variables
+# ------------------
 _include_com    =
 _sources_com    =
 _cppflags_com   =
@@ -61,18 +64,18 @@ _sources_com    += \
                    hy_mem.c \
                    hy_log.c
 
-_cppflags_com   += $(CPPFLAGS_COM) \
+_cppflags_com   += \
+                   $(CPPFLAGS_COM) \
                    $(_include_com)
 
 _cflags_com     += $(CFLAGS_COM)
 
 _cxxflags_com   += $(CXXFLAGS_COM)
 
-_ldflags_com    += $(LIB_LDFLAGS_COM) \
+_ldflags_com    += \
+                   $(LIB_LDFLAGS_COM) \
                    -export-symbols-regex 'Hy*' \
-                   -version-info @current@:@revision@:@age@
-
-_ldadd_com      += \
+                   -version-info @current@:@revision@:@age@ \
                    $(top_builddir)/src/$(select_target_os)/libhy_os.la
 
 lib@project_name@_la_SOURCES    = $(_sources_com)

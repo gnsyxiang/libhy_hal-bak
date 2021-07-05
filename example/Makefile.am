@@ -18,38 +18,41 @@
 #     last modified: 21/12 2019 13:22
 # ===============================================================
 
-_include_com  	=
-_sources_com 	=
-_cppflags_com 	=
-_cflags_com 	=
-_cxxflags_com 	=
-_ldflags_com 	=
-_ldadd_com 		=
-bin_PROGRAMS 	=
+# ------------------
+# defining variables
+# ------------------
+_include_com    =
+_sources_com    =
+_cppflags_com   =
+_cflags_com     =
+_cxxflags_com   =
+_ldflags_com    =
+_ldadd_com      =
+bin_PROGRAMS    =
 
 # ---------------------
 # add necessary content
 # ---------------------
-_include_com  	+= -I$(top_srcdir)/include
+_include_com    += -I$(top_srcdir)/include
 
-_sources_com 	+=
+_sources_com    +=
 
-_cppflags_com 	+= $(CPPFLAGS_COM) \
-				   $(_include_com)
+_cppflags_com   += $(CPPFLAGS_COM) \
+                   $(_include_com)
 
-_cflags_com 	+= $(CFLAGS_COM)
+_cflags_com     += $(CFLAGS_COM)
 
-_cxxflags_com 	+= $(CXXFLAGS_COM)
+_cxxflags_com   += $(CXXFLAGS_COM)
 
-_ldflags_com 	+= $(BIN_LDFLAGS_COM)
+_ldflags_com    += \
+                   $(BIN_LDFLAGS_COM) \
+                   $(top_builddir)/src/lib@project_name@.la
 
-_ldadd_com 		+= $(top_builddir)/src/lib@project_name@.la
-
-bin_PROGRAMS			+= hy_time_test
-hy_time_test_SOURCES 	= $(_sources_com) hy_time_test.c
-hy_time_test_CPPFLAGS  	= $(_cppflags_com)
-hy_time_test_CFLAGS  	= $(_cflags_com)
-hy_time_test_CXXFLAGS  	= $(_cxxflags_com)
-hy_time_test_LDFLAGS	= $(_ldflags_com)
-hy_time_test_LDADD   	= $(_ldadd_com)
+bin_PROGRAMS            += hy_time_test
+hy_time_test_SOURCES    = $(_sources_com) hy_time_test.c
+hy_time_test_CPPFLAGS   = $(_cppflags_com)
+hy_time_test_CFLAGS     = $(_cflags_com)
+hy_time_test_CXXFLAGS   = $(_cxxflags_com)
+hy_time_test_LDFLAGS    = $(_ldflags_com)
+hy_time_test_LDADD      = $(_ldadd_com)
 

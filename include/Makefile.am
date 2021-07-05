@@ -20,22 +20,30 @@
 
 SUBDIRS = wrapper
 
-NO_INSTALL_HEADERS_COM  =
-INSTALL_HEADERS_COM     =
-install_includedir      = $(includedir)/@project_name@
+# ------------------
+# defining variables
+# ------------------
+_no_install_headers_com     =
+_install_headers_com        =
+install_includedir          = $(includedir)/@project_name@
 
-# ----------------------------------------------------
-NO_INSTALL_HEADERS_COM  +=
+# ---------------------
+# add necessary content
+# ---------------------
+_no_install_headers_com     +=
 
-INSTALL_HEADERS_COM     += \
-                           hy_socket.h \
-                           hy_time.h \
-                           hy_mem.h \
-                           hy_type.h \
-                           hy_compile.h \
-                           hy_error.h \
-                           hy_log.h
+_install_headers_com        += \
+                               hy_socket.h \
+                               hy_time.h \
+                               hy_mem.h \
+                               hy_type.h \
+                               hy_compile.h \
+                               hy_error.h \
+                               hy_log.h
 
-noinst_HEADERS          = $(NO_INSTALL_HEADERS_COM)
-install_include_HEADERS = $(INSTALL_HEADERS_COM)
+# ------------------
+# make install files
+# ------------------
+noinst_HEADERS              = $(_no_install_headers_com)
+install_include_HEADERS     = $(_install_headers_com)
 

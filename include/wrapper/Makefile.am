@@ -18,18 +18,26 @@
 #     last modified: 30/06 2021 17:03
 # ===============================================================
 
-NO_INSTALL_HEADERS_COM  =
-INSTALL_HEADERS_COM     =
-install_includedir      = $(includedir)/@project_name@
+# ------------------
+# defining variables
+# ------------------
+_no_install_headers_com     =
+_install_headers_com        =
+install_includedir          = $(includedir)/@project_name@
 
-# ----------------------------------------------------
-NO_INSTALL_HEADERS_COM  += \
-                           hy_socket_wrapper.h \
-                           hy_time_wrapper.h \
-                           hy_mem_wrapper.h
+# ---------------------
+# add necessary content
+# ---------------------
+_no_install_headers_com     += \
+                               hy_socket_wrapper.h \
+                               hy_time_wrapper.h \
+                               hy_mem_wrapper.h
 
-INSTALL_HEADERS_COM     +=
+_install_headers_com        +=
 
-noinst_HEADERS          = $(NO_INSTALL_HEADERS_COM)
-install_include_HEADERS = $(INSTALL_HEADERS_COM)
+# ------------------
+# make install files
+# ------------------
+noinst_HEADERS              = $(_no_install_headers_com)
+install_include_HEADERS     = $(_install_headers_com)
 

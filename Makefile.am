@@ -20,38 +20,52 @@
 
 include res/doxygen.am
 
-SUBDIRS = include \
+SUBDIRS = \
+          include \
           src \
           example \
-          res \
-          doc
+          doc \
+          res
 
-# -----
-# flags
-# -----
+# ------------------
+# defining variables
+# ------------------
+_no_error_com       =
+_remove_unuse_func  =
+_install_files_com  =
+_dist_files_com     =
+
+CPPFLAGS_COM        =
+CFLAGS_COM          =
+CXXFLAGS_COM        =
+LIB_LDFLAGS_COM     =
+BIN_LDFLAGS_COM     =
+
 ACLOCAL_AMFLAGS     = -I m4
+pkgconfigdir        = $(libdir)/pkgconfig
 
-_no_error_com       = -W -Wall -Werror \
-                      -Wno-error=unused-but-set-variable \
-                      -Wno-error=unused-result \
-                      -Wno-unused-parameter
+# ---------------------
+# add necessary content
+# ---------------------
+_no_error_com       += \
+                       -W -Wall -Werror \
+                       -Wno-unused-parameter \
+                       -Wno-error=unused-but-set-variable \
+                       -Wno-error=unused-result
 
+_remove_unuse_func  += \
+                       -ffunction-sections \
+                       -fdata-sections
 
-_remove_unuse_func  = -ffunction-sections \
-                      -fdata-sections
+CPPFLAGS_COM        += \
+                       -pipe \
+                       $(_no_error_com) \
+                       $(ACLOCAL_AMFLAGS)
 
-CPPFLAGS_COM        = -pipe \
-                      $(_no_error_com) \
-                      $(ACLOCAL_AMFLAGS)
-
-CFLAGS_COM          = $(_remove_unuse_func)
-
-CXXFLAGS_COM        = $(_remove_unuse_func)
-
-LIB_LDFLAGS_COM     = -rdynamic
-
-BIN_LDFLAGS_COM     = \
-                      -Wl,--gc-sections
+CFLAGS_COM          += $(_remove_unuse_func)
+CXXFLAGS_COM        += $(_remove_unuse_func)
+LIB_LDFLAGS_COM     += -rdynamic
+BIN_LDFLAGS_COM     += -Wl,--gc-sections
 
 export CPPFLAGS_COM
 export CFLAGS_COM
@@ -62,17 +76,17 @@ export BIN_LDFLAGS_COM
 # ------------------
 # make install files
 # ------------------
-_install_files_com  = LICENSE \
-                      README.md
+_install_files_com  += \
+                       LICENSE \
+                       README.md
 dist_doc_DATA       = $(_install_files_com)
-
-pkgconfigdir        = $(libdir)/pkgconfig
 pkgconfig_DATA      = @project_name@.pc
 
 # ---------------
 # make dist files
 # ---------------
-_dist_files_com     = autogen.sh \
-                      @PACKAGE_NAME@.pc.in
+_dist_files_com     += \
+                       autogen.sh \
+                       @project_name@.pc.in
 EXTRA_DIST          = $(_dist_files_com)
 

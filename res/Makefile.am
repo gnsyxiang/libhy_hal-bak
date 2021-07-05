@@ -18,10 +18,20 @@
 #     last modified: 08/03 2021 08:16
 # ===============================================================
 
+# ------------------
+# defining variables
+# ------------------
+_dist_file_com  =
+
+# ---------------------
+# add necessary content
+# ---------------------
+_dist_file_com  += \
+                   Doxyfile \
+                   get_project_info.sh
+
 # ---------------
 # make dist files
 # ---------------
-DIST_FILES_COM 	= Doxyfile \
-				  get_project_info.sh
-EXTRA_DIST 		= $(DIST_FILES_COM)
+EXTRA_DIST      = $(DIST_FILES_COM)
 

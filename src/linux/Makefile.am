@@ -20,6 +20,9 @@
 
 noinst_LTLIBRARIES = libhy_os.la
 
+# ------------------
+# defining variables
+# ------------------
 _include_com    =
 _sources_com    =
 _cppflags_com   =
@@ -40,7 +43,8 @@ _sources_com    += \
                    hy_time_linux.c \
                    hy_mem_linux.c
 
-_cppflags_com   += $(CPPFLAGS_COM) \
+_cppflags_com   += \
+                   $(CPPFLAGS_COM) \
                    $(_include_com)
 
 _cflags_com     += $(CFLAGS_COM)
@@ -48,8 +52,6 @@ _cflags_com     += $(CFLAGS_COM)
 _cxxflags_com   += $(CXXFLAGS_COM)
 
 _ldflags_com    += $(LIB_LDFLAGS_COM)
-
-_ldadd_com      +=
 
 libhy_os_la_SOURCES   = $(_sources_com)
 libhy_os_la_CPPFLAGS  = $(_cppflags_com)
