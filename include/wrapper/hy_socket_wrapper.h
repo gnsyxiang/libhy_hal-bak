@@ -28,13 +28,15 @@ extern "C" {
 
 typedef struct {
     int fd;
+
+    HySocketConfigSave_t config_save;
 } socket_context_t;
 
 void *socket_create(HySocketConfig_t *socket_config);
 void socket_destroy(socket_context_t *context);
 
-int socket_read(socket_context_t *context, char *buf, uint32_t len);
-int socket_write(socket_context_t *context, const char *buf, uint32_t len);
+int socket_process(socket_context_t *context);
+int socket_write(socket_context_t *context, void *buf, size_t len);
 
 #ifdef __cplusplus
 }

@@ -24,18 +24,27 @@
 extern "C" {
 #endif
 
+#include <stdio.h>
 #include <stdint.h>
+
+typedef struct {
+    void (*event_cb)(void *handle, int type, void *args);
+    void (*read_cb)(void *handle, void *buf, size_t len, void *args);
+    void *args;
+} HySocketConfigSave_t;
 
 typedef struct {
     char                *ip;
     uint16_t            port;
+
+    HySocketConfigSave_t config_save;
 } HySocketConfig_t;
 
 void *HySocketCreate(HySocketConfig_t *socket_config);
 void HySocketDestroy(void *handle);
 
-int HySocketRead(void *handle, char *buf, uint32_t len);
-int HySocketWrite(void *handle, const char *buf, uint32_t len);
+int HySocketProcess(void *handle);
+int HySocketWrite(void *handle, void *buf, size_t len);
 
 #ifdef __cplusplus
 }

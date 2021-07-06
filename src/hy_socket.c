@@ -46,17 +46,17 @@ void HySocketDestroy(void *handle)
     socket_destroy((socket_context_t *)handle);
 }
 
-int HySocketRead(void *handle, char *buf, uint32_t len)
+int HySocketProcess(void *handle)
 {
-    if (!handle || !buf) {
+    if (!handle) {
         LOGE("the param is NULL \n");
         return -1;
     }
 
-    return socket_read((socket_context_t *)handle, buf, len);
+    return socket_process((socket_context_t *)handle);
 }
 
-int HySocketWrite(void *handle, const char *buf, uint32_t len)
+int HySocketWrite(void *handle, void *buf, size_t len)
 {
     if (!handle || !buf) {
         LOGE("the param is NULL \n");
