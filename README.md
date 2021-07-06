@@ -29,17 +29,9 @@ $ make install
 
 * `PKG_CONFIG_PATH`: 使用`pkg-config`检测依赖库
 
-* `--with-system_os=[linux|mac|window|rtt]`: 编译对应的系统，默认为`linux`
+* `--with-target_os=[linux|mac|window|rtos]`: 编译对应的系统，默认为`linux`
 
 ## 交叉编译
 
-```shell
-$ ./configure \
-    --prefix=`pwd`/install \
-    CC=arm-himix200-linux-gcc \
-    CXX=arm-himix200-linux-g++ \
-    --host=arm-himix200-linux
-$ make
-$ make install
-```
+详见`build.sh`
 
