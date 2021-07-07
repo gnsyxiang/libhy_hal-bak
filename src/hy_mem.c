@@ -22,6 +22,10 @@
 #include "hy_mem.h"
 #include "hy_mem_wrapper.h"
 
+#include "hy_log.h"
+
+#define ALONE_DEBUG 1
+
 void *HyMalloc(size_t size)
 {
     return malloc_wrapper(size);

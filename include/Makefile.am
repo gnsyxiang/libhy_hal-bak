@@ -38,8 +38,7 @@ _install_headers_com        += \
                                hy_mem.h \
                                hy_type.h \
                                hy_compile.h \
-                               hy_error.h \
-                               hy_log.h
+                               hy_error.h
 
 # ------------------
 # make install files

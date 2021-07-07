@@ -21,18 +21,22 @@
 
 #include "hy_time.h"
 
+#include "hy_log.h"
+
+#define ALONE_DEBUG 1
+
 int main(int argc, char *argv[])
 {
     time_t start = HyTimeGetCurUs();
 
     for (int i = 0; i < 10; ++i) {
-        printf("ha");
+        LOGD("haha");
     }
-    printf("\n");
+    LOGD("\n");
 
     time_t end = HyTimeGetCurUs();
 
-    printf("interval: %ldus\n", end - start);
+    LOGD("interval: %ldus \n", end - start);
 
     return 0;
 }
