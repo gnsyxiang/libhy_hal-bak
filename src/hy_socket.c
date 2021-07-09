@@ -22,47 +22,32 @@
 #include "hy_socket.h"
 #include "hy_socket_wrapper.h"
 
+#include "utils.h"
 #include "log.h"
 
 #define ALONE_DEBUG 1
 
 void *HySocketCreate(HySocketConfig_t *socket_config)
 {
-    if (!socket_config) {
-        LOGE("the param is NULL \n");
-        return NULL;
-    }
-
+    JUDGE_NULL_RET(!socket_config, NULL);
     return socket_create(socket_config);
 }
 
 void HySocketDestroy(void *handle)
 {
-    if (!handle) {
-        LOGE("the param is NULL \n");
-        return ;
-    }
-
+    JUDGE_NULL(!handle);
     socket_destroy((socket_context_t *)handle);
 }
 
 int HySocketProcess(void *handle)
 {
-    if (!handle) {
-        LOGE("the param is NULL \n");
-        return -1;
-    }
-
+    JUDGE_NULL_RET(!handle, -1);
     return socket_process((socket_context_t *)handle);
 }
 
 int HySocketWrite(void *handle, void *buf, size_t len)
 {
-    if (!handle || !buf) {
-        LOGE("the param is NULL \n");
-        return -1;
-    }
-
+    JUDGE_NULL_RET(!handle || !buf, -1);
     return socket_write((socket_context_t *)handle, buf, len);
 }
 

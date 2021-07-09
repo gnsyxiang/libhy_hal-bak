@@ -31,6 +31,7 @@ install_includedir          = $(includedir)/@project_name@
 # add necessary content
 # ---------------------
 _no_install_headers_com     += \
+                               utils.h \
                                log.h
 
 _install_headers_com        += \

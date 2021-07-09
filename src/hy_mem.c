@@ -22,6 +22,7 @@
 #include "hy_mem.h"
 #include "hy_mem_wrapper.h"
 
+#include "utils.h"
 #include "log.h"
 
 #define ALONE_DEBUG 1
@@ -45,10 +46,7 @@ void *HyCalloc(size_t nmemb, size_t size)
 
 void *HyRealloc(void *ptr, size_t size)
 {
-    if (ptr) {
-        return realloc_wrapper(ptr, size);
-    } else {
-        return NULL;
-    }
+    JUDGE_NULL_RET(ptr, NULL);
+    return realloc_wrapper(ptr, size);
 }
 
