@@ -32,7 +32,7 @@
 
 #include "hy_type.h"
 #include "hy_error.h"
-#include "hy_log.h"
+#include "log.h"
 
 #define ALONE_DEBUG 1
 
@@ -43,14 +43,13 @@ static inline void _socket_destroy(socket_context_t *context)
     }
 }
 
-static int _socket_create(socket_context_t *context, HySocketConfig_t *socket_config)
+static int _socket_create(socket_context_t *context,
+        HySocketConfig_t *socket_config)
 {
-        LOGI("ip: %s, port: %d \r\n", socket_config->ip, socket_config->port);
     do {
         context->fd = socket(AF_INET, SOCK_STREAM, 0);
         if (context->fd < 0) {
             LOGE("socket faild \n");
-
             break;
         }
 
@@ -60,13 +59,12 @@ static int _socket_create(socket_context_t *context, HySocketConfig_t *socket_co
         servaddr.sin_port   = htons(socket_config->port);
         if (1 != inet_pton(AF_INET, socket_config->ip, &servaddr.sin_addr)) {
             LOGE("inet_pton faild for %s \n", socket_config->ip);
-
             break;
         }
 
-        if (0 != connect(context->fd, (struct sockaddr*)&servaddr, sizeof(servaddr))) {
+        if (0 != connect(context->fd,
+                    (struct sockaddr*)&servaddr, sizeof(servaddr))) {
             LOGE("connect faild \n");
-
             break;
         }
 
@@ -89,7 +87,6 @@ void *socket_create(HySocketConfig_t *socket_config)
         context = malloc(sizeof(*context));
         if (!context) {
             LOGE("calloc faild \n");
-
             break;
         }
         memset(context, '\0', sizeof(*context));
@@ -99,7 +96,6 @@ void *socket_create(HySocketConfig_t *socket_config)
 
         if (HY_ERR_OK != _socket_create(context, socket_config)) {
             LOGE("_socket_create faild \n");
-
             break;
         }
 
@@ -123,7 +119,7 @@ int socket_process(socket_context_t *context)
 {
     HySocketConfigSave_t *config_save = &context->config_save;
 
-    #define BUF_LEN (1024)
+#define BUF_LEN (1024)
     char buf[BUF_LEN] = {0};
     int ret = recv(context->fd, buf, BUF_LEN, 0);
     if (ret <= 0) {

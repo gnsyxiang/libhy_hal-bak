@@ -2,7 +2,7 @@
  *
  * Release under GPLv-3.0.
  * 
- * @file    hy_log.h
+ * @file    log.h
  * @brief   
  * @author  gnsyxiang <gnsyxiang@163.com>
  * @date    01/06 2021 14:48
@@ -17,8 +17,8 @@
  * 
  *     last modified: 01/06 2021 14:48
  */
-#ifndef __LIBHY_HAL_INCLUDE_HY_LOG_H_
-#define __LIBHY_HAL_INCLUDE_HY_LOG_H_
+#ifndef __LIBHY_HAL_INCLUDE_LOG_H_
+#define __LIBHY_HAL_INCLUDE_LOG_H_
 
 #ifdef __cplusplus
 extern "C" {

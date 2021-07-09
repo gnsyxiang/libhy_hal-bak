@@ -22,7 +22,7 @@
 #include "hy_mem.h"
 #include "hy_mem_wrapper.h"
 
-#include "hy_log.h"
+#include "log.h"
 
 #define ALONE_DEBUG 1
 

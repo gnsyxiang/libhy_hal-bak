@@ -22,10 +22,6 @@
 #include "hy_time.h"
 #include "hy_time_wrapper.h"
 
-#include "hy_log.h"
-
-#define ALONE_DEBUG 1
-
 time_t HyTimeGetTick(void)
 {
     return time_get_tick();
