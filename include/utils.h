@@ -24,14 +24,14 @@
 extern "C" {
 #endif
 
-#define JUDGE_NULL_RET(param, ret)     \
-    if (!param) {                       \
+#define JUDGE_NULL_RET(param, ret)      \
+    if (param) {                        \
         LOGE("the param is NULL \n");   \
         return ret;                     \
     }
 
-#define JUDGE_NULL(param)              \
-    if (!param) {                       \
+#define JUDGE_NULL(param)               \
+    if (param) {                        \
         LOGE("the param is NULL \n");   \
         return ;                        \
     }

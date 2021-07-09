@@ -46,7 +46,7 @@ void *HyCalloc(size_t nmemb, size_t size)
 
 void *HyRealloc(void *ptr, size_t size)
 {
-    JUDGE_NULL_RET(ptr, NULL);
+    JUDGE_NULL_RET(!ptr, NULL);
     return realloc(ptr, size);
 }
 
