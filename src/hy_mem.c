@@ -18,9 +18,9 @@
  *     last modified: 22/02 2020 16:42
  */
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "hy_mem.h"
-#include "hy_mem_wrapper.h"
 
 #include "utils.h"
 #include "log.h"
@@ -29,24 +29,24 @@
 
 void *HyMalloc(size_t size)
 {
-    return malloc_wrapper(size);
+    return malloc(size);
 }
 
 void HyFree(void *ptr)
 {
     if (ptr) {
-        free_wrapper(ptr);
+        free(ptr);
     }
 }
 
 void *HyCalloc(size_t nmemb, size_t size)
 {
-    return calloc_wrapper(nmemb, size);
+    return calloc(nmemb, size);
 }
 
 void *HyRealloc(void *ptr, size_t size)
 {
     JUDGE_NULL_RET(ptr, NULL);
-    return realloc_wrapper(ptr, size);
+    return realloc(ptr, size);
 }
 

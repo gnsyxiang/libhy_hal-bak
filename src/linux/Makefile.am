@@ -40,8 +40,7 @@ _include_com    += \
 
 _sources_com    += \
                    hy_socket_linux.c \
-                   hy_time_linux.c \
-                   hy_mem_linux.c
+                   hy_time_linux.c
 
 _cppflags_com   += \
                    $(CPPFLAGS_COM) \
