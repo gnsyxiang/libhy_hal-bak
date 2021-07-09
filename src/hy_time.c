@@ -20,7 +20,7 @@
 #include <stdio.h>
 
 #include "hy_time.h"
-#include "hy_time_wrapper.h"
+#include "time_wrapper.h"
 
 time_t HyTimeGetTick(void)
 {

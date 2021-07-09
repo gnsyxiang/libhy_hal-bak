@@ -2,7 +2,7 @@
  * 
  * Release under GPLv-3.0.
  * 
- * @file    hy_time_linux.c
+ * @file    time_wrapper.c
  * @brief   
  * @author  gnsyxiang <gnsyxiang@163.com>
  * @date    30/06 2021 17:31
@@ -21,7 +21,7 @@
 #include <sys/time.h>
 #include <errno.h>
 
-#include "hy_time_wrapper.h"
+#include "time_wrapper.h"
 
 #define BASE_NUM	(1000)
 #define BASE_NUM_2	(1000 * 1000)

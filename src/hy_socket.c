@@ -20,7 +20,7 @@
 #include <stdio.h>
 
 #include "hy_socket.h"
-#include "hy_socket_wrapper.h"
+#include "socket_wrapper.h"
 
 #include "utils.h"
 #include "log.h"

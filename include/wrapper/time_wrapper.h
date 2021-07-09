@@ -2,7 +2,7 @@
  *
  * Release under GPLv-3.0.
  * 
- * @file    hy_time_wrapper.h
+ * @file    time_wrapper.h
  * @brief   
  * @author  gnsyxiang <gnsyxiang@163.com>
  * @date    30/06 2021 17:28
@@ -17,8 +17,8 @@
  * 
  *     last modified: 30/06 2021 17:28
  */
-#ifndef __LIBHY_HAL_INCLUDE_WRAPPER_HY_TIME_WRAPPER_H_
-#define __LIBHY_HAL_INCLUDE_WRAPPER_HY_TIME_WRAPPER_H_
+#ifndef __LIBHY_HAL_INCLUDE_WRAPPER_TIME_WRAPPER_H_
+#define __LIBHY_HAL_INCLUDE_WRAPPER_TIME_WRAPPER_H_
 
 #ifdef __cplusplus
 extern "C" {

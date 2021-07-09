@@ -2,8 +2,8 @@
  * 
  * Release under GPLv-3.0.
  * 
- * @file    hy_socket.c
- * @brief   封装网络操作函数
+ * @file    socket_wrapper.c
+ * @brief   
  * @author  gnsyxiang <gnsyxiang@163.com>
  * @date    05/12 2020 09:50
  * @version v0.0.1
@@ -28,7 +28,7 @@
 #include <fcntl.h>
 #include <errno.h>
 
-#include "hy_socket_wrapper.h"
+#include "socket_wrapper.h"
 
 #include "hy_type.h"
 #include "hy_error.h"

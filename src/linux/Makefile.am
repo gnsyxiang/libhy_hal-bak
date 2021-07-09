@@ -39,8 +39,8 @@ _include_com    += \
                    -I$(top_srcdir)/include
 
 _sources_com    += \
-                   hy_socket_linux.c \
-                   hy_time_linux.c
+                   socket_wrapper.c \
+                   time_wrapper.c
 
 _cppflags_com   += \
                    $(CPPFLAGS_COM) \

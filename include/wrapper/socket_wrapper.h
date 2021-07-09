@@ -2,7 +2,7 @@
  *
  * Release under GPLv-3.0.
  * 
- * @file    hy_socket_wrapper.h
+ * @file    socket_wrapper.h
  * @brief   
  * @author  gnsyxiang <gnsyxiang@163.com>
  * @date    01/07 2021 19:04
@@ -17,8 +17,8 @@
  * 
  *     last modified: 01/07 2021 19:04
  */
-#ifndef __LIBHY_HAL_INCLUDE_WRAPPER_HY_SOCKET_WRAPPER_H_
-#define __LIBHY_HAL_INCLUDE_WRAPPER_HY_SOCKET_WRAPPER_H_
+#ifndef __LIBHY_HAL_INCLUDE_WRAPPER_SOCKET_WRAPPER_H_
+#define __LIBHY_HAL_INCLUDE_WRAPPER_SOCKET_WRAPPER_H_
 
 #ifdef __cplusplus
 extern "C" {
