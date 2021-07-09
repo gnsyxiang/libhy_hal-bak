@@ -61,6 +61,7 @@ _include_com    += \
                    -I$(top_srcdir)/include
 
 _sources_com    += \
+                   hy_uart.c \
                    hy_socket.c \
                    hy_time.c \
                    hy_mem.c
