@@ -29,6 +29,8 @@ elif [ x$1 = x"mcu" ]; then
     gcc_version=gcc-arm-none-eabi-5_4-2016q3
     gcc_prefix=arm-none-eabi
     cross_gcc_path=${data_disk_path}/opt/toolchains/${vender}/${gcc_version}/bin/${gcc_prefix}-
+    _cflag_com="-specs=nano.specs -specs=nosys.specs"
+    _param_com="--with-target_os=mcu"
 else
     help_info
 fi
@@ -51,7 +53,7 @@ ${target_path}/configure                            \
     CC=${cross_gcc_path}gcc                         \
     CXX=${cross_gcc_path}g++                        \
     CPPFLAGS=""                                     \
-    CFLAGS="-I${lib_3rd_path}/include"              \
+    CFLAGS="-I${lib_3rd_path}/include ${_cflag_com}"\
     CXXFLAGS="-I${lib_3rd_path}/include"            \
     LDFLAGS="-L${lib_3rd_path}/lib"                 \
     LIBS=""                                         \
@@ -59,7 +61,9 @@ ${target_path}/configure                            \
     --prefix=${prefix_path}                         \
     --build=                                        \
     --host=${host}                                  \
-    --target=${host}
+    --target=${host}                                \
+    \
+    ${_param_com}
 
 thread_jobs=`getconf _NPROCESSORS_ONLN 2>/dev/null || echo 1`
 

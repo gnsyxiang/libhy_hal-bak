@@ -68,5 +68,6 @@ AC_CONFIG_FILES([Makefile
                  src/linux/Makefile
                  src/mac/Makefile
                  src/rtos/Makefile
+                 src/mcu/Makefile
                  src/window/Makefile])
 AC_OUTPUT

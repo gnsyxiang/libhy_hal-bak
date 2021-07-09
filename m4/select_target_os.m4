@@ -25,7 +25,7 @@ dnl ===============================================================
 AC_DEFUN([SELECT_TARGET_OS],
     [
         AC_ARG_WITH([target_os],
-            [AS_HELP_STRING([--with-target_os=@<:@linux|mac|window|rtos@:>@], [select system os about @<:@linux|mac|window|rtos@:>@ @<:@default=linux@:>@])],
+            [AS_HELP_STRING([--with-target_os=@<:@linux|mac|window|rtos|mcu@:>@], [select system os about @<:@linux|mac|window|rtos|mcu@:>@ @<:@default=linux@:>@])],
             [],
             [with_target_os=linux])
 
@@ -34,12 +34,17 @@ AC_DEFUN([SELECT_TARGET_OS],
             mac)    AC_DEFINE(HAVE_SELECT_TARGET_OS_MAC,    1, [select mac target system]) ;;
             window) AC_DEFINE(HAVE_SELECT_TARGET_OS_WINDOW, 1, [select window target system]) ;;
             rtos)   AC_DEFINE(HAVE_SELECT_TARGET_OS_RTOS,   1, [select rtos target system]) ;;
-            *)      AC_MSG_ERROR([bad value ${with_target_os} for --with-target_os=@<:@linux|mac|window|rtos@:>@]) ;;
+            mcu)
+                AC_DEFINE(HAVE_SELECT_TARGET_OS_MCU,    1, [select mcu target system])
+                CHECK_LIBHY_MCU
+            ;;
+            *)      AC_MSG_ERROR([bad value ${with_target_os} for --with-target_os=@<:@linux|mac|window|rtos|mcu@:>@]) ;;
         esac
 
         AM_CONDITIONAL([COMPILE_SELECT_TARGET_OS_LINUX],    [test "x$with_target_os" = "xlinux"])
         AM_CONDITIONAL([COMPILE_SELECT_TARGET_OS_MAC],      [test "x$with_target_os" = "xmac"])
         AM_CONDITIONAL([COMPILE_SELECT_TARGET_OS_WINDOW],   [test "x$with_target_os" = "xwindow"])
         AM_CONDITIONAL([COMPILE_SELECT_TARGET_OS_RTOS],     [test "x$with_target_os" = "xrtos"])
+        AM_CONDITIONAL([COMPILE_SELECT_TARGET_OS_MCU],      [test "x$with_target_os" = "xmcu"])
     ])
 
