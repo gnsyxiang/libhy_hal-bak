@@ -44,9 +44,9 @@ _cflags_com     += $(CFLAGS_COM)
 
 _cxxflags_com   += $(CXXFLAGS_COM)
 
-_ldflags_com    += \
-                   $(BIN_LDFLAGS_COM) \
-                   $(top_builddir)/src/lib@project_name@.la
+_ldflags_com    += $(BIN_LDFLAGS_COM)
+
+_ldadd_com      += $(top_builddir)/src/lib@project_name@.la
 
 bin_PROGRAMS            += hy_time_test
 hy_time_test_SOURCES    = $(_sources_com) hy_time_test.c

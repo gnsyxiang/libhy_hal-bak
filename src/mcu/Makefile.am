@@ -53,6 +53,8 @@ _cxxflags_com   += $(CXXFLAGS_COM)
 
 _ldflags_com    += $(LIB_LDFLAGS_COM)
 
+_ldadd_com      +=
+
 libhy_os_la_SOURCES   = $(_sources_com)
 libhy_os_la_CPPFLAGS  = $(_cppflags_com)
 libhy_os_la_CFLAGS    = $(_cflags_com)

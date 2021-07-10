@@ -77,8 +77,9 @@ _cxxflags_com   += $(CXXFLAGS_COM)
 _ldflags_com    += \
                    $(LIB_LDFLAGS_COM) \
                    -export-symbols-regex 'Hy*' \
-                   -version-info @current@:@revision@:@age@ \
-                   $(top_builddir)/src/$(select_target_os)/libhy_os.la
+                   -version-info @current@:@revision@:@age@
+
+_ldadd_com      += $(top_builddir)/src/$(select_target_os)/libhy_os.la
 
 lib@project_name@_la_SOURCES    = $(_sources_com)
 lib@project_name@_la_CPPFLAGS   = $(_cppflags_com)
