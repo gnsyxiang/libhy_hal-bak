@@ -56,3 +56,11 @@ hy_time_test_CXXFLAGS   = $(_cxxflags_com)
 hy_time_test_LDFLAGS    = $(_ldflags_com)
 hy_time_test_LDADD      = $(_ldadd_com)
 
+bin_PROGRAMS                += hy_socket_test
+hy_socket_test_SOURCES      = $(_sources_com) hy_socket_test.c
+hy_socket_test_CPPFLAGS     = $(_cppflags_com)
+hy_socket_test_CFLAGS       = $(_cflags_com)
+hy_socket_test_CXXFLAGS     = $(_cxxflags_com)
+hy_socket_test_LDFLAGS      = $(_ldflags_com)
+hy_socket_test_LDADD        = $(_ldadd_com)
+
