@@ -27,6 +27,14 @@ extern "C" {
 #include <stdio.h>
 #include <stdint.h>
 
+typedef enum {
+    HY_SOCKET_STATE_DISCONNECT,
+    HY_SOCKET_STATE_CONNECTING,
+    HY_SOCKET_STATE_CONNECTED,
+
+    HY_SOCKET_STATE_MAX,
+} HySocketState_t;
+
 typedef struct {
     void (*event_cb)(void *handle, int type, void *args);
     void (*read_cb)(void *handle, void *buf, size_t len, void *args);

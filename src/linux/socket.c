@@ -69,10 +69,20 @@ static int _socket_create(socket_context_t *context,
             break;
         }
 
+        if (context->config_save.event_cb) {
+            context->config_save.event_cb(context,
+                    HY_SOCKET_STATE_CONNECTING, context->config_save.args);
+        }
+
         if (0 != connect(context->fd,
                     (struct sockaddr*)&servaddr, sizeof(servaddr))) {
             LOGE("connect faild \n");
             break;
+        }
+
+        if (context->config_save.event_cb) {
+            context->config_save.event_cb(context,
+                    HY_SOCKET_STATE_CONNECTED, context->config_save.args);
         }
 
         LOGI("fd: %d, ip: %s, port: %d \n",
@@ -88,6 +98,8 @@ static int _socket_create(socket_context_t *context,
 
 void socket_destroy(void **handle)
 {
+    LOGT("%s:%d \n", __func__, __LINE__);
+
     socket_context_t **context = (socket_context_t **)handle;
 
     _socket_destroy(*context);
@@ -97,6 +109,8 @@ void socket_destroy(void **handle)
 
 void *socket_create(HySocketConfig_t *socket_config)
 {
+    LOGT("%s:%d \n", __func__, __LINE__);
+
     socket_context_t *context = NULL;
 
     do {
@@ -115,7 +129,6 @@ void *socket_create(HySocketConfig_t *socket_config)
             break;
         }
 
-        LOGI("socket create successful \n");
         return context;
     } while (0);
 
@@ -135,9 +148,11 @@ int socket_process(void *handle)
     if (ret <= 0) {
         if (0 == ret) {
             if (config_save->event_cb) {
-                config_save->event_cb(context, 0, config_save->args);
+                config_save->event_cb(context,
+                        HY_SOCKET_STATE_DISCONNECT, config_save->args);
             }
             LOGE("recv data error, err: %d<%s> \n", errno, strerror(errno));
+            return -1;
         } else if (ret < 0) {
             if (errno == EINTR) {
                 ret = 0;
@@ -161,9 +176,11 @@ int socket_write(void *handle, void *buf, size_t len)
     if (ret <= 0) {
         if (0 == ret) {
             if (config_save->event_cb) {
-                config_save->event_cb(context, 0, config_save->args);
+                config_save->event_cb(context,
+                        HY_SOCKET_STATE_DISCONNECT, config_save->args);
             }
             LOGE("send data error, err: %d<%s> \n", errno, strerror(errno));
+            return -1;
         } else if (ret < 0) {
             if (errno == EINTR) {
                 ret = 0;
