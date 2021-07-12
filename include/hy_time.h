@@ -24,10 +24,8 @@
 extern "C" {
 #endif
 
-#include <time.h>
-
-#include "hy_type.h"
-
+#include <stdio.h>
+#include<sys/time.h>
 
 /**
  * @brief 在特定tick下，1s要多少个tick表示
@@ -41,9 +39,9 @@ time_t HyTimeGetTick(void);
 time_t HyTimeGetCurUs(void);
 time_t HyTimeGetCurMs(void);
 
-void HyTimeDelayMs(hy_uint32_t ms);
+void HyTimeDelayMs(size_t ms);
 
-void HyTimeDelayUs(hy_uint32_t us);
+void HyTimeDelayUs(size_t us);
 
 #ifdef __cplusplus
 }

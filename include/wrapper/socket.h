@@ -2,7 +2,7 @@
  *
  * Release under GPLv-3.0.
  * 
- * @file    socket_wrapper.h
+ * @file    socket.h
  * @brief   
  * @author  gnsyxiang <gnsyxiang@163.com>
  * @date    01/07 2021 19:04
@@ -17,8 +17,8 @@
  * 
  *     last modified: 01/07 2021 19:04
  */
-#ifndef __LIBHY_HAL_INCLUDE_WRAPPER_SOCKET_WRAPPER_H_
-#define __LIBHY_HAL_INCLUDE_WRAPPER_SOCKET_WRAPPER_H_
+#ifndef __LIBHY_HAL_INCLUDE_WRAPPER_SOCKET_H_
+#define __LIBHY_HAL_INCLUDE_WRAPPER_SOCKET_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -26,17 +26,11 @@ extern "C" {
 
 #include "hy_socket.h"
 
-typedef struct {
-    int fd;
-
-    HySocketConfigSave_t config_save;
-} socket_context_t;
-
 void *socket_create(HySocketConfig_t *socket_config);
-void socket_destroy(socket_context_t *context);
+void socket_destroy(void **handle);
 
-int socket_process(socket_context_t *context);
-int socket_write(socket_context_t *context, void *buf, size_t len);
+int socket_process(void *handle);
+int socket_write(void *handle, void *buf, size_t len);
 
 #ifdef __cplusplus
 }

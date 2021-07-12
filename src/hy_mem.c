@@ -32,10 +32,10 @@ void *HyMalloc(size_t size)
     return malloc(size);
 }
 
-void HyFree(void *ptr)
+void HyFree(void **ptr)
 {
-    if (ptr) {
-        free(ptr);
+    if (ptr && *ptr) {
+        FREE(ptr);
     }
 }
 

@@ -2,7 +2,7 @@
  * 
  * Release under GPLv-3.0.
  * 
- * @file    uart_wrapper.c
+ * @file    uart.c
  * @brief   
  * @author  gnsyxiang <gnsyxiang@163.com>
  * @date    10/07 2021 10:39
@@ -19,14 +19,14 @@
  */
 #include <stdio.h>
 
-#include "uart_wrapper.h"
+#include "uart.h"
 
 void *uart_create(HyHalUartConfig_t *uart_config)
 {
     return NULL;
 }
 
-void uart_destroy(void *handle)
+void uart_destroy(void **handle)
 {
 }
 

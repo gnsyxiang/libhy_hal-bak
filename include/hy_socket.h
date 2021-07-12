@@ -41,7 +41,7 @@ typedef struct {
 } HySocketConfig_t;
 
 void *HySocketCreate(HySocketConfig_t *socket_config);
-void HySocketDestroy(void *handle);
+void HySocketDestroy(void **handle);
 
 int HySocketProcess(void *handle);
 int HySocketWrite(void *handle, void *buf, size_t len);

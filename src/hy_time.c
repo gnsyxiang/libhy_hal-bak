@@ -20,7 +20,7 @@
 #include <stdio.h>
 
 #include "hy_time.h"
-#include "time_wrapper.h"
+#include "time.h"
 
 time_t HyTimeGetTick(void)
 {
@@ -37,12 +37,12 @@ time_t HyTimeGetCurMs(void)
     return time_get_cur_ms();
 }
 
-void HyTimeDelayMs(hy_uint32_t ms)
+void HyTimeDelayMs(size_t ms)
 {
     time_delay_ms(ms);
 }
 
-void HyTimeDelayUs(hy_uint32_t us)
+void HyTimeDelayUs(size_t us)
 {
     time_delay_us(us);
 }

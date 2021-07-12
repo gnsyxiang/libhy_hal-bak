@@ -2,7 +2,7 @@
  * 
  * Release under GPLv-3.0.
  * 
- * @file    time_wrapper.c
+ * @file    time.c
  * @brief   
  * @author  gnsyxiang <gnsyxiang@163.com>
  * @date    30/06 2021 17:31
@@ -21,7 +21,7 @@
 #include <sys/time.h>
 #include <errno.h>
 
-#include "time_wrapper.h"
+#include "time.h"
 
 #define BASE_NUM	(1000)
 #define BASE_NUM_2	(1000 * 1000)
@@ -31,7 +31,7 @@
 #define take_remainder_1000(num)	((num) % BASE_NUM)
 #define take_multiplier_1000(num)	((num) * BASE_NUM)
 
-static void _delay_com(uint32_t us)
+static void _delay_com(size_t us)
 {
     struct timeval tv;
     tv.tv_sec   = 0;
@@ -62,12 +62,12 @@ time_t time_get_cur_ms(void)
     return time_get_cur_us() / 1000;
 }
 
-void time_delay_ms(hy_uint32_t ms)
+void time_delay_ms(size_t ms)
 {
     _delay_com(ms * BASE_NUM);
 }
 
-void time_delay_us(hy_uint32_t us)
+void time_delay_us(size_t us)
 {
     _delay_com(us);
 }

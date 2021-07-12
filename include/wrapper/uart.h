@@ -2,7 +2,7 @@
  *
  * Release under GPLv-3.0.
  * 
- * @file    uart_wrapper.h
+ * @file    uart.h
  * @brief   
  * @author  gnsyxiang <gnsyxiang@163.com>
  * @date    09/07 2021 17:27
@@ -17,8 +17,8 @@
  * 
  *     last modified: 09/07 2021 17:27
  */
-#ifndef __LIBHY_HAL_INCLUDE_WRAPPER_UART_WRAPPER_H_
-#define __LIBHY_HAL_INCLUDE_WRAPPER_UART_WRAPPER_H_
+#ifndef __LIBHY_HAL_INCLUDE_WRAPPER_UART_H_
+#define __LIBHY_HAL_INCLUDE_WRAPPER_UART_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -27,7 +27,7 @@ extern "C" {
 #include "hy_uart.h"
 
 void *uart_create(HyHalUartConfig_t *uart_config);
-void uart_destroy(void *handle);
+void uart_destroy(void **handle);
 
 int uart_write(void *handle, void *buf, size_t len);
 

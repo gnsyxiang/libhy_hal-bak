@@ -2,7 +2,7 @@
  * 
  * Release under GPLv-3.0.
  * 
- * @file    socket_wrapper.c
+ * @file    socket.c
  * @brief   
  * @author  gnsyxiang <gnsyxiang@163.com>
  * @date    05/12 2020 09:50
@@ -28,13 +28,20 @@
 #include <fcntl.h>
 #include <errno.h>
 
-#include "socket_wrapper.h"
+#include "socket.h"
 
 #include "hy_type.h"
 #include "hy_error.h"
+#include "utils.h"
 #include "log.h"
 
 #define ALONE_DEBUG 1
+
+typedef struct {
+    int fd;
+
+    HySocketConfigSave_t config_save;
+} socket_context_t;
 
 static inline void _socket_destroy(socket_context_t *context)
 {
@@ -79,6 +86,15 @@ static int _socket_create(socket_context_t *context,
     return HY_ERR_OK;
 }
 
+void socket_destroy(void **handle)
+{
+    socket_context_t **context = (socket_context_t **)handle;
+
+    _socket_destroy(*context);
+
+    FREE(context);
+}
+
 void *socket_create(HySocketConfig_t *socket_config)
 {
     socket_context_t *context = NULL;
@@ -103,20 +119,14 @@ void *socket_create(HySocketConfig_t *socket_config)
         return context;
     } while (0);
 
-    socket_destroy(context);
+    socket_destroy((void **)&context);
 
     return context;
 }
 
-void socket_destroy(socket_context_t *context)
+int socket_process(void *handle)
 {
-    _socket_destroy(context);
-
-    free(context);
-}
-
-int socket_process(socket_context_t *context)
-{
+    socket_context_t *context = handle;
     HySocketConfigSave_t *config_save = &context->config_save;
 
 #define BUF_LEN (1024)
@@ -142,8 +152,9 @@ int socket_process(socket_context_t *context)
     return 0;
 }
 
-int socket_write(socket_context_t *context, void *buf, size_t len)
+int socket_write(void *handle, void *buf, size_t len)
 {
+    socket_context_t *context = handle;
     HySocketConfigSave_t *config_save = &context->config_save;
 
     int ret = send(context->fd, buf, len, 0);

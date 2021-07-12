@@ -29,9 +29,9 @@ install_includedir          = $(includedir)/@project_name@
 # add necessary content
 # ---------------------
 _no_install_headers_com     += \
-                               uart_wrapper.h \
-                               socket_wrapper.h \
-                               time_wrapper.h
+                               uart.h \
+                               socket.h \
+                               time.h
 
 _install_headers_com        +=
 

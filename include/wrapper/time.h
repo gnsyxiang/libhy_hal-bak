@@ -2,7 +2,7 @@
  *
  * Release under GPLv-3.0.
  * 
- * @file    time_wrapper.h
+ * @file    time.h
  * @brief   
  * @author  gnsyxiang <gnsyxiang@163.com>
  * @date    30/06 2021 17:28
@@ -17,8 +17,8 @@
  * 
  *     last modified: 30/06 2021 17:28
  */
-#ifndef __LIBHY_HAL_INCLUDE_WRAPPER_TIME_WRAPPER_H_
-#define __LIBHY_HAL_INCLUDE_WRAPPER_TIME_WRAPPER_H_
+#ifndef __LIBHY_HAL_INCLUDE_WRAPPER_TIME_H_
+#define __LIBHY_HAL_INCLUDE_WRAPPER_TIME_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -34,9 +34,9 @@ time_t time_get_cur_us(void);
 
 time_t time_get_cur_ms(void);
 
-void time_delay_ms(hy_uint32_t ms);
+void time_delay_ms(size_t ms);
 
-void time_delay_us(hy_uint32_t us);
+void time_delay_us(size_t us);
 
 #ifdef __cplusplus
 }

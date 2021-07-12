@@ -28,7 +28,7 @@ extern "C" {
 
 void *HyMalloc(size_t size);
 
-void HyFree(void *ptr);
+void HyFree(void **ptr);
 
 void *HyCalloc(size_t nmemb, size_t size);
 

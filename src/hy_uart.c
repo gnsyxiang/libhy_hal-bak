@@ -20,7 +20,7 @@
 #include <stdio.h>
 
 #include "hy_uart.h"
-#include "uart_wrapper.h"
+#include "uart.h"
 
 #include "utils.h"
 #include "log.h"
@@ -33,9 +33,9 @@ void *HyHalUartCreate(HyHalUartConfig_t *uart_config)
     return uart_create(uart_config);
 }
 
-void HyHalUartDestroy(void *handle)
+void HyHalUartDestroy(void **handle)
 {
-    JUDGE_NULL(!handle);
+    JUDGE_NULL(!handle || !*handle);
     uart_destroy(handle);
 }
 

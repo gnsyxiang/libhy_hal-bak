@@ -51,7 +51,7 @@ typedef struct {
 } HyHalUartConfig_t;
 
 void *HyHalUartCreate(HyHalUartConfig_t *uart_config);
-void HyHalUartDestroy(void *handle);
+void HyHalUartDestroy(void **handle);
 
 int HyHalUartWrite(void *handle, void *buf, size_t len);
 
