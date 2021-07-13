@@ -29,12 +29,12 @@ typedef struct {
 
 static _main_context_t context;
 
-static void _socket_event_cb(void *handle, int state, void *args)
+static void _socket_event_cb(int state, void *args)
 {
     LOGD("state: %d \n", state);
 }
 
-static void _socket_read_cb(void *handle, void *buf, size_t len, void *args)
+static void _socket_read_cb(void *buf, size_t len, void *args)
 {
     LOGD("buf: %s \n", (char *)buf);
 }
@@ -44,9 +44,9 @@ int main(int argc, char *argv[])
     HySocketConfig_t socket_config;
     socket_config.ip = "192.168.1.57";
     socket_config.port = 7809;
-    socket_config.config_save.event_cb = _socket_event_cb;
-    socket_config.config_save.read_cb = _socket_read_cb;
-    socket_config.config_save.args = &context;
+    socket_config.config_save.event_cb  = _socket_event_cb;
+    socket_config.config_save.read_cb   = _socket_read_cb;
+    socket_config.config_save.args      = &context;
 
     context.socket_handle = HySocketCreate(&socket_config);
     if (!context.socket_handle) {

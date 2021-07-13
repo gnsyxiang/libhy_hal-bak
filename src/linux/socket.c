@@ -78,8 +78,8 @@ static int _socket_create(socket_context_t *context,
         }
 
         if (context->config_save.event_cb) {
-            context->config_save.event_cb(context,
-                    HY_SOCKET_STATE_CONNECTING, context->config_save.args);
+            context->config_save.event_cb(HY_SOCKET_STATE_CONNECTING,
+                    context->config_save.args);
         }
 
         if (0 != connect(context->fd,
@@ -91,8 +91,8 @@ static int _socket_create(socket_context_t *context,
         _set_nonblocking(context->fd);
 
         if (context->config_save.event_cb) {
-            context->config_save.event_cb(context,
-                    HY_SOCKET_STATE_CONNECTED, context->config_save.args);
+            context->config_save.event_cb(HY_SOCKET_STATE_CONNECTED,
+                    context->config_save.args);
         }
 
         LOGI("fd: %d, ip: %s, port: %d \n",
@@ -158,8 +158,8 @@ int socket_process(void *handle)
     if (ret <= 0) {
         if (0 == ret) {
             if (config_save->event_cb) {
-                config_save->event_cb(context,
-                        HY_SOCKET_STATE_DISCONNECT, config_save->args);
+                config_save->event_cb(HY_SOCKET_STATE_DISCONNECT,
+                        config_save->args);
             }
             LOGE("recv data error, err: %d<%s> \n", errno, strerror(errno));
             return -1;
@@ -170,7 +170,7 @@ int socket_process(void *handle)
         }
     } else {
         if (config_save->read_cb) {
-            config_save->read_cb(context, buf, ret, config_save->args);
+            config_save->read_cb(buf, ret, config_save->args);
         }
     }
 
@@ -186,8 +186,8 @@ int socket_write(void *handle, void *buf, size_t len)
     if (ret <= 0) {
         if (0 == ret) {
             if (config_save->event_cb) {
-                config_save->event_cb(context,
-                        HY_SOCKET_STATE_DISCONNECT, config_save->args);
+                config_save->event_cb(HY_SOCKET_STATE_DISCONNECT,
+                        config_save->args);
             }
             LOGE("send data error, err: %d<%s> \n", errno, strerror(errno));
             return -1;
