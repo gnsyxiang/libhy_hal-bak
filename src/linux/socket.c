@@ -50,6 +50,14 @@ static inline void _socket_destroy(socket_context_t *context)
     }
 }
 
+static inline int _set_nonblocking(int fd)
+{
+    int old_option = fcntl(fd, F_GETFL);
+    int new_option = old_option | O_NONBLOCK;
+    fcntl(fd, F_SETFL, new_option);
+    return old_option;
+}
+
 static int _socket_create(socket_context_t *context,
         HySocketConfig_t *socket_config)
 {
@@ -79,6 +87,8 @@ static int _socket_create(socket_context_t *context,
             LOGE("connect faild \n");
             break;
         }
+
+        _set_nonblocking(context->fd);
 
         if (context->config_save.event_cb) {
             context->config_save.event_cb(context,
