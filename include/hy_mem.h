@@ -25,11 +25,8 @@ extern "C" {
 #endif
 
 #include <stdio.h>
+#include <stdlib.h>
 
-#define HY_MEMSET(ptr)                          \
-    do {                                        \
-        memset((ptr), '\0', sizeof(*(ptr)));    \
-    } while (0)
 #define HY_MALLOC_RETURN_VAL(size, ret) \
     ({                                  \
         void *ptr = NULL;               \
