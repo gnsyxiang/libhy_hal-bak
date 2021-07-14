@@ -26,9 +26,60 @@ extern "C" {
 
 #include <stdio.h>
 
+#define HY_MEMSET(ptr)                          \
+    do {                                        \
+        memset((ptr), '\0', sizeof(*(ptr)));    \
+    } while (0)
+#define HY_MALLOC_RETURN_VAL(size, ret) \
+    ({                                  \
+        void *ptr = NULL;               \
+        ptr = malloc(size);             \
+        if (!ptr) {                     \
+            LOGE("malloc faild \n");    \
+            return ret;                 \
+        } else {                        \
+            memset(ptr, '\0', size);    \
+        }                               \
+        ptr;                            \
+     })
+
+#define HY_MALLOC_RETURN(size)          \
+    ({                                  \
+        void *ptr = NULL;               \
+        ptr = malloc(size);             \
+        if (!ptr) {                     \
+            LOGE("malloc faild \n");    \
+            return;                     \
+        } else {                        \
+            memset(ptr, '\0', size);    \
+        }                               \
+        ptr;                            \
+     })
+
+#define HY_MALLOC_BREAK(size)           \
+    ({                                  \
+        void *ptr = NULL;               \
+        ptr = malloc(size);             \
+        if (!ptr) {                     \
+            LOGE("malloc faild \n");    \
+            break;                      \
+        } else {                        \
+            memset(ptr, '\0', size);    \
+        }                               \
+        ptr;                            \
+     })
+
+#define HY_FREE(pptr)           \
+    do {                        \
+        if (pptr && *pptr) {    \
+            free(*pptr);        \
+            *pptr = NULL;       \
+        }                       \
+    } while (0)
+
 void *HyMalloc(size_t size);
 
-void HyFree(void **ptr);
+void HyFree(void **pptr);
 
 void *HyCalloc(size_t nmemb, size_t size);
 

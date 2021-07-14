@@ -19,6 +19,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "hy_mem.h"
 
@@ -29,13 +30,21 @@
 
 void *HyMalloc(size_t size)
 {
-    return malloc(size);
+    void *ptr = malloc(size);
+    if (!ptr) {
+        LOGE("malloc faild \n");
+        return NULL;
+    }
+    memset(ptr, '\0', size);
+
+    return ptr;
 }
 
-void HyFree(void **ptr)
+void HyFree(void **pptr)
 {
-    if (ptr && *ptr) {
-        FREE(ptr);
+    if (pptr && *pptr) {
+        free(*pptr);
+        *pptr = NULL;
     }
 }
 

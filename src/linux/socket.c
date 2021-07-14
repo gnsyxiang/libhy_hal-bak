@@ -32,7 +32,7 @@
 
 #include "hy_type.h"
 #include "hy_error.h"
-#include "utils.h"
+#include "hy_mem.h"
 #include "log.h"
 
 #define ALONE_DEBUG 1
@@ -110,11 +110,11 @@ void socket_destroy(void **handle)
 {
     LOGT("%s:%d \n", __func__, __LINE__);
 
-    socket_context_t **context = (socket_context_t **)handle;
+    socket_context_t *context = *handle;
 
-    _socket_destroy(*context);
+    _socket_destroy(context);
 
-    FREE(context);
+    HY_FREE(handle);
 }
 
 void *socket_create(HySocketConfig_t *socket_config)
@@ -124,12 +124,7 @@ void *socket_create(HySocketConfig_t *socket_config)
     socket_context_t *context = NULL;
 
     do {
-        context = malloc(sizeof(*context));
-        if (!context) {
-            LOGE("calloc faild \n");
-            break;
-        }
-        memset(context, '\0', sizeof(*context));
+        context = HY_MALLOC_BREAK(sizeof(*context));
 
         memcpy(&context->config_save, &socket_config->config_save,
                 sizeof(context->config_save));
