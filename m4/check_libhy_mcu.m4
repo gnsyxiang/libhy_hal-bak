@@ -57,7 +57,7 @@ AC_DEFUN([CHECK_LIBHY_MCU], [
                     HY_MCU_LIBS=""
 
                     # clear cache
-                    unset ac_cv_search_HyMalloc
+                    unset ac_cv_search_HySystemCreate
                     AC_SEARCH_LIBS([HySystemCreate], [hy_mcu],
                             [have_hy_mcu=yes
                                 HY_MCU_LIBS="$LIBS"],

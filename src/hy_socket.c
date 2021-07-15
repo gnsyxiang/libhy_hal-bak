@@ -22,32 +22,32 @@
 #include "hy_socket.h"
 #include "socket.h"
 
-#include "utils.h"
-#include "log.h"
+#include "hy_utils/hy_assert.h"
+#include "hy_utils/hy_log.h"
 
 #define ALONE_DEBUG 1
 
 void *HySocketCreate(HySocketConfig_t *socket_config)
 {
-    JUDGE_NULL_RET(!socket_config, NULL);
+    ASSERT_NULL_RET_VAL(!socket_config, NULL);
     return socket_create(socket_config);
 }
 
 void HySocketDestroy(void **handle)
 {
-    JUDGE_NULL(!handle || !*handle);
+    ASSERT_NULL_RET(!handle || !*handle);
     socket_destroy(handle);
 }
 
 int HySocketProcess(void *handle)
 {
-    JUDGE_NULL_RET(!handle, -1);
+    ASSERT_NULL_RET_VAL(!handle, -1);
     return socket_process(handle);
 }
 
 int HySocketWrite(void *handle, void *buf, size_t len)
 {
-    JUDGE_NULL_RET(!handle || !buf, -1);
+    ASSERT_NULL_RET_VAL(!handle || !buf, -1);
     return socket_write(handle, buf, len);
 }
 

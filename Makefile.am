@@ -56,19 +56,23 @@ _no_error_com       += \
                        -Wno-error=unused-but-set-variable \
                        -Wno-error=unused-result
 
-_remove_unuse_func  += \
-                       -ffunction-sections \
-                       -fdata-sections
-
 CPPFLAGS_COM        += \
                        -pipe \
                        $(_no_error_com) \
                        $(ACLOCAL_AMFLAGS)
 
+LIB_LDFLAGS_COM     += -rdynamic
+
+_remove_unuse_func  += \
+                       -ffunction-sections \
+                       -fdata-sections
 CFLAGS_COM          += $(_remove_unuse_func)
 CXXFLAGS_COM        += $(_remove_unuse_func)
-LIB_LDFLAGS_COM     += -rdynamic
 BIN_LDFLAGS_COM     += -Wl,--gc-sections
+
+if COMPILE_LIBHY_UTILS
+CPPFLAGS_COM        += $(HY_UTILS_INCS)
+endif
 
 export CPPFLAGS_COM
 export CFLAGS_COM

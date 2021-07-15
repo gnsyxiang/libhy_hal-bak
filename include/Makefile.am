@@ -30,19 +30,12 @@ install_includedir          = $(includedir)/@project_name@
 # ---------------------
 # add necessary content
 # ---------------------
-_no_install_headers_com     += \
-                               utils.h \
-                               log.h
+_no_install_headers_com     +=
 
 _install_headers_com        += \
                                hy_socket.h \
                                hy_time.h \
-                               hy_string.h \
-                               hy_mem.h \
-                               hy_uart.h \
-                               hy_type.h \
-                               hy_compile.h \
-                               hy_error.h
+                               hy_uart.h
 
 # ------------------
 # make install files

@@ -22,26 +22,26 @@
 #include "hy_uart.h"
 #include "uart.h"
 
-#include "utils.h"
-#include "log.h"
+#include "hy_utils/hy_assert.h"
+#include "hy_utils/hy_log.h"
 
 #define ALONE_DEBUG 1
 
 void *HyHalUartCreate(HyHalUartConfig_t *uart_config)
 {
-    JUDGE_NULL_RET(!uart_config, NULL);
+    ASSERT_NULL_RET_VAL(!uart_config, NULL);
     return uart_create(uart_config);
 }
 
 void HyHalUartDestroy(void **handle)
 {
-    JUDGE_NULL(!handle || !*handle);
+    ASSERT_NULL_RET(!handle || !*handle);
     uart_destroy(handle);
 }
 
 int HyHalUartWrite(void *handle, void *buf, size_t len)
 {
-    JUDGE_NULL_RET(!handle, -1);
+    ASSERT_NULL_RET_VAL(!handle, -1);
     return uart_write(handle, buf, len);
 }
 

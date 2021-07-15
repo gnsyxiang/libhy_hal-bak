@@ -30,10 +30,10 @@
 
 #include "socket.h"
 
-#include "hy_type.h"
-#include "hy_error.h"
-#include "hy_mem.h"
-#include "log.h"
+#include "hy_utils/hy_type.h"
+#include "hy_utils/hy_error.h"
+#include "hy_utils/hy_mem.h"
+#include "hy_utils/hy_log.h"
 
 #define ALONE_DEBUG 1
 
@@ -88,7 +88,7 @@ static int _socket_create(socket_context_t *context,
             break;
         }
 
-        _set_nonblocking(context->fd);
+        // _set_nonblocking(context->fd);
 
         if (context->config_save.event_cb) {
             context->config_save.event_cb(HY_SOCKET_STATE_CONNECTED,

@@ -21,7 +21,7 @@
 
 #include "hy_time.h"
 
-#include "log.h"
+#include "hy_utils/hy_log.h"
 
 #define ALONE_DEBUG 1
 

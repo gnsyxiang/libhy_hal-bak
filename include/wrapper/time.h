@@ -24,9 +24,8 @@
 extern "C" {
 #endif
 
-#include <time.h>
-
-#include "hy_type.h"
+#include <stdio.h>
+#include <sys/time.h>
 
 time_t time_get_tick(void);
 

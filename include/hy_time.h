@@ -25,7 +25,7 @@ extern "C" {
 #endif
 
 #include <stdio.h>
-#include<sys/time.h>
+#include <sys/time.h>
 
 /**
  * @brief 在特定tick下，1s要多少个tick表示

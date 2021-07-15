@@ -2,7 +2,7 @@
  * 
  * Release under GPLv-3.0.
  * 
- * @file    time_wrapper.c
+ * @file    time.c
  * @brief   
  * @author  gnsyxiang <gnsyxiang@163.com>
  * @date    09/07 2021 16:48
@@ -19,7 +19,7 @@
  */
 #include <stdio.h>
 
-#include "time_wrapper.h"
+#include "time.h"
 
 time_t time_get_tick(void)
 {
@@ -36,11 +36,11 @@ time_t time_get_cur_ms(void)
     return 0;
 }
 
-void time_delay_ms(hy_uint32_t ms)
+void time_delay_ms(size_t ms)
 {
 }
 
-void time_delay_us(hy_uint32_t us)
+void time_delay_us(size_t us)
 {
 
 }

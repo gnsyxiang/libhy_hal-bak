@@ -21,7 +21,9 @@
 
 #include "hy_socket.h"
 
-#include "log.h"
+#include "hy_utils/hy_log.h"
+
+#define ALONE_DEBUG 1
 
 typedef struct {
     void *socket_handle;
