@@ -29,19 +29,19 @@
 
 void *HyHalUartCreate(HyHalUartConfig_t *uart_config)
 {
-    ASSERT_NULL_RET_VAL(!uart_config, NULL);
+    HY_ASSERT_NULL_RET_VAL(!uart_config, NULL);
     return uart_create(uart_config);
 }
 
 void HyHalUartDestroy(void **handle)
 {
-    ASSERT_NULL_RET(!handle || !*handle);
+    HY_ASSERT_NULL_RET(!handle || !*handle);
     uart_destroy(handle);
 }
 
 int HyHalUartWrite(void *handle, void *buf, size_t len)
 {
-    ASSERT_NULL_RET_VAL(!handle, -1);
+    HY_ASSERT_NULL_RET_VAL(!handle, -1);
     return uart_write(handle, buf, len);
 }
 

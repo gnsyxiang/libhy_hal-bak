@@ -29,25 +29,25 @@
 
 void *HySocketCreate(HySocketConfig_t *socket_config)
 {
-    ASSERT_NULL_RET_VAL(!socket_config, NULL);
+    HY_ASSERT_NULL_RET_VAL(!socket_config, NULL);
     return socket_create(socket_config);
 }
 
 void HySocketDestroy(void **handle)
 {
-    ASSERT_NULL_RET(!handle || !*handle);
+    HY_ASSERT_NULL_RET(!handle || !*handle);
     socket_destroy(handle);
 }
 
 int HySocketProcess(void *handle)
 {
-    ASSERT_NULL_RET_VAL(!handle, -1);
+    HY_ASSERT_NULL_RET_VAL(!handle, -1);
     return socket_process(handle);
 }
 
 int HySocketWrite(void *handle, void *buf, size_t len)
 {
-    ASSERT_NULL_RET_VAL(!handle || !buf, -1);
+    HY_ASSERT_NULL_RET_VAL(!handle || !buf, -1);
     return socket_write(handle, buf, len);
 }
 
