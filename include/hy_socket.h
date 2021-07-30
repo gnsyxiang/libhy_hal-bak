@@ -36,7 +36,7 @@ typedef enum {
 } HySocketState_t;
 
 typedef struct {
-    void (*event_cb)(int state, void *args);
+    void (*event_cb)(HySocketState_t state, void *args);
     void (*read_cb)(void *buf, size_t len, void *args);
     void *args;
 } HySocketConfigSave_t;

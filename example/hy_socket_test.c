@@ -31,7 +31,7 @@ typedef struct {
 
 static _main_context_t context;
 
-static void _socket_event_cb(int state, void *args)
+static void _socket_event_cb(HySocketState_t state, void *args)
 {
     LOGD("state: %d \n", state);
 }
