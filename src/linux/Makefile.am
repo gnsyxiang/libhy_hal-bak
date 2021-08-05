@@ -43,7 +43,8 @@ _sources_com    += \
                    hy_signal.c \
                    hy_socket.c \
                    hy_time.c \
-                   hy_uart.c
+                   hy_uart.c \
+                   hy_utils.c
 
 _cppflags_com   += \
                    $(CPPFLAGS_COM) \
