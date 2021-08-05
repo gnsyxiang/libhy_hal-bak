@@ -88,6 +88,5 @@ hy_hal.pc
 *.o
 *.lo
 *.la
-example/hy_*_test
 example/hy_*_demo
 
