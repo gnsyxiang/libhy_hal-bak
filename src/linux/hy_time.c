@@ -43,12 +43,12 @@ static void _delay_com(size_t us)
     } while(err < 0 && errno == EINTR);
 }
 
-time_t time_get_tick(void)
+time_t HyTimeGetTick(void)
 {
     return 0;
 }
 
-time_t time_get_cur_us(void)
+time_t HyTimeGetCurUs(void)
 {
     struct timeval tv;
 
@@ -57,17 +57,17 @@ time_t time_get_cur_us(void)
     return (tv.tv_sec * 1000 * 1000 + tv.tv_usec);
 }
 
-time_t time_get_cur_ms(void)
+time_t HyTimeGetCurMs(void)
 {
-    return time_get_cur_us() / 1000;
+    return HyTimeGetCurUs() / 1000;
 }
 
-void time_delay_ms(size_t ms)
+void HyTimeDelayMs(size_t ms)
 {
     _delay_com(ms * BASE_NUM);
 }
 
-void time_delay_us(size_t us)
+void HyTimeDelayUs(size_t us)
 {
     _delay_com(us);
 }

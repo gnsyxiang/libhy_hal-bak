@@ -56,12 +56,9 @@ _ldadd_com      =
 # ---------------------
 # add necessary content
 # ---------------------
-_include_com    += \
-                   -I$(top_srcdir)/include/wrapper \
-                   -I$(top_srcdir)/include
+_include_com    +=
 
-_sources_com    += \
-                   hy_time.c
+_sources_com    +=
 
 _cppflags_com   += \
                    $(CPPFLAGS_COM) \

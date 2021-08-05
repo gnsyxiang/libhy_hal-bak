@@ -41,7 +41,7 @@ _include_com    += \
 _sources_com    += \
                    hy_file.c \
                    hy_socket.c \
-                   time.c \
+                   hy_time.c \
                    hy_uart.c
 
 _cppflags_com   += \
