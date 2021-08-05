@@ -2,7 +2,7 @@
  * 
  * Release under GPLv-3.0.
  * 
- * @file    socket.c
+ * @file    hy_socket.c
  * @brief   
  * @author  gnsyxiang <gnsyxiang@163.com>
  * @date    05/12 2020 09:50
@@ -28,9 +28,10 @@
 #include <fcntl.h>
 #include <errno.h>
 
-#include "socket.h"
+#include "hy_socket.h"
 
 #include "hy_utils/hy_type.h"
+#include "hy_utils/hy_assert.h"
 #include "hy_utils/hy_error.h"
 #include "hy_utils/hy_mem.h"
 #include "hy_utils/hy_log.h"
@@ -38,10 +39,76 @@
 #define ALONE_DEBUG 1
 
 typedef struct {
-    int fd;
-
     HySocketConfigSave_t config_save;
+
+    hy_s32_t fd;
 } socket_context_t;
+
+hy_s32_t HySocketWrite(void *handle, void *buf, size_t len)
+{
+    HY_ASSERT_NULL_RET_VAL(!handle || !buf, -1);
+
+    socket_context_t *context = handle;
+    HySocketConfigSave_t *config_save = &context->config_save;
+
+    hy_s32_t ret = send(context->fd, buf, len, 0);
+    if (ret <= 0) {
+        if (0 == ret) {
+            if (config_save->event_cb) {
+                config_save->event_cb(HY_SOCKET_STATE_DISCONNECT,
+                        config_save->args);
+            }
+            LOGE("send data error, err: %d<%s> \n", errno, strerror(errno));
+            return -1;
+        } else if (ret < 0) {
+            if (errno == EINTR) {
+                ret = 0;
+            }
+        }
+    }
+
+    return ret;
+}
+
+hy_s32_t HySocketProcess(void *handle)
+{
+    HY_ASSERT_NULL_RET_VAL(!handle, -1);
+
+    socket_context_t *context = handle;
+    HySocketConfigSave_t *config_save = &context->config_save;
+
+    char buf[BUF_LEN] = {0};
+    hy_s32_t ret = recv(context->fd, buf, BUF_LEN, 0);
+    if (ret <= 0) {
+        if (0 == ret) {
+            if (config_save->event_cb) {
+                config_save->event_cb(HY_SOCKET_STATE_DISCONNECT,
+                        config_save->args);
+            }
+            LOGE("recv data error, err: %d<%s> \n", errno, strerror(errno));
+            return -1;
+        } else if (ret < 0) {
+            if (errno == EINTR) {
+                ret = 0;
+            }
+        }
+    } else {
+        if (config_save->read_cb) {
+            config_save->read_cb(buf, ret, config_save->args);
+        }
+    }
+
+    return 0;
+}
+
+static inline hy_s32_t _set_nonblocking(hy_s32_t fd)
+{
+    hy_s32_t old_option = fcntl(fd, F_GETFL);
+    hy_s32_t new_option = old_option | O_NONBLOCK;
+    fcntl(fd, F_SETFL, new_option);
+
+    return old_option;
+}
 
 static inline void _socket_destroy(socket_context_t *context)
 {
@@ -50,15 +117,7 @@ static inline void _socket_destroy(socket_context_t *context)
     }
 }
 
-static inline int _set_nonblocking(int fd)
-{
-    int old_option = fcntl(fd, F_GETFL);
-    int new_option = old_option | O_NONBLOCK;
-    fcntl(fd, F_SETFL, new_option);
-    return old_option;
-}
-
-static int _socket_create(socket_context_t *context,
+static hy_s32_t _socket_create(socket_context_t *context,
         HySocketConfig_t *socket_config)
 {
     do {
@@ -102,13 +161,13 @@ static int _socket_create(socket_context_t *context,
     } while (0);
 
     _socket_destroy(context);
-
     return HY_ERR_OK;
 }
 
-void socket_destroy(void **handle)
+void HySocketDestroy(void **handle)
 {
     LOGT("%s:%d \n", __func__, __LINE__);
+    HY_ASSERT_NULL_RET(!handle || !*handle);
 
     socket_context_t *context = *handle;
 
@@ -117,9 +176,10 @@ void socket_destroy(void **handle)
     HY_FREE(handle);
 }
 
-void *socket_create(HySocketConfig_t *socket_config)
+void *HySocketCreate(HySocketConfig_t *socket_config)
 {
     LOGT("%s:%d \n", __func__, __LINE__);
+    HY_ASSERT_NULL_RET_VAL(!socket_config, NULL);
 
     socket_context_t *context = NULL;
 
@@ -137,62 +197,7 @@ void *socket_create(HySocketConfig_t *socket_config)
         return context;
     } while (0);
 
-    socket_destroy((void **)&context);
-
+    HySocketDestroy((void **)&context);
     return context;
-}
-
-int socket_process(void *handle)
-{
-    socket_context_t *context = handle;
-    HySocketConfigSave_t *config_save = &context->config_save;
-
-#define BUF_LEN (1024)
-    char buf[BUF_LEN] = {0};
-    int ret = recv(context->fd, buf, BUF_LEN, 0);
-    if (ret <= 0) {
-        if (0 == ret) {
-            if (config_save->event_cb) {
-                config_save->event_cb(HY_SOCKET_STATE_DISCONNECT,
-                        config_save->args);
-            }
-            LOGE("recv data error, err: %d<%s> \n", errno, strerror(errno));
-            return -1;
-        } else if (ret < 0) {
-            if (errno == EINTR) {
-                ret = 0;
-            }
-        }
-    } else {
-        if (config_save->read_cb) {
-            config_save->read_cb(buf, ret, config_save->args);
-        }
-    }
-
-    return 0;
-}
-
-int socket_write(void *handle, void *buf, size_t len)
-{
-    socket_context_t *context = handle;
-    HySocketConfigSave_t *config_save = &context->config_save;
-
-    int ret = send(context->fd, buf, len, 0);
-    if (ret <= 0) {
-        if (0 == ret) {
-            if (config_save->event_cb) {
-                config_save->event_cb(HY_SOCKET_STATE_DISCONNECT,
-                        config_save->args);
-            }
-            LOGE("send data error, err: %d<%s> \n", errno, strerror(errno));
-            return -1;
-        } else if (ret < 0) {
-            if (errno == EINTR) {
-                ret = 0;
-            }
-        }
-    }
-
-    return ret;
 }
 

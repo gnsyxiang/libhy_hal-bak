@@ -40,7 +40,7 @@ _include_com    += \
 
 _sources_com    += \
                    hy_file.c \
-                   socket.c \
+                   hy_socket.c \
                    time.c \
                    hy_uart.c
 

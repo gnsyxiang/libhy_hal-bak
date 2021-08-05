@@ -29,7 +29,6 @@ install_includedir          = $(includedir)/@project_name@
 # add necessary content
 # ---------------------
 _no_install_headers_com     += \
-                               socket.h \
                                time.h
 
 _install_headers_com        +=

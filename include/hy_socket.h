@@ -27,6 +27,8 @@ extern "C" {
 #include <stdio.h>
 #include <stdint.h>
 
+#include "hy_utils/hy_type.h"
+
 typedef enum {
     HY_SOCKET_STATE_DISCONNECT,
     HY_SOCKET_STATE_CONNECTING,
@@ -42,8 +44,8 @@ typedef struct {
 } HySocketConfigSave_t;
 
 typedef struct {
-    char                *ip;
-    uint16_t            port;
+    char        *ip;
+    hy_u16_t    port;
 
     HySocketConfigSave_t config_save;
 } HySocketConfig_t;
@@ -51,8 +53,8 @@ typedef struct {
 void *HySocketCreate(HySocketConfig_t *socket_config);
 void HySocketDestroy(void **handle);
 
-int HySocketProcess(void *handle);
-int HySocketWrite(void *handle, void *buf, size_t len);
+hy_s32_t HySocketProcess(void *handle);
+hy_s32_t HySocketWrite(void *handle, void *buf, size_t len);
 
 #ifdef __cplusplus
 }

@@ -61,7 +61,6 @@ _include_com    += \
                    -I$(top_srcdir)/include
 
 _sources_com    += \
-                   hy_socket.c \
                    hy_time.c
 
 _cppflags_com   += \
