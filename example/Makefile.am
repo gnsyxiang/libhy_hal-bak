@@ -52,13 +52,13 @@ endif
 
 _ldadd_com      += $(top_builddir)/src/lib@project_name@.la
 
-bin_PROGRAMS            += hy_time_test
-hy_time_test_SOURCES    = $(_sources_com) hy_time_test.c
-hy_time_test_CPPFLAGS   = $(_cppflags_com)
-hy_time_test_CFLAGS     = $(_cflags_com)
-hy_time_test_CXXFLAGS   = $(_cxxflags_com)
-hy_time_test_LDFLAGS    = $(_ldflags_com)
-hy_time_test_LDADD      = $(_ldadd_com)
+bin_PROGRAMS                += hy_time_test
+hy_time_test_SOURCES        = $(_sources_com) hy_time_test.c
+hy_time_test_CPPFLAGS       = $(_cppflags_com)
+hy_time_test_CFLAGS         = $(_cflags_com)
+hy_time_test_CXXFLAGS       = $(_cxxflags_com)
+hy_time_test_LDFLAGS        = $(_ldflags_com)
+hy_time_test_LDADD          = $(_ldadd_com)
 
 bin_PROGRAMS                += hy_socket_test
 hy_socket_test_SOURCES      = $(_sources_com) hy_socket_test.c
@@ -67,4 +67,12 @@ hy_socket_test_CFLAGS       = $(_cflags_com)
 hy_socket_test_CXXFLAGS     = $(_cxxflags_com)
 hy_socket_test_LDFLAGS      = $(_ldflags_com)
 hy_socket_test_LDADD        = $(_ldadd_com)
+
+bin_PROGRAMS                += hy_uart_demo
+hy_uart_demo_SOURCES        = $(_sources_com) hy_uart_demo.c
+hy_uart_demo_CPPFLAGS       = $(_cppflags_com)
+hy_uart_demo_CFLAGS         = $(_cflags_com)
+hy_uart_demo_CXXFLAGS       = $(_cxxflags_com)
+hy_uart_demo_LDFLAGS        = $(_ldflags_com)
+hy_uart_demo_LDADD          = $(_ldadd_com)
 

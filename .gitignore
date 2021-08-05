@@ -88,6 +88,6 @@ hy_hal.pc
 *.o
 *.lo
 *.la
+example/hy_*_test
+example/hy_*_demo
 
-example/hy_time_test
-example/hy_socket_test
