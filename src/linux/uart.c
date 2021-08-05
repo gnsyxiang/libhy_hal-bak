@@ -21,7 +21,7 @@
 
 #include "uart.h"
 
-void *uart_create(HyHalUartConfig_t *uart_config)
+void *uart_create(HyUartConfig_t *uart_config)
 {
     return NULL;
 }

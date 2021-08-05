@@ -26,7 +26,7 @@ extern "C" {
 
 #include "hy_uart.h"
 
-void *uart_create(HyHalUartConfig_t *uart_config);
+void *uart_create(HyUartConfig_t *uart_config);
 void uart_destroy(void **handle);
 
 int uart_write(void *handle, void *buf, size_t len);

@@ -27,7 +27,7 @@
 
 #define ALONE_DEBUG 1
 
-void *HyHalUartCreate(HyHalUartConfig_t *uart_config)
+void *HyHalUartCreate(HyUartConfig_t *uart_config)
 {
     HY_ASSERT_NULL_RET_VAL(!uart_config, NULL);
     return uart_create(uart_config);

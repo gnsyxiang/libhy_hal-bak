@@ -28,32 +28,32 @@ extern "C" {
 #include <stdint.h>
 
 typedef enum {
-    HY_HAL_UART_0,
-    HY_HAL_UART_1,
-    HY_HAL_UART_2,
-    HY_HAL_UART_3,
-    HY_HAL_UART_4,
-    HY_HAL_UART_5,
+    HY_UART_0,
+    HY_UART_1,
+    HY_UART_2,
+    HY_UART_3,
+    HY_UART_4,
+    HY_UART_5,
 
-    HY_HAL_UART_MAX
-} HyHalUartNum_t;
+    HY_UART_MAX
+} HyUartNum_t;
 
 typedef struct {
     void (*read_cb)(char byte, void *args);
     void *args;
-} HyHalUartConfigSave_t;
+} HyUartConfigSave_t;
 
 typedef struct {
-    HyHalUartNum_t num;
+    HyUartNum_t num;
     uint32_t    rate;
 
-    HyHalUartConfigSave_t config_save;
-} HyHalUartConfig_t;
+    HyUartConfigSave_t config_save;
+} HyUartConfig_t;
 
-void *HyHalUartCreate(HyHalUartConfig_t *uart_config);
-void HyHalUartDestroy(void **handle);
+void *HyUartCreate(HyUartConfig_t *uart_config);
+void HyUartDestroy(void **handle);
 
-int HyHalUartWrite(void *handle, void *buf, size_t len);
+int HyUartWrite(void *handle, void *buf, size_t len);
 
 #ifdef __cplusplus
 }
