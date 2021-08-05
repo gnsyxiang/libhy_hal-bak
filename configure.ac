@@ -43,7 +43,7 @@ AC_PROG_MKDIR_P
 # Checks for libraries.
 
 # Checks for header files.
-AC_CHECK_HEADERS([fcntl.h stdint.h stdlib.h string.h sys/time.h unistd.h])
+AC_CHECK_HEADERS([arpa/inet.h fcntl.h stdint.h stdlib.h string.h sys/socket.h sys/time.h unistd.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_INLINE
@@ -52,12 +52,11 @@ AC_TYPE_OFF_T
 AC_TYPE_PID_T
 AC_TYPE_SIZE_T
 AC_TYPE_SSIZE_T
+AC_TYPE_UINT16_T
 AC_TYPE_UINT32_T
 
 # Checks for library functions.
-AC_FUNC_MALLOC
-AC_FUNC_REALLOC
-AC_CHECK_FUNCS([gettimeofday memset select strdup strerror strstr])
+AC_CHECK_FUNCS([gettimeofday memset select socket strdup strerror strstr])
 
 AC_CONFIG_FILES([Makefile
                  $project_name.pc
@@ -66,10 +65,11 @@ AC_CONFIG_FILES([Makefile
                  include/Makefile
                  include/wrapper/Makefile
                  res/Makefile
+                 res/config/Makefile
                  src/Makefile
                  src/linux/Makefile
                  src/mac/Makefile
-                 src/rtos/Makefile
                  src/mcu/Makefile
+                 src/rtos/Makefile
                  src/window/Makefile])
 AC_OUTPUT
