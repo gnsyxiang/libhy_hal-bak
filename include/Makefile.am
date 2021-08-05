@@ -36,7 +36,9 @@ _install_headers_com        += \
                                hy_uart.h
 
 if COMPILE_SELECT_TARGET_OS_LINUX
-_install_headers_com        += hy_file.h
+_install_headers_com        += \
+                               hy_file.h \
+                               hy_signal.h
 endif
 
 # ------------------

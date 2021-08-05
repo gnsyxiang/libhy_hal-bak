@@ -40,6 +40,7 @@ _include_com    += \
 
 _sources_com    += \
                    hy_file.c \
+                   hy_signal.c \
                    hy_socket.c \
                    hy_time.c \
                    hy_uart.c
