@@ -39,6 +39,7 @@ _include_com    += \
                    -I$(top_srcdir)/include
 
 _sources_com    += \
+                   hy_file.c \
                    socket.c \
                    time.c \
                    uart.c

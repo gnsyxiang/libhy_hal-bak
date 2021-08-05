@@ -37,6 +37,10 @@ _install_headers_com        += \
                                hy_time.h \
                                hy_uart.h
 
+if COMPILE_SELECT_TARGET_OS_LINUX
+_install_headers_com        += hy_file.h
+endif
+
 # ------------------
 # make install files
 # ------------------
