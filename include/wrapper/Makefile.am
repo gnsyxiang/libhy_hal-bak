@@ -30,8 +30,7 @@ install_includedir          = $(includedir)/@project_name@
 # ---------------------
 _no_install_headers_com     += \
                                socket.h \
-                               time.h \
-                               uart.h
+                               time.h
 
 _install_headers_com        +=
 

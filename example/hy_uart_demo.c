@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "hy_uart.h"
 
@@ -32,7 +33,13 @@
 
 typedef struct {
     void *log_handle;
+    void *uart_handle;
 } _main_context_t;
+
+static void _uart_read_cb(void *buf, size_t len, void *args)
+{
+    LOGE("len: %zu, buf: %s", len, buf);
+}
 
 static void _module_destroy(_main_context_t **context_pp)
 {
@@ -40,6 +47,7 @@ static void _module_destroy(_main_context_t **context_pp)
 
     // note: 增加或删除要同步到module_create_t中
     module_destroy_t module[] = {
+        {"uart",    &context->uart_handle,  HyUartDestroy},
         {"log",     &context->log_handle,   HyLogDestroy},
     };
 
@@ -53,13 +61,24 @@ static _main_context_t *_module_create(void)
     _main_context_t *context = (_main_context_t *)HY_MALLOC_RET_VAL(sizeof(*context), NULL);
 
     HyLogConfig_t log_config;
-    log_config.buf_len      = 512;
-    log_config.level        = HY_LOG_LEVEL_INFO;
-    log_config.config_file  = "./res/config/log4cplus.rc";
+    log_config.buf_len                  = 512;
+    log_config.level                    = HY_LOG_LEVEL_INFO;
+    log_config.config_file              = "./res/config/log4cplus.rc";
+
+    HyUartConfig_t uart_config;
+    uart_config.dev_name                = "/dev/ttyUSB0";
+    uart_config.rate                    = HY_RATE_115200;
+    uart_config.flow_control            = HY_UART_FLOW_CONTROL_DISABLE;
+    uart_config.bits                    = HY_UART_BITS_8;
+    uart_config.parity                  = HY_UART_PARITY_N;
+    uart_config.stop                    = HY_UART_STOP_1;
+    uart_config.config_save.read_cb     = _uart_read_cb;
+    uart_config.config_save.args        = context;
 
     // note: 增加或删除要同步到module_destroy_t中
     module_create_t module[] = {
-        {"log",  &context->log_handle,   &log_config,    (create_t)HyLogCreate,    HyLogDestroy},
+        {"log",     &context->log_handle,   &log_config,    (create_t)HyLogCreate,  HyLogDestroy},
+        {"uart",    &context->uart_handle,  &uart_config,   (create_t)HyUartCreate, HyUartDestroy},
     };
 
     RUN_CREATE(module);
@@ -73,6 +92,10 @@ int main(int argc, char *argv[])
     if (!context) {
         LOGE("_module_create faild \n");
         return -1;
+    }
+
+    while (1) {
+        HyUartProcess(context->uart_handle);
     }
 
     _module_destroy(&context);

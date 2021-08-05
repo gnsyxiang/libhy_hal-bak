@@ -42,7 +42,7 @@ _sources_com    += \
                    hy_file.c \
                    socket.c \
                    time.c \
-                   uart.c
+                   hy_uart.c
 
 _cppflags_com   += \
                    $(CPPFLAGS_COM) \
