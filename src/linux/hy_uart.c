@@ -76,12 +76,20 @@ static hy_s32_t _uart_open(_uart_context_t *context, HyUartConfig_t *uart_config
             break;
         }
 
-        context->fd = open(uart_config->dev_name, O_RDWR | O_NOCTTY | O_NDELAY);
+        hy_s32_t flag = 0;
+        if (uart_config->is_block == HY_UART_NONBLOCK) {
+            flag = O_RDWR | O_NOCTTY | O_NONBLOCK;
+        } else {
+            flag = O_RDWR | O_NOCTTY;
+        }
+
+        context->fd = open(uart_config->dev_name, flag);
         if(context->fd < 0) {
             LOGE("open faild \n");
             break;
         }
 
+        // 恢复串口为阻塞状态
         if (fcntl(context->fd, F_GETFL, 0) < 0) {
             LOGE("fcntl faild \n");
             break;
@@ -155,8 +163,8 @@ static hy_s32_t _uart_create(_uart_context_t *context, HyUartConfig_t *uart_conf
         }
 
         /*设置控制模式*/
-        options.c_cflag |= CLOCAL;//保证程序不占用串口
-        options.c_cflag |= CREAD;//保证程序可以从串口中读取数据
+        options.c_cflag |= CLOCAL;      //保证程序不占用串口
+        options.c_cflag |= CREAD;       //保证程序可以从串口中读取数据
 
         /*设置数据流控制*/
         switch(uart_config->flow_control) {
@@ -241,7 +249,7 @@ static hy_s32_t _uart_create(_uart_context_t *context, HyUartConfig_t *uart_conf
         }
 
         /*设置输出模式为原始输出*/
-        options.c_oflag &= ~OPOST;//OPOST：若设置则按定义的输出处理，否则所有c_oflag失效
+        options.c_oflag &= ~OPOST;      //OPOST：若设置则按定义的输出处理，否则所有c_oflag失效
 
         /*设置本地模式为原始模式*/
         options.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
@@ -257,7 +265,7 @@ static hy_s32_t _uart_create(_uart_context_t *context, HyUartConfig_t *uart_conf
         options.c_cc[VMIN] = 1;//最少读取一个字符
 
         /*如果发生数据溢出，只接受数据，但是不进行读操作*/
-        tcflush(context->fd,TCIFLUSH);
+        tcflush(context->fd, TCIFLUSH);
 
         /*激活配置*/
         if(tcsetattr(context->fd, TCSANOW, &options) < 0) {

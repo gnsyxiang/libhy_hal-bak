@@ -78,14 +78,30 @@ typedef enum {
     HY_UART_STOP_2,
 } HyUartStop_t;
 
+typedef enum {
+    HY_UART_BLOCK,
+    HY_UART_NONBLOCK,
+} HyUartBlock_t;
+
 typedef struct {
     void (*read_cb)(void *buf, size_t len, void *args);
     void *args;
 } HyUartConfigSave_t;
 
+/**
+ * @struct HyUartConfig_t
+ *
+ * @brief 串口配置结构体
+ *
+ * @note 注意linux和单片机的区别: \n
+ *       dev_name和is_block只用于linux, \n
+ *       num只用于单片机
+ */
 typedef struct {
-    HyUartNum_t num;
     char *dev_name;
+    HyUartBlock_t is_block;
+
+    HyUartNum_t num;
 
     HyUartRate_t rate;
     HyUartFlowControl_t flow_control;
