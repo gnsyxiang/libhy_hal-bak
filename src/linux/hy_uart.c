@@ -242,7 +242,7 @@ static hy_s32_t _uart_create(_uart_context_t *context, HyUartConfig_t *uart_conf
 
         /*设置等待时间和最小接受字符*/
         options.c_cc[VTIME] = 0;//可以在select中设置
-        options.c_cc[VMIN] = 1;//最少读取一个字符
+        options.c_cc[VMIN] = 0;//最少读取一个字符
 
         /*如果发生数据溢出，只接受数据，但是不进行读操作*/
         if (tcflush(context->fd, TCIFLUSH) == -1) {
