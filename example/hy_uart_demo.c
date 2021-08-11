@@ -39,6 +39,9 @@ typedef struct {
 static void _uart_read_cb(void *buf, size_t len, void *args)
 {
     LOGE("len: %zu, buf: %s \n", len, buf);
+    _main_context_t *context = args;
+
+    HyUartWrite(context->uart_handle, buf, len);
 }
 
 static void _module_destroy(_main_context_t **context_pp)

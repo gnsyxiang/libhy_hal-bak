@@ -43,7 +43,10 @@ typedef struct {
 
 hy_s32_t HyUartWrite(void *handle, void *buf, size_t len)
 {
-    return 0;
+    HY_ASSERT_NULL_RET_VAL(!handle | !buf, -1);
+    _uart_context_t *context = handle;
+
+    return HyFileWrite(context->fd, buf, len);
 }
 
 hy_s32_t HyUartProcess(void *handle)
