@@ -70,12 +70,12 @@ static _main_context_t *_module_create(void)
 
     HyUartConfig_t uart_config;
     uart_config.dev_name                = "/dev/ttyUSB0";
-    uart_config.is_block                = HY_UART_BLOCK;
     uart_config.rate                    = HY_RATE_115200;
     uart_config.flow_control            = HY_UART_FLOW_CONTROL_DISABLE;
     uart_config.bits                    = HY_UART_BITS_8;
     uart_config.parity                  = HY_UART_PARITY_N;
     uart_config.stop                    = HY_UART_STOP_1;
+    uart_config.config_save.is_block    = HY_UART_NONBLOCK;
     uart_config.config_save.read_cb     = _uart_read_cb;
     uart_config.config_save.args        = context;
 

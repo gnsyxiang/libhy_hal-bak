@@ -51,17 +51,34 @@ hy_s32_t HyUartWrite(void *handle, void *buf, size_t len)
 
 hy_s32_t HyUartProcess(void *handle)
 {
-    HY_ASSERT_NULL_RET_VAL(!handle, -1);
+    HY_ASSERT_NULL_RET_VAL(!handle, HY_ERR_FAILD);
     _uart_context_t *context = handle;
+    HyUartConfigSave_t *config_save = &context->config_save;
 
+    hy_s32_t ret = 0;
     char buf[BUF_LEN] = {0};
-    hy_s32_t ret = HyFileRead(context->fd, buf, BUF_LEN);
 
-    if (ret > 0 && context->config_save.read_cb) {
-        context->config_save.read_cb(buf, ret, context->config_save.args);
+    if (config_save->is_block == HY_UART_BLOCK) {
+        ret = HyFileRead(context->fd, buf, BUF_LEN);
+    } else {
+        fd_set fs_read;
+        FD_ZERO(&fs_read);
+        FD_SET(context->fd, &fs_read);
+
+        struct timeval time;
+        time.tv_sec = 0;
+        time.tv_usec = 1000;
+
+        if(select(context->fd + 1,&fs_read, NULL, NULL, &time) != -1) {
+            ret = HyFileRead(context->fd, buf, BUF_LEN);
+        }
     }
 
-    return 0;
+    if (ret > 0 && config_save->read_cb) {
+        config_save->read_cb(buf, ret, config_save->args);
+    }
+
+    return HY_ERR_OK;
 }
 
 static void _uart_close(_uart_context_t *context)
@@ -80,7 +97,7 @@ static hy_s32_t _uart_open(_uart_context_t *context, HyUartConfig_t *uart_config
         }
 
         hy_s32_t flag = 0;
-        if (uart_config->is_block == HY_UART_NONBLOCK) {
+        if (uart_config->config_save.is_block == HY_UART_NONBLOCK) {
             flag = O_RDWR | O_NOCTTY | O_NONBLOCK;
         } else {
             flag = O_RDWR | O_NOCTTY;
