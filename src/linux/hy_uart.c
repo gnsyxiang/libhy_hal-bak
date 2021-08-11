@@ -138,117 +138,57 @@ static hy_s32_t _uart_create(_uart_context_t *context, HyUartConfig_t *uart_conf
         struct termios options;
 
         /*获取终端属性*/
-        if(tcgetattr(context->fd, &options) < 0) {
+        if (tcgetattr(context->fd, &options) == -1) {
             LOGE("tcgetattr faild \n");
             break;
         }
 
         /*设置输入输出波特率，两者保持一致*/
-        switch(uart_config->rate) {
-            case HY_RATE_1200:
-                cfsetispeed(&options, B1200);
-                cfsetospeed(&options, B1200);
-                break;
-            case HY_RATE_2400:
-                cfsetispeed(&options, B2400);
-                cfsetospeed(&options, B2400);
-                break;
-            case HY_RATE_4800:
-                cfsetispeed(&options, B4800);
-                cfsetospeed(&options, B4800);
-                break;
-            case HY_RATE_9600:
-                cfsetispeed(&options, B9600);
-                cfsetospeed(&options, B9600);
-                break;
-            case HY_RATE_19200:
-                cfsetispeed(&options, B19200);
-                cfsetospeed(&options, B19200);
-                break;
-            case HY_RATE_38400:
-                cfsetispeed(&options, B38400);
-                cfsetospeed(&options, B38400);
-                break;
-            case HY_RATE_57600:
-                cfsetispeed(&options, B57600);
-                cfsetospeed(&options, B57600);
-                break;
-            case HY_RATE_115200:
-                cfsetispeed(&options, B115200);
-                cfsetospeed(&options, B115200);
-                break;
-            default:
-                LOGE("unknow rate\n");
-                break;
-        }
+        hy_u32_t b_arr[HY_RATE_MAX][2] = {
+            {HY_RATE_1200,      B1200},
+            {HY_RATE_2400,      B2400},
+            {HY_RATE_4800,      B4800},
+            {HY_RATE_9600,      B9600},
+            {HY_RATE_19200,     B19200},
+            {HY_RATE_38400,     B38400},
+            {HY_RATE_57600,     B57600},
+            {HY_RATE_115200,    B115200},
+        };
 
-        /*设置控制模式*/
-        options.c_cflag |= CLOCAL;      //保证程序不占用串口
-        options.c_cflag |= CREAD;       //保证程序可以从串口中读取数据
-
-        /*设置数据流控制*/
-        switch(uart_config->flow_control) {
-            case HY_UART_FLOW_CONTROL_DISABLE://不进行流控制
-                options.c_cflag &= ~CRTSCTS;
-                break;
-            case HY_UART_FLOW_CONTROL_HARD_ENABLE://进行硬件流控制
-                options.c_cflag |= CRTSCTS;
-                break;
-            case HY_UART_FLOW_CONTROL_SOFT_ENABLE://进行软件流控制
-                options.c_cflag |= IXON|IXOFF|IXANY;
-                break;
-            default:
-                LOGE("unknow flow control \n");
-                break;
+        if (cfsetispeed(&options, b_arr[uart_config->rate][1]) == -1 \
+                || cfsetospeed(&options, b_arr[uart_config->rate][1]) == -1) {
+            LOGE("cfsetispeed or cfsetospeed faild \n");
+            break;
         }
 
         /*设置数据位*/
-        switch(uart_config->bits) {
-            case HY_UART_BITS_5:
-                options.c_cflag &= ~CSIZE;//屏蔽其它标志位
-                options.c_cflag |= CS5;
-                break;
-            case HY_UART_BITS_6:
-                options.c_cflag &= ~CSIZE;//屏蔽其它标志位
-                options.c_cflag |= CS6;
-                break;
-            case HY_UART_BITS_7:
-                options.c_cflag &= ~CSIZE;//屏蔽其它标志位
-                options.c_cflag |= CS7;
-                break;
-            case HY_UART_BITS_8:
-                options.c_cflag &= ~CSIZE;//屏蔽其它标志位
-                options.c_cflag |= CS8;
-                break;
-            default:
-                LOGE("unknow bits \n");
-                break;
-        }
+        hy_s32_t bits_array[HY_UART_BITS_MAX] = {
+            CS5, CS6, CS7, CS8
+        };
+
+        options.c_cflag &= ~CSIZE;//屏蔽其它标志位
+        options.c_cflag |= bits_array[uart_config->bits];
 
         /*设置校验位*/
         switch(uart_config->parity) {
             /*无奇偶校验位*/
             case HY_UART_PARITY_N:
-                options.c_cflag &= ~PARENB;//PARENB：产生奇偶位，执行奇偶校验
-                break;
-                /*设为空格,即停止位为2位*/
-            case HY_UART_PARITY_S:
-                options.c_cflag &= ~PARENB;//PARENB：产生奇偶位，执行奇偶校验
-                options.c_cflag &= ~CSTOPB;//CSTOPB：使用两位停止位
+                options.c_cflag &= ~PARENB;     //PARENB：产生奇偶位，执行奇偶校验
+                options.c_iflag &= ~INPCK;      /* Disnable parity checking */
                 break;
                 /*设置奇校验*/
             case HY_UART_PARITY_O:
                 options.c_cflag |= PARENB;//PARENB：产生奇偶位，执行奇偶校验
                 options.c_cflag |= PARODD;//PARODD：若设置则为奇校验,否则为偶校验
                 options.c_cflag |= INPCK;//INPCK：使奇偶校验起作用
-                options.c_cflag |= ISTRIP;//ISTRIP：若设置则有效输入数字被剥离7个字节，否则保留全部8位
+                // options.c_cflag |= ISTRIP;//ISTRIP：若设置则有效输入数字被剥离7个字节，否则保留全部8位
                 break;
                 /*设置偶校验*/
             case HY_UART_PARITY_E:
                 options.c_cflag |= PARENB;//PARENB：产生奇偶位，执行奇偶校验
                 options.c_cflag &= ~PARODD;//PARODD：若设置则为奇校验,否则为偶校验
                 options.c_cflag |= INPCK;//INPCK：使奇偶校验起作用
-                options.c_cflag |= ISTRIP;//ISTRIP：若设置则有效输入数字被剥离7个字节，否则保留全部8位
+                // options.c_cflag |= ISTRIP;//ISTRIP：若设置则有效输入数字被剥离7个字节，否则保留全部8位
                 break;
             default:
                 LOGE("unknow parity \n");
@@ -268,6 +208,26 @@ static hy_s32_t _uart_create(_uart_context_t *context, HyUartConfig_t *uart_conf
                 break;
         }
 
+        /*设置数据流控制*/
+        switch(uart_config->flow_control) {
+            case HY_UART_FLOW_CONTROL_DISABLE://不进行流控制
+                options.c_cflag &= ~CRTSCTS;
+                break;
+            case HY_UART_FLOW_CONTROL_HARD_ENABLE://进行硬件流控制
+                options.c_cflag |= CRTSCTS;
+                break;
+            case HY_UART_FLOW_CONTROL_SOFT_ENABLE://进行软件流控制
+                options.c_cflag |= IXON|IXOFF|IXANY;
+                break;
+            default:
+                LOGE("unknow flow control \n");
+                break;
+        }
+
+        /*设置控制模式*/
+        options.c_cflag |= CLOCAL;      //保证程序不占用串口
+        options.c_cflag |= CREAD;       //保证程序可以从串口中读取数据
+
         /*设置输出模式为原始输出*/
         options.c_oflag &= ~OPOST;      //OPOST：若设置则按定义的输出处理，否则所有c_oflag失效
 
@@ -285,10 +245,13 @@ static hy_s32_t _uart_create(_uart_context_t *context, HyUartConfig_t *uart_conf
         options.c_cc[VMIN] = 1;//最少读取一个字符
 
         /*如果发生数据溢出，只接受数据，但是不进行读操作*/
-        tcflush(context->fd, TCIFLUSH);
+        if (tcflush(context->fd, TCIFLUSH) == -1) {
+            LOGE("tcflush faild \n");
+            break;
+        }
 
         /*激活配置*/
-        if(tcsetattr(context->fd, TCSANOW, &options) < 0) {
+        if (tcsetattr(context->fd, TCSANOW, &options) == -1) {
             LOGE("tcsetattr faild \n");
             break;
         }

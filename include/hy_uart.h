@@ -64,11 +64,12 @@ typedef enum {
     HY_UART_BITS_6,
     HY_UART_BITS_7,
     HY_UART_BITS_8,
+
+    HY_UART_BITS_MAX,
 } HyUartBits_t;
 
 typedef enum {
     HY_UART_PARITY_N,
-    HY_UART_PARITY_S,
     HY_UART_PARITY_O,
     HY_UART_PARITY_E,
 } HyUartParity_t;
