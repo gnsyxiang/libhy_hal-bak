@@ -84,6 +84,7 @@ hy_s32_t HyUartProcess(void *handle)
 static void _uart_close(_uart_context_t *context)
 {
     if (context->fd > 0) {
+        LOGI("uart close fd: %d \n", context->fd);
         close(context->fd);
     }
 }
@@ -115,6 +116,7 @@ static hy_s32_t _uart_open(_uart_context_t *context, HyUartConfig_t *uart_config
             break;
         }
 
+        LOGI("uart open fd: %d \n", context->fd);
         return HY_ERR_OK;
     } while (0);
 
@@ -267,11 +269,13 @@ void HyUartDestroy(void **handle)
 {
     LOGT("%s:%d \n", __func__, __LINE__);
     HY_ASSERT_NULL_RET(!handle || !*handle);
-
     _uart_context_t *context = *handle;
+
     _uart_destroy(context);
 
     HY_FREE(handle);
+
+    LOGI("uart destroy successful \n");
 }
 
 void *HyUartCreate(HyUartConfig_t *uart_config)
@@ -291,6 +295,7 @@ void *HyUartCreate(HyUartConfig_t *uart_config)
             break;
         }
 
+        LOGI("uart %s create successful \n", uart_config->dev_name);
         return context;
     } while (0);
 
