@@ -76,7 +76,10 @@ typedef enum {
 
 typedef enum {
     HY_UART_STOP_1,
+    HY_UART_STOP_1_5,
     HY_UART_STOP_2,
+
+    HY_UART_STOP_MAX,
 } HyUartStop_t;
 
 typedef enum {
