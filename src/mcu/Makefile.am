@@ -42,6 +42,7 @@ _include_com    += $(HY_MCU_INCS)
 
 _sources_com    += \
                    hy_gpio.c \
+                   hy_gpio_int.c \
                    hy_uart.c
 
 _cppflags_com   += \
