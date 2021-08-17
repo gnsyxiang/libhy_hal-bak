@@ -38,7 +38,10 @@ _include_com    += \
                    -I$(top_srcdir)/include/wrapper \
                    -I$(top_srcdir)/include
 
+_include_com    += $(HY_MCU_INCS)
+
 _sources_com    += \
+                   hy_gpio.c \
                    hy_uart.c
 
 _cppflags_com   += \

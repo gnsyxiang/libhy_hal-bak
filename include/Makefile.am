@@ -42,6 +42,11 @@ _install_headers_com        += \
                                hy_signal.h
 endif
 
+if COMPILE_SELECT_TARGET_OS_MCU
+_install_headers_com        += \
+                               hy_gpio.h
+endif
+
 # ------------------
 # make install files
 # ------------------
