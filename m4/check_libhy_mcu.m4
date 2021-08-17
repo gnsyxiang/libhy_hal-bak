@@ -69,7 +69,7 @@ AC_DEFUN([CHECK_LIBHY_MCU], [
 
             CPPFLAGS_SAVE=$CPPFLAGS
             CPPFLAGS="$CPPFLAGS $HY_MCU_INCS"
-            AC_CHECK_HEADERS([hy_mcu/hy_system.h], [], [have_hy_mcu=no])
+            AC_CHECK_HEADERS([hy_mcu/hy_func_check.h], [], [have_hy_mcu=no])
 
             CPPFLAGS=$CPPFLAGS_SAVE
             AC_SUBST(HY_MCU_INCS)

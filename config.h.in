@@ -15,8 +15,8 @@
 /* Define if the system has hy_mcu */
 #undef HAVE_HY_MCU
 
-/* Define to 1 if you have the <hy_mcu/hy_system.h> header file. */
-#undef HAVE_HY_MCU_HY_SYSTEM_H
+/* Define to 1 if you have the <hy_mcu/hy_func_check.h> header file. */
+#undef HAVE_HY_MCU_HY_FUNC_CHECK_H
 
 /* Define if the system has hy_utils */
 #undef HAVE_HY_UTILS
