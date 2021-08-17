@@ -52,6 +52,7 @@ pkgconfigdir        = $(libdir)/pkgconfig
 # ---------------------
 _no_error_com       += \
                        -W -Wall -Werror \
+                       -Wno-error=unused-function \
                        -Wno-unused-parameter \
                        -Wno-error=unused-variable \
                        -Wno-error=unused-but-set-variable \

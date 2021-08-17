@@ -46,7 +46,8 @@ if COMPILE_SELECT_TARGET_OS_MCU
 _install_headers_com        += \
                                hy_adc.h \
                                hy_gpio.h \
-                               hy_gpio_int.h
+                               hy_gpio_int.h \
+                               hy_time.h
 endif
 
 # ------------------

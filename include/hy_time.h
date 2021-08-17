@@ -25,6 +25,51 @@ extern "C" {
 #endif
 
 #include <stdio.h>
+#include <stdint.h>
+
+#include "hy_utils/hy_type.h"
+
+typedef enum {
+    HY_TIME_0,
+    HY_TIME_1,
+    HY_TIME_2,
+    HY_TIME_3,
+    HY_TIME_4,
+    HY_TIME_5,
+    HY_TIME_6,
+    HY_TIME_7,
+
+    HY_TIME_SYSTICK,
+
+    HY_TIME_MAX,
+} HyTimeNum_t;
+
+typedef enum {
+    HY_TIME_DISABLE,
+    HY_TIME_ENABLE,
+} HytimeFlag_t;
+
+typedef struct {
+    void (*time_cb)(void *args);
+    void *args;
+} HyTimeConfigSave_t;
+
+typedef struct {
+    HyTimeConfigSave_t  config_save;
+
+    HyTimeNum_t         num;
+    uint32_t            us;
+    HytimeFlag_t        flag;
+} HyTimeConfig_t;
+
+void *HyTimeCreate(HyTimeConfig_t *time_config);
+void HyTimeDestroy(void **handle);
+
+void HyTimeEnable(void *handle);
+void HyTimeDisable(void *handle);
+
+#if 0
+#include <stdio.h>
 #include <sys/time.h>
 
 /**
@@ -42,6 +87,7 @@ time_t HyTimeGetCurMs(void);
 void HyTimeDelayMs(size_t ms);
 
 void HyTimeDelayUs(size_t us);
+#endif
 
 #ifdef __cplusplus
 }
