@@ -19,22 +19,24 @@
  */
 #include <stdio.h>
 
-#include "uart.h"
+#include "hy_uart.h"
 
-#include "hy_mcu/hy_uart.h"
-
-void *uart_create(HyHalUartConfig_t *uart_config)
+void *HyUartCreate(HyUartConfig_t *uart_config)
 {
-    return HyUartCreate((HyUartConfig_t *)uart_config);
+    return NULL;
+}
+void HyUartDestroy(void **handle)
+{
+
 }
 
-void uart_destroy(void **handle)
+hy_s32_t HyUartProcess(void *handle)
 {
-    HyUartDestroy(handle);
+    return 0;
 }
 
-int uart_write(void *handle, void *buf, size_t len)
+hy_s32_t HyUartWrite(void *handle, void *buf, size_t len)
 {
-    return HyUartSendBuf(handle, buf, len);
+    return 0;
 }
 

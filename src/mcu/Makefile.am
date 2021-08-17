@@ -39,9 +39,7 @@ _include_com    += \
                    -I$(top_srcdir)/include
 
 _sources_com    += \
-                   socket.c \
-                   uart.c \
-                   time.c
+                   hy_uart.c
 
 _cppflags_com   += \
                    $(CPPFLAGS_COM) \
