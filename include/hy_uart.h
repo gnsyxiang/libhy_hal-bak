@@ -29,6 +29,11 @@ extern "C" {
 
 #include "hy_utils/hy_type.h"
 
+/**
+ * @brief 打开该宏后，可以直接使用printf输出调试信息
+ */
+#define DEBUG_UART
+
 typedef enum {
     HY_UART_0,
     HY_UART_1,
@@ -104,17 +109,17 @@ typedef struct {
  *       num只用于单片机
  */
 typedef struct {
-    char *dev_name;
-    HyUartNum_t num;
+    char                *dev_name;
+    HyUartNum_t         num;
 
-    HyUartRate_t rate;
+    HyUartRate_t        rate;
     HyUartFlowControl_t flow_control;
 
-    HyUartBits_t bits;
-    HyUartParity_t parity;
-    HyUartStop_t stop;
+    HyUartBits_t        bits;
+    HyUartParity_t      parity;
+    HyUartStop_t        stop;
 
-    HyUartConfigSave_t config_save;
+    HyUartConfigSave_t  config_save;
 } HyUartConfig_t;
 
 void *HyUartCreate(HyUartConfig_t *uart_config);
@@ -122,6 +127,15 @@ void HyUartDestroy(void **handle);
 
 hy_s32_t HyUartProcess(void *handle);
 hy_s32_t HyUartWrite(void *handle, void *buf, size_t len);
+
+#ifdef DEBUG_UART
+
+#define DEBUG_UART_NUM (HY_UART_1)
+
+void *HyUartDebugCreate(HyUartConfig_t *uart_config);
+void HyUartDebugDestroy(void **handle);
+
+#endif
 
 #ifdef __cplusplus
 }
