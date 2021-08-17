@@ -89,4 +89,6 @@ hy_hal.pc
 *.lo
 *.la
 example/hy_*_demo
+example/address_book.pb-c.c
+example/address_book.pb-c.h
 

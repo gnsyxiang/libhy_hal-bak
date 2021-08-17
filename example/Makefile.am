@@ -21,6 +21,7 @@
 # ------------------
 # defining variables
 # ------------------
+_no_error_com   =
 _include_com    =
 _sources_com    =
 _cppflags_com   =
@@ -29,15 +30,20 @@ _cxxflags_com   =
 _ldflags_com    =
 _ldadd_com      =
 bin_PROGRAMS    =
+BUILT_SOURCES   =
+CLEANFILES      =
 
 # ---------------------
 # add necessary content
 # ---------------------
+_no_error_com       += -Wno-error=address
+
 _include_com    += -I$(top_srcdir)/include
 
 _sources_com    +=
 
 _cppflags_com   += $(CPPFLAGS_COM) \
+                   $(_no_error_com) \
                    $(_include_com)
 
 _cflags_com     += $(CFLAGS_COM)
@@ -91,5 +97,34 @@ hy_mcu_time_demo_CFLAGS     = $(_cflags_com)
 hy_mcu_time_demo_CXXFLAGS   = $(_cxxflags_com)
 hy_mcu_time_demo_LDFLAGS    = $(_ldflags_com)
 hy_mcu_time_demo_LDADD      = $(_ldadd_com)
+
+if COMPILE_LIBPROTOBUF_C
+
+if COMPILE_LIBPROTOBUF_C
+_ldadd_com      += $(LIBPROTOBUF_C_LIBS)
+endif
+
+bin_PROGRAMS                += hy_protobuf-c_demo
+hy_protobuf_c_demo_SOURCES  = $(_sources_com) hy_protobuf-c_demo.c address_book.pb-c.c
+hy_protobuf_c_demo_CPPFLAGS = $(_cppflags_com)
+hy_protobuf_c_demo_CFLAGS   = $(_cflags_com)
+hy_protobuf_c_demo_CXXFLAGS = $(_cxxflags_com)
+hy_protobuf_c_demo_LDFLAGS  = $(_ldflags_com)
+hy_protobuf_c_demo_LDADD    = $(_ldadd_com)
+
+address_book.pb.c address_book.pb.h: @PROTOC_C@ address_book.proto
+	$(AM_V_GEN)@PROTOC_C@ --c_out=. address_book.proto
+
+BUILT_SOURCES += \
+                 address_book.pb.c \
+                 address_book.pb.h
+
+CLEANFILES += $(BUILT_SOURCES)
+
+install-exec-hook:
+	@gcc_prefix@objcopy -O binary main.elf main.bin
+	@gcc_prefix@objcopy -O binary protobuf-c-demo.elf protobuf-c-demo.bin
+	$(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) *.bin "$(DESTDIR)$(bindir)$$dir"
+endif
 endif
 
