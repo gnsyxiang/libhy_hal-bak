@@ -27,11 +27,17 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
+/* Define if the system has libprotobuf_c */
+#undef HAVE_LIBPROTOBUF_C
+
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
 /* Define to 1 if you have the `memset' function. */
 #undef HAVE_MEMSET
+
+/* Define to 1 if you have the <protobuf-c/protobuf-c.h> header file. */
+#undef HAVE_PROTOBUF_C_PROTOBUF_C_H
 
 /* Define to 1 if you have the `select' function. */
 #undef HAVE_SELECT
