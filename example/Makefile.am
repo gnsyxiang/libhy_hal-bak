@@ -52,6 +52,7 @@ endif
 
 _ldadd_com      += $(top_builddir)/src/lib@project_name@.la
 
+if COMPILE_SELECT_TARGET_OS_LINUX
 bin_PROGRAMS                += hy_time_demo
 hy_time_demo_SOURCES        = $(_sources_com) hy_time_demo.c
 hy_time_demo_CPPFLAGS       = $(_cppflags_com)
@@ -75,4 +76,20 @@ hy_uart_demo_CFLAGS         = $(_cflags_com)
 hy_uart_demo_CXXFLAGS       = $(_cxxflags_com)
 hy_uart_demo_LDFLAGS        = $(_ldflags_com)
 hy_uart_demo_LDADD          = $(_ldadd_com)
+endif
+
+if COMPILE_SELECT_TARGET_OS_MCU
+
+if COMPILE_LIBHY_UTILS
+_ldadd_com      += $(HY_MCU_LIBS)
+endif
+
+bin_PROGRAMS                += hy_mcu_time_demo
+hy_mcu_time_demo_SOURCES    = $(_sources_com) hy_mcu_time_demo.c
+hy_mcu_time_demo_CPPFLAGS   = $(_cppflags_com)
+hy_mcu_time_demo_CFLAGS     = $(_cflags_com)
+hy_mcu_time_demo_CXXFLAGS   = $(_cxxflags_com)
+hy_mcu_time_demo_LDFLAGS    = $(_ldflags_com)
+hy_mcu_time_demo_LDADD      = $(_ldadd_com)
+endif
 

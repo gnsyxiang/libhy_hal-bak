@@ -32,7 +32,6 @@ _no_install_headers_com     +=
 
 _install_headers_com        += \
                                hy_socket.h \
-                               hy_time.h \
                                hy_uart.h \
                                hy_utils.h
 
