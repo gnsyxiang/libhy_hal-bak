@@ -23,6 +23,7 @@
 
 #include "sysctrl.h"
 #include "flash.h"
+#include "lpm.h"
 
 #include "hy_utils/hy_mem.h"
 #include "hy_utils/hy_string.h"
@@ -72,6 +73,14 @@ static void _clock_init(void)
     stcCfg.enHClkDiv = SysctrlHclkDiv1;                 //< HCLK SYSCLK/1
     stcCfg.enPClkDiv = SysctrlPclkDiv1;                 //< PCLK 为HCLK/1
     Sysctrl_ClkInit(&stcCfg);                           //< 系统时钟初始化
+
+    //使能RCL
+    Sysctrl_ClkSourceEnable(SysctrlClkRCL, TRUE);
+}
+
+void HySystemDeepSleep(void)
+{
+    Lpm_GotoDeepSleep(FALSE);
 }
 
 void HySystemDestroy(void **handle)
