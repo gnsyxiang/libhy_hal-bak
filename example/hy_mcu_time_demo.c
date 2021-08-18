@@ -106,9 +106,9 @@ static _main_context_t *_module_create(void)
     log_config.config_file              = NULL;
 
     HyTimeConfig_t time_config;
-    time_config.num                     = HY_TIME_2;
+    time_config.num                     = HY_TIME_NUM_2;
     time_config.us                      = 1000;
-    time_config.flag                    = HY_TIME_ENABLE;
+    time_config.flag                    = HY_TIME_FLAG_ENABLE;
     time_config.config_save.time_cb     = _time_cb;
     time_config.config_save.args        = context;
 

@@ -23,6 +23,7 @@
 
 #include "timer3.h"
 #include "bt.h"
+#include "lptim.h"
 
 #include "hy_utils/hy_mem.h"
 #include "hy_utils/hy_string.h"
@@ -33,16 +34,18 @@
 
 typedef struct {
     HyTimeConfigSave_t config_save;
+
+    HyTimeNum_t         num;
 } _time_context_t;
 
-static _time_context_t *context_arr[HY_TIME_MAX] = {0};
+static _time_context_t *context_arr[HY_TIME_NUM_MAX] = {0};
 
 void Tim0_IRQHandler(void)
 {
     if(TRUE == Bt_GetIntFlag(TIM0, BtUevIrq)) {
         Bt_ClearIntFlag(TIM0,BtUevIrq); //中断标志清零
 
-        _time_context_t *context = context_arr[HY_TIME_0];
+        _time_context_t *context = context_arr[HY_TIME_NUM_0];
         context->config_save.time_cb(context->config_save.args);
     }
 }
@@ -52,7 +55,17 @@ void Tim3_IRQHandler(void)
     if (TRUE == Tim3_GetIntFlag(Tim3UevIrq)) {
         Tim3_ClearIntFlag(Tim3UevIrq);
 
-        _time_context_t *context = context_arr[HY_TIME_3];
+        _time_context_t *context = context_arr[HY_TIME_NUM_3];
+        context->config_save.time_cb(context->config_save.args);
+    }
+}
+
+void LpTim_IRQHandler(void)
+{
+    if (TRUE == Lptim_GetItStatus(M0P_LPTIMER)) {
+        Lptim_ClrItStatus(M0P_LPTIMER);             //清除LPTimer的中断标志位
+
+        _time_context_t *context = context_arr[HY_TIME_NUM_LP_0];
         context->config_save.time_cb(context->config_save.args);
     }
 }
@@ -124,6 +137,70 @@ static void App_Timer3Cfg(uint16_t u16Period)
     Tim3_M0_Run();   //TIM3 运行。
 }
 
+static void App_LPTimerInit(HyTimeConfig_t *time_config)
+{
+    stc_lptim_cfg_t    stcLptCfg;
+    DDL_ZERO_STRUCT(stcLptCfg);
+
+    ///< 使能LPTIM0 外设时钟
+    Sysctrl_SetPeripheralGate(SysctrlPeripheralLpTim, TRUE);
+
+    stcLptCfg.enGate   = LptimGateLow;
+    stcLptCfg.enGatep  = LptimGatePLow;
+    stcLptCfg.enTcksel = LptimRcl;
+    stcLptCfg.enTogen  = LptimTogEnLow;
+    stcLptCfg.enCt     = LptimTimerFun;
+    stcLptCfg.enMd     = LptimMode2;            //工作模式为模式1：无自动重装载16位计数器/定时器
+    stcLptCfg.u16Arr   = 0x10000 - 32768;                 //预装载寄存器值
+    Lptim_Init(M0P_LPTIMER, &stcLptCfg);
+
+    Lptim_ClrItStatus(M0P_LPTIMER);             //清除中断标志位
+    Lptim_ConfIt(M0P_LPTIMER, TRUE);            //允许LPTIMER中断
+    EnableNvic(LPTIM_IRQn, IrqLevel3, TRUE);
+
+    if (time_config->flag) {
+        Lptim_Cmd(M0P_LPTIMER, TRUE);    //LPT 运行
+    }
+}
+
+static void _time_enable_disable(HyTimeNum_t num, HytimeFlag_t flag)
+{
+    switch (num) {
+        case HY_TIME_NUM_0:
+            if (flag == HY_TIME_FLAG_ENABLE) {
+                Bt_M0_Run(TIM0);                                //TIM0 运行。
+            } else {
+                Bt_M0_Stop(TIM0);
+            }
+            break;
+        case HY_TIME_NUM_LP_0:
+            if (flag == HY_TIME_FLAG_ENABLE) {
+                Lptim_Cmd(M0P_LPTIMER, TRUE);    //LPT 运行
+            } else {
+                Lptim_Cmd(M0P_LPTIMER, FALSE);    //LPT 运行
+            }
+            break;
+        default:
+            break;
+    }
+}
+
+void HyTimeEnable(void *handle)
+{
+    HY_ASSERT_NULL_RET(!handle);
+    _time_context_t *context = handle;
+
+    _time_enable_disable(context->num, HY_TIME_FLAG_ENABLE);
+}
+
+void HyTimeDisable(void *handle)
+{
+    HY_ASSERT_NULL_RET(!handle);
+    _time_context_t *context = handle;
+
+    _time_enable_disable(context->num, HY_TIME_FLAG_DISABLE);
+}
+
 void HyTimeDestroy(void **handle)
 {
     LOGT("%s:%d \n", __func__, __LINE__);
@@ -144,10 +221,19 @@ void *HyTimeCreate(HyTimeConfig_t *time_config)
         context = (_time_context_t *)HY_MALLOC_BREAK(sizeof(*context));
 
         HY_MEMCPY(&context->config_save, &time_config->config_save);
+        context->num = time_config->num;
 
-        // App_Timer3Cfg(time_config->time_ms);
-        // App_Timer0Cfg(30000);
-        App_Timer0Cfg(500);
+        switch (time_config->num) {
+            case HY_TIME_NUM_0:
+                // App_Timer0Cfg(30000);
+                App_Timer0Cfg(500);
+                break;
+            case HY_TIME_NUM_LP_0:
+                App_LPTimerInit(time_config);
+                break;
+            default:
+                break;
+        }
 
         context_arr[time_config->num] = context;
 

@@ -30,23 +30,26 @@ extern "C" {
 #include "hy_utils/hy_type.h"
 
 typedef enum {
-    HY_TIME_0,
-    HY_TIME_1,
-    HY_TIME_2,
-    HY_TIME_3,
-    HY_TIME_4,
-    HY_TIME_5,
-    HY_TIME_6,
-    HY_TIME_7,
+    HY_TIME_NUM_0,
+    HY_TIME_NUM_1,
+    HY_TIME_NUM_2,
+    HY_TIME_NUM_3,
+    HY_TIME_NUM_4,
+    HY_TIME_NUM_5,
+    HY_TIME_NUM_6,
+    HY_TIME_NUM_7,
 
-    HY_TIME_SYSTICK,
+    HY_TIME_NUM_LP_0,
+    HY_TIME_NUM_LP_1,
 
-    HY_TIME_MAX,
+    HY_TIME_NUM_SYSTICK,
+
+    HY_TIME_NUM_MAX,
 } HyTimeNum_t;
 
 typedef enum {
-    HY_TIME_DISABLE,
-    HY_TIME_ENABLE,
+    HY_TIME_FLAG_DISABLE,
+    HY_TIME_FLAG_ENABLE,
 } HytimeFlag_t;
 
 typedef struct {
