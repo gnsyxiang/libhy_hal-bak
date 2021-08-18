@@ -129,12 +129,9 @@ hy_s32_t HyUartProcess(void *handle);
 hy_s32_t HyUartWrite(void *handle, void *buf, size_t len);
 
 #ifdef DEBUG_UART
-
 #define DEBUG_UART_NUM (HY_UART_1)
-
-void *HyUartDebugCreate(HyUartConfig_t *uart_config);
-void HyUartDebugDestroy(void **handle);
-
+#define HyUartDebugCreate HyUartCreate
+#define HyUartDebugDestroy HyUartDestroy
 #endif
 
 #ifdef __cplusplus

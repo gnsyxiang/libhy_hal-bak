@@ -202,7 +202,7 @@ void *HyUartCreate(HyUartConfig_t *uart_config)
 }
 
 #ifdef DEBUG_UART
-
+#ifdef __GNUC__
 int _write(int fd, char *ptr, int len)
 {
     /*
@@ -232,21 +232,16 @@ int _write(int fd, char *ptr, int len)
     }
     return i;
 }
-
-void HyUartDebugDestroy(void **handle)
+#endif
+#if __CC_ARM
+int fputc(int ch, FILE *f)
 {
-    LOGT("%s:%d \n", __func__, __LINE__);
+    M0P_UART_TypeDef* uart[] = {
+        M0P_UART0,
+        M0P_UART1,
+    };
 
-    if (handle && *handle) {
-        HyUartDestroy(handle);
-    }
+    return Uart_SendDataPoll(uart[HY_UART_1], (hy_u8_t)ch);
 }
-
-void *HyUartDebugCreate(HyUartConfig_t *uart_config)
-{
-    LOGT("%s:%d \n", __func__, __LINE__);
-
-    return HyUartCreate(uart_config);
-}
-
+#endif
 #endif
