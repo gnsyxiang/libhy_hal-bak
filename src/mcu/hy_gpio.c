@@ -28,8 +28,7 @@
 
 #define ALONE_DEBUG 1
 
-static void _init_PA_pin(HyGpio_t *gpio,
-        en_gpio_dir_t dir, HyGpioLevel_t level)
+static void _init_PA_pin(HyGpio_t *gpio, en_gpio_dir_t dir)
 {
     en_gpio_port_t group[HY_GPIO_GROUP_MAX] = {
         GpioPortA, GpioPortB, GpioPortC, GpioPortD
@@ -98,17 +97,17 @@ static void _init_PA_pin(HyGpio_t *gpio,
     }
 }
 
-static void _init_PB_pin(HyGpio_t *gpio, en_gpio_dir_t dir, HyGpioLevel_t level)
+static void _init_PB_pin(HyGpio_t *gpio, en_gpio_dir_t dir)
 {
 
 }
 
-static void _init_PC_pin(HyGpio_t *gpio, en_gpio_dir_t dir, HyGpioLevel_t level)
+static void _init_PC_pin(HyGpio_t *gpio, en_gpio_dir_t dir)
 {
 
 }
 
-static void _init_PD_pin(HyGpio_t *gpio, en_gpio_dir_t dir, HyGpioLevel_t level)
+static void _init_PD_pin(HyGpio_t *gpio, en_gpio_dir_t dir)
 {
     en_gpio_port_t group[HY_GPIO_GROUP_MAX] = {
         GpioPortA, GpioPortB, GpioPortC, GpioPortD
@@ -158,36 +157,38 @@ void HyGpioSetOutput(HyGpio_t *gpio, HyGpioLevel_t level)
 {
     switch (gpio->group) {
         case HY_GPIO_GROUP_PA:
-            _init_PA_pin(gpio, GpioDirOut, level);
+            _init_PA_pin(gpio, GpioDirOut);
             break;
         case HY_GPIO_GROUP_PB:
-            _init_PB_pin(gpio, GpioDirOut, level);
+            _init_PB_pin(gpio, GpioDirOut);
             break;
         case HY_GPIO_GROUP_PC:
-            _init_PC_pin(gpio, GpioDirOut, level);
+            _init_PC_pin(gpio, GpioDirOut);
             break;
         case HY_GPIO_GROUP_PD:
-            _init_PD_pin(gpio, GpioDirOut, level);
+            _init_PD_pin(gpio, GpioDirOut);
             break;
         default:
             break;
     }
+
+    HyGpioSetLevel(gpio, level);
 }
 
 void HyGpioSetInput(HyGpio_t *gpio)
 {
     switch (gpio->group) {
         case HY_GPIO_GROUP_PA:
-            _init_PA_pin(gpio, GpioDirIn, (HyGpioLevel_t)0);
+            _init_PA_pin(gpio, GpioDirIn);
             break;
         case HY_GPIO_GROUP_PB:
-            _init_PB_pin(gpio, GpioDirIn, (HyGpioLevel_t)0);
+            _init_PB_pin(gpio, GpioDirIn);
             break;
         case HY_GPIO_GROUP_PC:
-            _init_PC_pin(gpio, GpioDirIn, (HyGpioLevel_t)0);
+            _init_PC_pin(gpio, GpioDirIn);
             break;
         case HY_GPIO_GROUP_PD:
-            _init_PD_pin(gpio, GpioDirIn, (HyGpioLevel_t)0);
+            _init_PD_pin(gpio, GpioDirIn);
             break;
         default:
             break;
