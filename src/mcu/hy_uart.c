@@ -241,7 +241,12 @@ int fputc(int ch, FILE *f)
         M0P_UART1,
     };
 
-    return Uart_SendDataPoll(uart[HY_UART_1], (hy_u8_t)ch);
+    Uart_SendDataPoll(uart[HY_UART_1], (hy_u8_t)ch);
+    if ((hy_u8_t)ch == '\n') {
+        Uart_SendDataPoll(uart[HY_UART_1], '\r');
+    }
+
+    return 1;
 }
 #endif
 #endif
