@@ -42,6 +42,7 @@ build-aux/
 autom4te.cache/
 
 m4/check_project_info.m4
+m4/get_cross_gcc_info.m4
 m4/libtool.m4
 m4/lt~obsolete.m4
 m4/ltoptions.m4
@@ -88,6 +89,7 @@ hy_hal.pc
 *.o
 *.lo
 *.la
+*.elf
 example/hy_*_demo
 example/address_book.pb-c.c
 example/address_book.pb-c.h
