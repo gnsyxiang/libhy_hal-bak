@@ -86,6 +86,8 @@ void *HySystemCreate(HySystemConfig_t *system_config)
         HY_MEMCPY(&context->config_save, &system_config->config_save);
 
         _clock_init();
+
+        return context;
     } while (0);
 
     HySystemDestroy((void **)&context);
