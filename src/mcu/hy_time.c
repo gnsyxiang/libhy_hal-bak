@@ -150,12 +150,12 @@ static void App_LPTimerInit(HyTimeConfig_t *time_config)
     stcLptCfg.enTcksel = LptimRcl;
     stcLptCfg.enTogen  = LptimTogEnLow;
     stcLptCfg.enCt     = LptimTimerFun;
-    stcLptCfg.enMd     = LptimMode2;            //工作模式为模式1：无自动重装载16位计数器/定时器
-    stcLptCfg.u16Arr   = 0x10000 - 32768;                 //预装载寄存器值
+    stcLptCfg.enMd     = LptimMode2;                //工作模式为模式1：无自动重装载16位计数器/定时器
+    stcLptCfg.u16Arr   = (hy_u16_t)time_config->us; //预装载寄存器值
     Lptim_Init(M0P_LPTIMER, &stcLptCfg);
 
-    Lptim_ClrItStatus(M0P_LPTIMER);             //清除中断标志位
-    Lptim_ConfIt(M0P_LPTIMER, TRUE);            //允许LPTIMER中断
+    Lptim_ClrItStatus(M0P_LPTIMER);                 //清除中断标志位
+    Lptim_ConfIt(M0P_LPTIMER, TRUE);                //允许LPTIMER中断
     EnableNvic(LPTIM_IRQn, IrqLevel3, TRUE);
 
     if (time_config->flag) {
@@ -229,6 +229,7 @@ void *HyTimeCreate(HyTimeConfig_t *time_config)
                 App_Timer0Cfg(500);
                 break;
             case HY_TIME_NUM_LP_0:
+                time_config->us = 0;   // 内部设定2s定时，跟外界设置无关
                 App_LPTimerInit(time_config);
                 break;
             default:
