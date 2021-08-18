@@ -67,26 +67,26 @@ void App_Timer0Cfg(uint16_t u16Period)
 
     Sysctrl_SetPeripheralGate(SysctrlPeripheralBaseTim, TRUE); //Base Timer外设时钟使能
 
-    stcBtBaseCfg.enWorkMode = BtWorkMode0;                  //定时器模式
-    stcBtBaseCfg.enCT       = BtTimer;                      //定时器功能，计数时钟为内部PCLK
-    stcBtBaseCfg.enPRS      = BtPCLKDiv64;                  //PCLK/64
-    stcBtBaseCfg.enCntMode  = Bt16bitArrMode;               //自动重载16位计数器/定时器
+    stcBtBaseCfg.enWorkMode = BtWorkMode0;          //定时器模式
+    stcBtBaseCfg.enCT       = BtTimer;              //定时器功能，计数时钟为内部PCLK
+    stcBtBaseCfg.enPRS      = BtPCLKDiv8;           //PCLK/64
+    stcBtBaseCfg.enCntMode  = Bt16bitArrMode;       //自动重载16位计数器/定时器
     stcBtBaseCfg.bEnTog     = FALSE;
     stcBtBaseCfg.bEnGate    = FALSE;
     stcBtBaseCfg.enGateP    = BtGatePositive;
-    Bt_Mode0_Init(TIM0, &stcBtBaseCfg);                     //TIM0 的模式0功能初始化
+    Bt_Mode0_Init(TIM0, &stcBtBaseCfg);             //TIM0 的模式0功能初始化
 
     u16ArrValue = 0x10000 - u16Period;
-    Bt_M0_ARRSet(TIM0, u16ArrValue);                        //设置重载值(ARR = 0x10000 - 周期)
+    Bt_M0_ARRSet(TIM0, u16ArrValue);                //设置重载值(ARR = 0x10000 - 周期)
 
     u16CntValue = 0x10000 - u16Period;
-    Bt_M0_Cnt16Set(TIM0, u16CntValue);                      //设置计数初值
+    Bt_M0_Cnt16Set(TIM0, u16CntValue);              //设置计数初值
 
-    Bt_ClearIntFlag(TIM0,BtUevIrq);                         //清中断标志   
-    Bt_Mode0_EnableIrq(TIM0);                               //使能TIM0中断(模式0时只有一个中断)
-    EnableNvic(TIM0_IRQn, IrqLevel3, TRUE);                 //TIM0中断使能
+    Bt_ClearIntFlag(TIM0,BtUevIrq);                 //清中断标志   
+    Bt_Mode0_EnableIrq(TIM0);                       //使能TIM0中断(模式0时只有一个中断)
+    EnableNvic(TIM0_IRQn, IrqLevel3, TRUE);         //TIM0中断使能
 
-    Bt_M0_Run(TIM0);        //TIM0 运行。
+    Bt_M0_Run(TIM0);                                //TIM0 运行。
 }
 
 static void App_Timer3Cfg(uint16_t u16Period)
@@ -146,7 +146,8 @@ void *HyTimeCreate(HyTimeConfig_t *time_config)
         HY_MEMCPY(&context->config_save, &time_config->config_save);
 
         // App_Timer3Cfg(time_config->time_ms);
-        App_Timer0Cfg(30000);
+        // App_Timer0Cfg(30000);
+        App_Timer0Cfg(500);
 
         context_arr[time_config->num] = context;
 

@@ -38,31 +38,40 @@ typedef struct {
 
 static void _clock_init(void)
 {
+    stc_sysctrl_clk_cfg_t stcCfg;
+
     ///< 开启FLASH外设时钟
     Sysctrl_SetPeripheralGate(SysctrlPeripheralFlash, TRUE);
-
+#if 0
     ///< 因将要倍频的PLL作为系统时钟HCLK会达到48MHz：所以此处预先设置FLASH 读等待周期为1 cycle(默认值为0 cycle)
     Flash_WaitCycle(FlashWaitCycle2);
 
     ///< 时钟初始化前，优先设置要使用的时钟源：此处配置PLL
-    Sysctrl_SetRCHTrim(SysctrlRchFreq4MHz);             //PLL使用RCH作为时钟源，因此需要先设置RCH    
+    Sysctrl_SetRCHTrim(SysctrlRchFreq4MHz);             //PLL使用RCH作为时钟源，因此需要先设置RCH
 
-    stc_sysctrl_pll_cfg_t stcPLLCfg;    
+    stc_sysctrl_pll_cfg_t stcPLLCfg;
     stcPLLCfg.enInFreq    = SysctrlPllInFreq4_6MHz;     //RCH 4MHz
     stcPLLCfg.enOutFreq   = SysctrlPllOutFreq36_48MHz;  //PLL 输出48MHz
     stcPLLCfg.enPllClkSrc = SysctrlPllRch;              //输入时钟源选择RCH
     stcPLLCfg.enPllMul    = SysctrlPllMul12;            //4MHz x 12 = 48MHz
-    Sysctrl_SetPLLFreq(&stcPLLCfg);       
+    Sysctrl_SetPLLFreq(&stcPLLCfg);
 
-    stc_sysctrl_clk_cfg_t stcCfg;
-    ///< 选择PLL作为HCLK时钟源;
-    stcCfg.enClkSrc  = SysctrlClkPLL;
-    ///< HCLK SYSCLK/2
-    stcCfg.enHClkDiv = SysctrlHclkDiv1;
-    ///< PCLK 为HCLK/8
-    stcCfg.enPClkDiv = SysctrlPclkDiv1;
-    ///< 系统时钟初始化
-    Sysctrl_ClkInit(&stcCfg);     
+    stcCfg.enClkSrc  = SysctrlClkPLL;                   //< 选择PLL作为HCLK时钟源;
+#endif
+
+#if 1
+    ///< 因要使用的时钟源HCLK小于24M：此处设置FLASH 读等待周期为0 cycle(默认值也为0 cycle)
+    Flash_WaitCycle(FlashWaitCycle0);
+
+    ///< 时钟初始化前，优先设置要使用的时钟源：此处设置RCH为4MHz（默认值为4MHz）
+    Sysctrl_SetRCHTrim(SysctrlRchFreq4MHz);
+
+    stcCfg.enClkSrc    = SysctrlClkRCH;                 ///< 选择内部RCH作为HCLK时钟源;
+#endif
+
+    stcCfg.enHClkDiv = SysctrlHclkDiv1;                 //< HCLK SYSCLK/1
+    stcCfg.enPClkDiv = SysctrlPclkDiv1;                 //< PCLK 为HCLK/1
+    Sysctrl_ClkInit(&stcCfg);                           //< 系统时钟初始化
 }
 
 void HySystemDestroy(void **handle)
