@@ -178,16 +178,16 @@ void HyGpioSetInput(HyGpio_t *gpio)
 {
     switch (gpio->group) {
         case HY_GPIO_GROUP_PA:
-            _init_PA_pin(gpio, GpioDirIn, 0);
+            _init_PA_pin(gpio, GpioDirIn, (HyGpioLevel_t)0);
             break;
         case HY_GPIO_GROUP_PB:
-            _init_PB_pin(gpio, GpioDirIn, 0);
+            _init_PB_pin(gpio, GpioDirIn, (HyGpioLevel_t)0);
             break;
         case HY_GPIO_GROUP_PC:
-            _init_PC_pin(gpio, GpioDirIn, 0);
+            _init_PC_pin(gpio, GpioDirIn, (HyGpioLevel_t)0);
             break;
         case HY_GPIO_GROUP_PD:
-            _init_PD_pin(gpio, GpioDirIn, 0);
+            _init_PD_pin(gpio, GpioDirIn, (HyGpioLevel_t)0);
             break;
         default:
             break;
