@@ -223,10 +223,10 @@ int _write(int fd, char *ptr, int len)
 
     int i = 0;
     while (*ptr && (i < len)) {
-        Uart_SendDataPoll(uart[context->num], *ptr);
         if (*ptr == '\n') {
             Uart_SendDataPoll(uart[context->num], '\r');
         }
+        Uart_SendDataPoll(uart[context->num], *ptr);
         i++;
         ptr++;
     }
@@ -241,10 +241,10 @@ int fputc(int ch, FILE *f)
         M0P_UART1,
     };
 
-    Uart_SendDataPoll(uart[HY_UART_1], (hy_u8_t)ch);
     if ((hy_u8_t)ch == '\n') {
         Uart_SendDataPoll(uart[HY_UART_1], '\r');
     }
+    Uart_SendDataPoll(uart[HY_UART_1], (hy_u8_t)ch);
 
     return 1;
 }
