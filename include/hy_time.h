@@ -83,11 +83,11 @@ time_t HyTimeGetTick(void);
 
 time_t HyTimeGetCurUs(void);
 time_t HyTimeGetCurMs(void);
+#endif
 
 void HyTimeDelayMs(size_t ms);
 
 void HyTimeDelayUs(size_t us);
-#endif
 
 #ifdef __cplusplus
 }

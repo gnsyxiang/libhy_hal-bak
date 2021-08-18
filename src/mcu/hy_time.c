@@ -156,6 +156,36 @@ void *HyTimeCreate(HyTimeConfig_t *time_config)
 
     HyTimeDestroy((void **)&context);
     return NULL;
+}
 
+static void _delay_com(size_t cnt, size_t base)
+{
+    uint32_t u32end;
+    size_t start = SystemCoreClock / base;
+
+    SysTick->LOAD = 0xFFFFFF;
+    SysTick->VAL  = 0;
+    SysTick->CTRL = SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_CLKSOURCE_Msk;
+
+    while (cnt-- > 0) {
+        SysTick->VAL  = 0;
+        u32end = 0x1000000 - start;
+
+        while (SysTick->VAL > u32end) {
+            ;
+        }
+    }
+
+    SysTick->CTRL = (SysTick->CTRL & (~SysTick_CTRL_ENABLE_Msk));
+}
+
+void HyTimeDelayMs(size_t ms)
+{
+    _delay_com(ms, 1000);
+}
+
+void HyTimeDelayUs(size_t us)
+{
+    _delay_com(us, 1000000);
 }
 
