@@ -21,7 +21,6 @@
 
 #include "hy_time.h"
 
-#include "timer3.h"
 #include "bt.h"
 #include "lptim.h"
 
@@ -32,6 +31,24 @@
 
 #define ALONE_DEBUG 1
 
+#define _HY_TIME_NUM_2_STR(_buf, val)                                           \
+    ({                                                                          \
+     if      ((val) == HY_TIME_NUM_0)           _buf = "HY_TIME_NUM_0";         \
+     else if ((val) == HY_TIME_NUM_1)           _buf = "HY_TIME_NUM_1";         \
+     else if ((val) == HY_TIME_NUM_2)           _buf = "HY_TIME_NUM_2";         \
+     else if ((val) == HY_TIME_NUM_3)           _buf = "HY_TIME_NUM_3";         \
+     else if ((val) == HY_TIME_NUM_4)           _buf = "HY_TIME_NUM_4";         \
+     else if ((val) == HY_TIME_NUM_5)           _buf = "HY_TIME_NUM_5";         \
+     else if ((val) == HY_TIME_NUM_6)           _buf = "HY_TIME_NUM_6";         \
+     else if ((val) == HY_TIME_NUM_7)           _buf = "HY_TIME_NUM_7";         \
+     else if ((val) == HY_TIME_NUM_LP_0)        _buf = "HY_TIME_NUM_LP_0";      \
+     else if ((val) == HY_TIME_NUM_LP_1)        _buf = "HY_TIME_NUM_LP_1";      \
+     else if ((val) == HY_TIME_NUM_SYSTICK)     _buf = "HY_TIME_NUM_SYSTICK";   \
+     else                                       _buf = "HY_TIME_NUM_MAX";       \
+     _buf;                                                                      \
+     })
+#define HY_TIME_NUM_2_STR(val) ({char *_buf = NULL; _HY_TIME_NUM_2_STR(_buf, val);})
+
 typedef struct {
     HyTimeConfigSave_t config_save;
 
@@ -40,43 +57,41 @@ typedef struct {
 
 static _time_context_t *context_arr[HY_TIME_NUM_MAX] = {0};
 
+#define _TIME_CB(num)                                                   \
+    do {                                                                \
+        _time_context_t *context = context_arr[num];                    \
+        if (context) {                                                  \
+            HyTimeConfigSave_t *config_save = &context->config_save;    \
+            if (config_save->time_cb) {                                 \
+                config_save->time_cb(config_save->args);                \
+            }                                                           \
+        }                                                               \
+    } while (0)
+
 void Tim0_IRQHandler(void)
 {
-    if(TRUE == Bt_GetIntFlag(TIM0, BtUevIrq)) {
-        Bt_ClearIntFlag(TIM0,BtUevIrq); //中断标志清零
+    if (TRUE == Bt_GetIntFlag(TIM0, BtUevIrq)) {
+        Bt_ClearIntFlag(TIM0,BtUevIrq);
 
-        _time_context_t *context = context_arr[HY_TIME_NUM_0];
-        context->config_save.time_cb(context->config_save.args);
-    }
-}
-
-void Tim3_IRQHandler(void)
-{
-    if (TRUE == Tim3_GetIntFlag(Tim3UevIrq)) {
-        Tim3_ClearIntFlag(Tim3UevIrq);
-
-        _time_context_t *context = context_arr[HY_TIME_NUM_3];
-        context->config_save.time_cb(context->config_save.args);
+        _TIME_CB(HY_TIME_NUM_0);
     }
 }
 
 void LpTim_IRQHandler(void)
 {
     if (TRUE == Lptim_GetItStatus(M0P_LPTIMER)) {
-        Lptim_ClrItStatus(M0P_LPTIMER);             //清除LPTimer的中断标志位
+        Lptim_ClrItStatus(M0P_LPTIMER);
 
-        _time_context_t *context = context_arr[HY_TIME_NUM_LP_0];
-        context->config_save.time_cb(context->config_save.args);
+        _TIME_CB(HY_TIME_NUM_LP_0);
     }
 }
 
-void App_Timer0Cfg(uint16_t u16Period)
+static void _time0_init(HyTimeConfig_t *time_config)
 {
-    uint16_t                  u16ArrValue;
-    uint16_t                  u16CntValue;
-    stc_bt_mode0_cfg_t     stcBtBaseCfg;
+    hy_u16_t cnt = 0x10000 - time_config->us;
 
-    DDL_ZERO_STRUCT(stcBtBaseCfg);
+    stc_bt_mode0_cfg_t stcBtBaseCfg;
+    memset(&stcBtBaseCfg, '\0', sizeof(stcBtBaseCfg));
 
     Sysctrl_SetPeripheralGate(SysctrlPeripheralBaseTim, TRUE); //Base Timer外设时钟使能
 
@@ -89,58 +104,22 @@ void App_Timer0Cfg(uint16_t u16Period)
     stcBtBaseCfg.enGateP    = BtGatePositive;
     Bt_Mode0_Init(TIM0, &stcBtBaseCfg);             //TIM0 的模式0功能初始化
 
-    u16ArrValue = 0x10000 - u16Period;
-    Bt_M0_ARRSet(TIM0, u16ArrValue);                //设置重载值(ARR = 0x10000 - 周期)
-
-    u16CntValue = 0x10000 - u16Period;
-    Bt_M0_Cnt16Set(TIM0, u16CntValue);              //设置计数初值
+    Bt_M0_ARRSet(TIM0, cnt);                //设置重载值(ARR = 0x10000 - 周期)
+    Bt_M0_Cnt16Set(TIM0, cnt);              //设置计数初值
 
     Bt_ClearIntFlag(TIM0,BtUevIrq);                 //清中断标志   
     Bt_Mode0_EnableIrq(TIM0);                       //使能TIM0中断(模式0时只有一个中断)
     EnableNvic(TIM0_IRQn, IrqLevel3, TRUE);         //TIM0中断使能
 
-    Bt_M0_Run(TIM0);                                //TIM0 运行。
+    if (time_config->flag == HY_TIME_FLAG_ENABLE) {
+        Bt_M0_Run(TIM0);                            //TIM0 运行。
+    }
 }
 
-static void App_Timer3Cfg(uint16_t u16Period)
+static void _lp_time0_init(HyTimeConfig_t *time_config)
 {
-    uint16_t                    u16ArrValue;
-    uint16_t                    u16CntValue;
-    stc_tim3_mode0_cfg_t     stcTim3BaseCfg;
-
-    DDL_ZERO_STRUCT(stcTim3BaseCfg);
-
-    Sysctrl_SetPeripheralGate(SysctrlPeripheralTim3, TRUE); //Base Timer外设时钟使能
-
-    stcTim3BaseCfg.enWorkMode = Tim3WorkMode0;              //定时器模式
-    stcTim3BaseCfg.enCT       = Tim3Timer;                  //定时器功能，计数时钟为内部PCLK
-    stcTim3BaseCfg.enPRS      = Tim3PCLKDiv16;              //PCLK/16
-    stcTim3BaseCfg.enCntMode  = Tim316bitArrMode;           //自动重载16位计数器/定时器
-    stcTim3BaseCfg.bEnTog     = FALSE;
-    stcTim3BaseCfg.bEnGate    = FALSE;
-    stcTim3BaseCfg.enGateP    = Tim3GatePositive;
-
-    Tim3_Mode0_Init(&stcTim3BaseCfg);                       //TIM3 的模式0功能初始化
-
-    u16ArrValue = 0x10000 - u16Period ;
-
-    Tim3_M0_ARRSet(u16ArrValue);                            //设置重载值(ARR = 0x10000 - 周期)
-
-    u16CntValue = 0x10000 - u16Period;
-
-    Tim3_M0_Cnt16Set(u16CntValue);                          //设置计数初值
-
-    Tim3_ClearIntFlag(Tim3UevIrq);                          //清中断标志
-    Tim3_Mode0_EnableIrq();                                 //使能TIM3中断(模式0时只有一个中断)
-    EnableNvic(TIM3_IRQn, IrqLevel3, TRUE);                 //TIM3 开中断 
-
-    Tim3_M0_Run();   //TIM3 运行。
-}
-
-static void App_LPTimerInit(HyTimeConfig_t *time_config)
-{
-    stc_lptim_cfg_t    stcLptCfg;
-    DDL_ZERO_STRUCT(stcLptCfg);
+    stc_lptim_cfg_t stcLptCfg;
+    memset(&stcLptCfg, '\0', sizeof(stcLptCfg));
 
     ///< 使能LPTIM0 外设时钟
     Sysctrl_SetPeripheralGate(SysctrlPeripheralLpTim, TRUE);
@@ -159,7 +138,7 @@ static void App_LPTimerInit(HyTimeConfig_t *time_config)
     EnableNvic(LPTIM_IRQn, IrqLevel3, TRUE);
 
     if (time_config->flag) {
-        Lptim_Cmd(M0P_LPTIMER, TRUE);    //LPT 运行
+        Lptim_Cmd(M0P_LPTIMER, TRUE);               //LPT 运行
     }
 }
 
@@ -168,16 +147,16 @@ static void _time_enable_disable(HyTimeNum_t num, HytimeFlag_t flag)
     switch (num) {
         case HY_TIME_NUM_0:
             if (flag == HY_TIME_FLAG_ENABLE) {
-                Bt_M0_Run(TIM0);                                //TIM0 运行。
+                Bt_M0_Run(TIM0);                    //TIM0 运行。
             } else {
                 Bt_M0_Stop(TIM0);
             }
             break;
         case HY_TIME_NUM_LP_0:
             if (flag == HY_TIME_FLAG_ENABLE) {
-                Lptim_Cmd(M0P_LPTIMER, TRUE);    //LPT 运行
+                Lptim_Cmd(M0P_LPTIMER, TRUE);       //LPT 运行
             } else {
-                Lptim_Cmd(M0P_LPTIMER, FALSE);    //LPT 运行
+                Lptim_Cmd(M0P_LPTIMER, FALSE);      //LPT 运行
             }
             break;
         default:
@@ -209,7 +188,6 @@ void HyTimeDestroy(void **handle)
     HY_FREE(handle);
 }
 
-// @note: 该定时器指定40ms计时
 void *HyTimeCreate(HyTimeConfig_t *time_config)
 {
     LOGT("%s:%d \n", __func__, __LINE__);
@@ -225,12 +203,12 @@ void *HyTimeCreate(HyTimeConfig_t *time_config)
 
         switch (time_config->num) {
             case HY_TIME_NUM_0:
-                // App_Timer0Cfg(30000);
-                App_Timer0Cfg(500);
+                time_config->us = 500;
+                _time0_init(time_config);
                 break;
             case HY_TIME_NUM_LP_0:
                 time_config->us = 0;   // 内部设定2s定时，跟外界设置无关
-                App_LPTimerInit(time_config);
+                _lp_time0_init(time_config);
                 break;
             default:
                 break;
@@ -238,7 +216,7 @@ void *HyTimeCreate(HyTimeConfig_t *time_config)
 
         context_arr[time_config->num] = context;
 
-        LOGI("time %d create successful \n", time_config->num);
+        LOGI("time %s create successful \n", HY_TIME_NUM_2_STR(time_config->num));
         return context;
     } while (0);
 

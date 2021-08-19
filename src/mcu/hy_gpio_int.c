@@ -86,8 +86,7 @@ static void _int_irq(HyIntConfig_t *int_config)
     };
 
     HyGpio_t *gpio = &int_config->config_save.gpio;
-    Gpio_EnableIrq(group[gpio->group], pin[gpio->pin], GpioIrqFalling);
-    // Gpio_EnableIrq(group[gpio->group], pin[gpio->pin], enType[int_config->trigger_mode]);
+    Gpio_EnableIrq(group[gpio->group], pin[gpio->pin], enType[int_config->trigger_mode]);
     EnableNvic(enIrq[gpio->group], IrqLevel3, TRUE);
 }
 

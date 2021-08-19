@@ -42,12 +42,11 @@ static _adc_context_t *context_arr[1] = {0};
 
  ///< ADC 中断服务程序
 void Adc_IRQHandler(void)
-{    
-    if(TRUE == Adc_GetIrqStatus(AdcMskIrqSgl)) {
+{
+    if (TRUE == Adc_GetIrqStatus(AdcMskIrqSgl)) {
         Adc_ClrIrqStatus(AdcMskIrqSgl);       ///< 清除中断标志位
 
         hy_u32_t ret = Adc_GetSglResult();   ///< 获取采样值
-        LOGE("%08x \n", ret);
 
         _adc_context_t *context = context_arr[0];
         HyAdcConfigSave_t *config_save = &context->config_save;
@@ -60,17 +59,16 @@ void Adc_IRQHandler(void)
 }
 
 ///< ADC模块 初始化
-void App_AdcInit(void)
+static void App_AdcInit(void)
 {
     stc_adc_cfg_t              stcAdcCfg;
-
     DDL_ZERO_STRUCT(stcAdcCfg);
-    
+
     ///< 开启ADC/BGR 外设时钟
     Sysctrl_SetPeripheralGate(SysctrlPeripheralAdcBgr, TRUE); 
-    
+
     Bgr_BgrEnable();        ///< 开启BGR
-    
+
     ///< ADC 初始化配置
     stcAdcCfg.enAdcMode         = AdcSglMode;               ///<采样模式-单次
     stcAdcCfg.enAdcClkDiv       = AdcMskClkDiv1;            ///<采样分频-1
@@ -83,11 +81,11 @@ void App_AdcInit(void)
 }
 
 ///< ADC 单次扫描模式 配置
-void App_AdcSglCfg(void)
+static void App_AdcSglCfg(void)
 {
     ///< ADC 采样通道配置
     Adc_CfgSglChannel(AdcExInputCH0);
-    
+
     ///< ADC 中断使能
     Adc_EnableIrq();
     EnableNvic(ADC_IRQn, IrqLevel3, TRUE);
@@ -107,7 +105,6 @@ static void _adc_init()
 void HyAdcStart(void *handle)
 {
     HY_ASSERT_NULL_RET(!handle);
-    _adc_context_t *context = handle;
 
     ///< 启动单次转换采样
     Adc_SGL_Start();
@@ -116,8 +113,6 @@ void HyAdcStart(void *handle)
 void HyAdcStop(void *handle)
 {
     HY_ASSERT_NULL_RET(!handle);
-    _adc_context_t *context = handle;
-
 }
 
 void HyAdcDestroy(void **handle)
@@ -141,6 +136,7 @@ void *HyAdcCreate(HyAdcConfig_t *adc_config)
 
         context_arr[0] = context;
 
+        LOGI("adc create successful \n");
         return context;
     } while (0);
 

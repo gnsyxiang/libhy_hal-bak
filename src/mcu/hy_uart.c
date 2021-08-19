@@ -33,13 +33,28 @@
 
 #define ALONE_DEBUG 1
 
+#define _HY_UART_NUM_2_STR(_buf, val)                                           \
+    ({                                                                          \
+     if      ((val) == HY_UART_NUM_0)           _buf = "HY_UART_NUM_0";         \
+     else if ((val) == HY_UART_NUM_1)           _buf = "HY_UART_NUM_1";         \
+     else if ((val) == HY_UART_NUM_2)           _buf = "HY_UART_NUM_2";         \
+     else if ((val) == HY_UART_NUM_3)           _buf = "HY_UART_NUM_3";         \
+     else if ((val) == HY_UART_NUM_4)           _buf = "HY_UART_NUM_4";         \
+     else if ((val) == HY_UART_NUM_5)           _buf = "HY_UART_NUM_5";         \
+     else if ((val) == HY_UART_NUM_6)           _buf = "HY_UART_NUM_6";         \
+     else if ((val) == HY_UART_NUM_7)           _buf = "HY_UART_NUM_7";         \
+     else                                       _buf = "HY_UART_NUM_MAX";       \
+     _buf;                                                                      \
+     })
+#define HY_UART_NUM_2_STR(val) ({char *_buf = NULL; _HY_UART_NUM_2_STR(_buf, val);})
+
 typedef struct {
     HyUartConfigSave_t config_save;
 
     HyUartNum_t num;
 } _uart_context_t;
 
-static _uart_context_t *context_arr[HY_UART_MAX] = {0};
+static _uart_context_t *context_arr[HY_UART_NUM_MAX] = {0};
 
 static inline void _uart_irq_handler(HyUartNum_t num)
 {
@@ -63,12 +78,12 @@ static inline void _uart_irq_handler(HyUartNum_t num)
 
 void Uart0_IRQHandler(void)
 {
-    _uart_irq_handler(HY_UART_0);
+    _uart_irq_handler(HY_UART_NUM_0);
 }
 
 void Uart1_IRQHandler(void)
 {
-    _uart_irq_handler(HY_UART_1);
+    _uart_irq_handler(HY_UART_NUM_1);
 }
 
 static void _gpio_init(HyUartNum_t num)
@@ -84,7 +99,7 @@ static void _gpio_init(HyUartNum_t num)
 
 static void _uart_config(HyUartConfig_t *uart_config)
 {
-    en_sysctrl_peripheral_gate_t clock[HY_UART_MAX] = {
+    en_sysctrl_peripheral_gate_t clock[HY_UART_NUM_MAX] = {
         SysctrlPeripheralUart0,
         SysctrlPeripheralUart1,
     };
@@ -101,15 +116,15 @@ static void _uart_config(HyUartConfig_t *uart_config)
         UartMskEven,
     };
 
-    hy_u32_t b_arr[HY_RATE_MAX][2] = {
-        {HY_RATE_1200,      1200},
-        {HY_RATE_2400,      2400},
-        {HY_RATE_4800,      4800},
-        {HY_RATE_9600,      9600},
-        {HY_RATE_19200,     19200},
-        {HY_RATE_38400,     38400},
-        {HY_RATE_57600,     57600},
-        {HY_RATE_115200,    115200},
+    hy_u32_t b_arr[HY_UART_RATE_MAX][2] = {
+        {HY_UART_RATE_1200,      1200},
+        {HY_UART_RATE_2400,      2400},
+        {HY_UART_RATE_4800,      4800},
+        {HY_UART_RATE_9600,      9600},
+        {HY_UART_RATE_19200,     19200},
+        {HY_UART_RATE_38400,     38400},
+        {HY_UART_RATE_57600,     57600},
+        {HY_UART_RATE_115200,    115200},
     };
 
     M0P_UART_TypeDef* uart[] = {
@@ -193,7 +208,7 @@ void *HyUartCreate(HyUartConfig_t *uart_config)
 
         context_arr[context->num] = context;
 
-        LOGI("uart %d create successful \n", uart_config->num);
+        LOGI("uart %s create successful \n", HY_UART_NUM_2_STR(uart_config->num));
         return context;
     } while (0);
 
@@ -242,9 +257,9 @@ int fputc(int ch, FILE *f)
     };
 
     if ((hy_u8_t)ch == '\n') {
-        Uart_SendDataPoll(uart[HY_UART_1], '\r');
+        Uart_SendDataPoll(uart[DEBUG_UART_NUM], '\r');
     }
-    Uart_SendDataPoll(uart[HY_UART_1], (hy_u8_t)ch);
+    Uart_SendDataPoll(uart[DEBUG_UART_NUM], (hy_u8_t)ch);
 
     return 1;
 }

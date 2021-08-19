@@ -35,27 +35,29 @@ extern "C" {
 #define DEBUG_UART
 
 typedef enum {
-    HY_UART_0,
-    HY_UART_1,
-    HY_UART_2,
-    HY_UART_3,
-    HY_UART_4,
-    HY_UART_5,
+    HY_UART_NUM_0,
+    HY_UART_NUM_1,
+    HY_UART_NUM_2,
+    HY_UART_NUM_3,
+    HY_UART_NUM_4,
+    HY_UART_NUM_5,
+    HY_UART_NUM_6,
+    HY_UART_NUM_7,
 
-    HY_UART_MAX
+    HY_UART_NUM_MAX
 } HyUartNum_t;
 
 typedef enum {
-    HY_RATE_1200,
-    HY_RATE_2400,
-    HY_RATE_4800,
-    HY_RATE_9600,
-    HY_RATE_19200,
-    HY_RATE_38400,
-    HY_RATE_57600,
-    HY_RATE_115200,
+    HY_UART_RATE_1200,
+    HY_UART_RATE_2400,
+    HY_UART_RATE_4800,
+    HY_UART_RATE_9600,
+    HY_UART_RATE_19200,
+    HY_UART_RATE_38400,
+    HY_UART_RATE_57600,
+    HY_UART_RATE_115200,
 
-    HY_RATE_MAX,
+    HY_UART_RATE_MAX,
 } HyUartRate_t;
 
 typedef enum {
@@ -129,7 +131,7 @@ hy_s32_t HyUartProcess(void *handle);
 hy_s32_t HyUartWrite(void *handle, void *buf, size_t len);
 
 #ifdef DEBUG_UART
-#define DEBUG_UART_NUM (HY_UART_1)
+#define DEBUG_UART_NUM (HY_UART_NUM_1)
 #define HyUartDebugCreate HyUartCreate
 #define HyUartDebugDestroy HyUartDestroy
 #endif

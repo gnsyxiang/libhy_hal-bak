@@ -45,39 +45,11 @@ static void _init_PA_pin(HyGpio_t *gpio, en_gpio_dir_t dir)
     stcGpioCfg.enDir = dir;
 
     switch (gpio->pin) {
-        case HY_GPIO_PIN_6:
-            stcGpioCfg.enPu  = GpioPuEnable;
-            stcGpioCfg.enPd  = GpioPdDisable;
-            break;
-        case HY_GPIO_PIN_7:
-            stcGpioCfg.enPu  = GpioPuEnable;
-            stcGpioCfg.enPd  = GpioPdDisable;
-            break;
-        case HY_GPIO_PIN_8:
-            stcGpioCfg.enPu  = GpioPuDisable;
-            stcGpioCfg.enPd  = GpioPdDisable;
-            stcGpioCfg.enDrv = GpioDrvL;
-            stcGpioCfg.enOD = GpioOdDisable;
-            stcGpioCfg.enCtrlMode = GpioAHB;
-            break;
-        case HY_GPIO_PIN_9:
-            stcGpioCfg.enPu  = GpioPuDisable;
-            stcGpioCfg.enPd  = GpioPdDisable;
-            break;
-        case HY_GPIO_PIN_10:
-            stcGpioCfg.enPu  = GpioPuDisable;
-            stcGpioCfg.enPd  = GpioPdDisable;
-            break;
         case HY_GPIO_PIN_11:
             stcGpioCfg.enPu  = GpioPuEnable;
-            stcGpioCfg.enPd  = GpioPdDisable;
-            stcGpioCfg.enDrv = GpioDrvL;
-            stcGpioCfg.enOD = GpioOdDisable;
-            stcGpioCfg.enCtrlMode = GpioAHB;
             break;
         case HY_GPIO_PIN_12:
             stcGpioCfg.enPu  = GpioPuEnable;
-            stcGpioCfg.enPd  = GpioPdDisable;
             break;
         default:
             break;
