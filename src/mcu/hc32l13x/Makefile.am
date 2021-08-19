@@ -18,13 +18,7 @@
 #     last modified: 09/07 2021 15:30
 # ===============================================================
 
-if COMPILE_SELECT_MCU_HC32L13X
-_select_mcu = hc32l13x
-endif
-
-SUBDIRS = $(_select_mcu)
-
-noinst_LTLIBRARIES = libhy_os.la
+noinst_LTLIBRARIES = libhy_mcu_os.la
 
 # ------------------
 # defining variables
@@ -40,11 +34,19 @@ _ldadd_com      =
 # ---------------------
 # add necessary content
 # ---------------------
-_include_com    +=
+_include_com    += \
+                   -I$(top_srcdir)/include/wrapper \
+                   -I$(top_srcdir)/include
 
 _include_com    += $(HY_MCU_INCS)
 
-_sources_com    +=
+_sources_com    += \
+                   hy_adc.c \
+                   hy_gpio.c \
+                   hy_gpio_int.c \
+                   hy_system.c \
+                   hy_time.c \
+                   hy_uart.c
 
 _cppflags_com   += \
                    $(CPPFLAGS_COM) \
@@ -56,12 +58,12 @@ _cxxflags_com   += $(CXXFLAGS_COM)
 
 _ldflags_com    += $(LIB_LDFLAGS_COM)
 
-_ldadd_com      += $(top_builddir)/src/mcu/$(_select_mcu)/libhy_mcu_os.la
+_ldadd_com      +=
 
-libhy_os_la_SOURCES   = $(_sources_com)
-libhy_os_la_CPPFLAGS  = $(_cppflags_com)
-libhy_os_la_CFLAGS    = $(_cflags_com)
-libhy_os_la_CXXFLAGS  = $(_cxxflags_com)
-libhy_os_la_LDFLAGS   = $(_ldflags_com)
-libhy_os_la_LIBADD    = $(_ldadd_com)
+libhy_mcu_os_la_SOURCES   = $(_sources_com)
+libhy_mcu_os_la_CPPFLAGS  = $(_cppflags_com)
+libhy_mcu_os_la_CFLAGS    = $(_cflags_com)
+libhy_mcu_os_la_CXXFLAGS  = $(_cxxflags_com)
+libhy_mcu_os_la_LDFLAGS   = $(_ldflags_com)
+libhy_mcu_os_la_LIBADD    = $(_ldadd_com)
 

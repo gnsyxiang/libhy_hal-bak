@@ -31,6 +31,7 @@ CHECK_LIBPROTOBUF_C
 CHECK_LIBHY_UTILS
 
 SELECT_TARGET_OS
+SELECT_MCU
 
 # Checks for programs.
 AC_PROG_CXX
@@ -50,12 +51,15 @@ AC_CHECK_HEADERS([arpa/inet.h fcntl.h stdint.h stdlib.h string.h sys/socket.h sy
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_INLINE
+AC_TYPE_INT32_T
 AC_TYPE_PID_T
 AC_TYPE_SIZE_T
 AC_TYPE_SSIZE_T
+AC_TYPE_UINT32_T
+AC_TYPE_UINT8_T
 
 # Checks for library functions.
-AC_CHECK_FUNCS([gettimeofday memset select socket strerror strstr])
+AC_CHECK_FUNCS([gettimeofday memset select socket strerror])
 
 AC_CONFIG_FILES([Makefile
                  $project_name.pc
@@ -68,6 +72,7 @@ AC_CONFIG_FILES([Makefile
                  src/linux/Makefile
                  src/mac/Makefile
                  src/mcu/Makefile
+                 src/mcu/hc32l13x/Makefile
                  src/rtos/Makefile
                  src/window/Makefile])
 AC_OUTPUT
