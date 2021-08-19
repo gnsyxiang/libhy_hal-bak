@@ -54,7 +54,7 @@ static void _init_PA_pin(HyGpio_t *gpio, en_gpio_dir_t dir)
             stcGpioCfg.enPd  = GpioPdDisable;
             break;
         case HY_GPIO_PIN_8:
-            stcGpioCfg.enPu  = GpioPuEnable;
+            stcGpioCfg.enPu  = GpioPuDisable;
             stcGpioCfg.enPd  = GpioPdDisable;
             stcGpioCfg.enDrv = GpioDrvL;
             stcGpioCfg.enOD = GpioOdDisable;
@@ -71,6 +71,9 @@ static void _init_PA_pin(HyGpio_t *gpio, en_gpio_dir_t dir)
         case HY_GPIO_PIN_11:
             stcGpioCfg.enPu  = GpioPuEnable;
             stcGpioCfg.enPd  = GpioPdDisable;
+            stcGpioCfg.enDrv = GpioDrvL;
+            stcGpioCfg.enOD = GpioOdDisable;
+            stcGpioCfg.enCtrlMode = GpioAHB;
             break;
         case HY_GPIO_PIN_12:
             stcGpioCfg.enPu  = GpioPuEnable;

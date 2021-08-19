@@ -34,22 +34,32 @@
 typedef struct {
     HyIntConfigSave_t config_save;
 
-    hy_u8_t pin_num;
+    HyGpio_t gpio;
 } _int_context_t;
 
-static _int_context_t *context_arr[HY_GPIO_PIN_MAX] = {0};
+static _int_context_t *context_arr[HY_GPIO_GROUP_MAX][HY_GPIO_PIN_MAX] = {0};
+
+#define _PIN_INT_CB(group, pin)                                 \
+    do {                                                        \
+        _int_context_t *context = context_arr[group][pin];      \
+        HyIntConfigSave_t *config_save = &context->config_save; \
+        if (config_save->int_cb) {                              \
+            config_save->int_cb(config_save->args);             \
+        }                                                       \
+    } while (0);
 
 void PortA_IRQHandler(void)
 {
-    _int_context_t *context = context_arr[HY_GPIO_PIN_8];
-
     if (TRUE == Gpio_GetIrqStatus(GpioPortA, GpioPin8)) {
         Gpio_ClearIrq(GpioPortA, GpioPin8);
 
-        HyIntConfigSave_t *config_save = &context->config_save;
-        if (config_save->int_cb) {
-            config_save->int_cb(config_save->args);
-        }
+        _PIN_INT_CB(HY_GPIO_GROUP_PA, HY_GPIO_PIN_8);
+    }
+
+    if (TRUE == Gpio_GetIrqStatus(GpioPortA, GpioPin11)) {
+        Gpio_ClearIrq(GpioPortA, GpioPin11);
+
+        _PIN_INT_CB(HY_GPIO_GROUP_PA, HY_GPIO_PIN_11);
     }
 }
 
@@ -75,8 +85,9 @@ static void _int_irq(HyIntConfig_t *int_config)
         GpioIrqLow, GpioIrqHigh, GpioIrqRising, GpioIrqFalling
     };
 
-    HyGpio_t *gpio = &int_config->gpio;
-    Gpio_EnableIrq(group[gpio->group], pin[gpio->pin], enType[int_config->trigger_mode]);
+    HyGpio_t *gpio = &int_config->config_save.gpio;
+    Gpio_EnableIrq(group[gpio->group], pin[gpio->pin], GpioIrqFalling);
+    // Gpio_EnableIrq(group[gpio->group], pin[gpio->pin], enType[int_config->trigger_mode]);
     EnableNvic(enIrq[gpio->group], IrqLevel3, TRUE);
 }
 
@@ -99,13 +110,13 @@ void *HyIntCreate(HyIntConfig_t *int_config)
         context = (_int_context_t *)HY_MALLOC_BREAK(sizeof(*context));
 
         HY_MEMCPY(&context->config_save, &int_config->config_save);
-        context->pin_num = int_config->gpio.pin;
 
-        HyGpioSetInput(&int_config->gpio);
+        HyGpio_t *gpio = &context->config_save.gpio;
+        HyGpioSetInput(gpio);
 
         _int_irq(int_config);
 
-        context_arr[context->pin_num] = context;
+        context_arr[gpio->group][gpio->pin] = context;
 
         return context;
     } while (0);

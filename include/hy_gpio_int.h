@@ -36,6 +36,7 @@ typedef enum {
 } HyIntTriggerMode_t;
 
 typedef struct {
+    HyGpio_t gpio;
     void (*int_cb)(void *args);
     void *args;
 } HyIntConfigSave_t;
@@ -43,7 +44,6 @@ typedef struct {
 typedef struct {
     HyIntConfigSave_t config_save;
 
-    HyGpio_t            gpio;
     HyIntTriggerMode_t  trigger_mode;
 } HyIntConfig_t;
 
