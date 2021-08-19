@@ -30,10 +30,6 @@
 
 static void _init_PA_pin(HyGpio_t *gpio, en_gpio_dir_t dir)
 {
-    en_gpio_port_t group[HY_GPIO_GROUP_MAX] = {
-        GpioPortA, GpioPortB, GpioPortC, GpioPortD
-    };
-
     en_gpio_pin_t pin[HY_GPIO_PIN_MAX] = {
         GpioPin0,   GpioPin1,   GpioPin2,   GpioPin3,
         GpioPin4,   GpioPin5,   GpioPin6,   GpioPin7,
@@ -83,14 +79,14 @@ static void _init_PA_pin(HyGpio_t *gpio, en_gpio_dir_t dir)
         default:
             break;
     }
-    Gpio_Init(group[gpio->group], pin[gpio->pin], &stcGpioCfg);
+    Gpio_Init(GpioPortA, pin[gpio->pin], &stcGpioCfg);
 
     switch (gpio->pin) {
         case HY_GPIO_PIN_9:
-            Gpio_SetAfMode(group[gpio->group], pin[gpio->pin], GpioAf1);
+            Gpio_SetAfMode(GpioPortA, pin[gpio->pin], GpioAf1);
             break;
         case HY_GPIO_PIN_10:
-            Gpio_SetAfMode(group[gpio->group], pin[gpio->pin], GpioAf1);
+            Gpio_SetAfMode(GpioPortA, pin[gpio->pin], GpioAf1);
             break;
         default:
             break;
@@ -109,10 +105,6 @@ static void _init_PC_pin(HyGpio_t *gpio, en_gpio_dir_t dir)
 
 static void _init_PD_pin(HyGpio_t *gpio, en_gpio_dir_t dir)
 {
-    en_gpio_port_t group[HY_GPIO_GROUP_MAX] = {
-        GpioPortA, GpioPortB, GpioPortC, GpioPortD
-    };
-
     en_gpio_pin_t pin[HY_GPIO_PIN_MAX] = {
         GpioPin0,   GpioPin1,   GpioPin2,   GpioPin3,
         GpioPin4,   GpioPin5,   GpioPin6,   GpioPin7,
@@ -139,14 +131,14 @@ static void _init_PD_pin(HyGpio_t *gpio, en_gpio_dir_t dir)
         default:
             break;
     }
-    Gpio_Init(group[gpio->group], pin[gpio->pin], &stcGpioCfg);
+    Gpio_Init(GpioPortD, pin[gpio->pin], &stcGpioCfg);
 
     switch (gpio->pin) {
         case HY_GPIO_PIN_0:
-            Gpio_SetAfMode(group[gpio->group], pin[gpio->pin], GpioAf3);
+            Gpio_SetAfMode(GpioPortD, pin[gpio->pin], GpioAf3);
             break;
         case HY_GPIO_PIN_1:
-            Gpio_SetAfMode(group[gpio->group], pin[gpio->pin], GpioAf3);
+            Gpio_SetAfMode(GpioPortD, pin[gpio->pin], GpioAf3);
             break;
         default:
             break;
