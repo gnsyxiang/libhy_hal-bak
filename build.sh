@@ -29,6 +29,7 @@ elif [ x$1 = x"mcu" ]; then
     gcc_version=gcc-arm-none-eabi-5_4-2016q3
     gcc_prefix=arm-none-eabi
     cross_gcc_path=${data_disk_path}/opt/toolchains/${vender}/${gcc_version}/bin/${gcc_prefix}-
+    _cppflags_com="-DAT32F407VGT7 -DAT_START_F407_V1_0 -DUSE_STDPERIPH_DRIVER"
     _ldflag_com="-specs=nano.specs -specs=nosys.specs"
     _param_com="--with-target_os=mcu --with-mcu=at32f4xx --enable-libprotobuf_c"
 else
@@ -52,7 +53,7 @@ fi
 ${target_path}/configure                                    \
     CC=${cross_gcc_path}gcc                                 \
     CXX=${cross_gcc_path}g++                                \
-    CPPFLAGS="-I${lib_3rd_path}/include"                    \
+    CPPFLAGS="-I${lib_3rd_path}/include ${_cppflags_com}"   \
     CFLAGS=""                                               \
     CXXFLAGS=""                                             \
     LDFLAGS="-L${lib_3rd_path}/lib ${_ldflag_com}"          \
