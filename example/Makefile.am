@@ -115,7 +115,7 @@ hy_protobuf_c_demo_elf_SOURCES  = $(_sources_com) hy_protobuf-c_demo.c address_b
 hy_protobuf_c_demo_elf_CPPFLAGS = $(_cppflags_com)
 hy_protobuf_c_demo_elf_CFLAGS   = $(_cflags_com)
 hy_protobuf_c_demo_elf_CXXFLAGS = $(_cxxflags_com)
-hy_protobuf_c_demo_elf_LDFLAGS  = $(_ldflags_com)
+hy_protobuf_c_demo_elf_LDFLAGS  = $(_ldflags_com) -Wl,--gc-sections,-Map=hy_protobuf-c_demo.map,-cref,-u,Reset_Handler
 hy_protobuf_c_demo_elf_LDADD    = $(_ldadd_com)
 
 address_book.pb.c address_book.pb.h: @PROTOC_C@ address_book.proto

@@ -33,7 +33,7 @@ elif [ x$1 = x"mcu" ]; then
 
     # _cppflags_com=""
     # _cflags_com="-mcpu=cortex-m0 -mthumb"
-    # _param_com="--with-target_os=mcu --with-mcu=hc32l13x --enable-libprotobuf_c"
+    # _param_com="--with-target_os=mcu --with-mcu=hc32l13x"
 
     _cppflags_com="-DAT32F407VGT7 -DAT_START_F407_V1_0 -DUSE_STDPERIPH_DRIVER -DSYSCLK_FREQ_240MHz=240000000"
     _cflags_com="-mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard"

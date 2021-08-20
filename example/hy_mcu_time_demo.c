@@ -148,7 +148,17 @@ int main(int argc, char const* argv[])
     gpio.pin = HY_GPIO_PIN_15;
     HyGpioSetOutput(&gpio, HY_GPIO_LEVEL_LOW);
 
+    HyGpio_t key;
+    key.group = HY_GPIO_GROUP_PA;
+    key.pin = HY_GPIO_PIN_0;
+    HyGpioSetInput(&key);
+
     while (1) {
+        if (HyGpioGetLevel(&key) == HY_GPIO_LEVEL_HIGH) {
+            HyGpioSetLevel(&gpio, HY_GPIO_LEVEL_HIGH);
+        } else {
+            HyGpioSetLevel(&gpio, HY_GPIO_LEVEL_LOW);
+        }
     }
 
     LOGI("version: %s, date: %s, time: %s \n", VERSION, __DATE__, __TIME__);
