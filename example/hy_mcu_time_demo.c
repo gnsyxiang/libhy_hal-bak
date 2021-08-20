@@ -26,6 +26,7 @@
 #include "hy_system.h"
 #include "hy_uart.h"
 #include "hy_time.h"
+#include "hy_gpio.h"
 
 #include "hy_utils/hy_log.h"
 #include "hy_utils/hy_module.h"
@@ -54,6 +55,7 @@ static void _sys_tick_cb(void *args)
 
 static void _time_cb(void *args)
 {
+    LOGE("------------haha\n");
 #if 0
     static int cnt = 0;
     if (cnt++ == 1000) {
@@ -115,9 +117,9 @@ static _main_context_t *_module_create(void)
     // note: 增加或删除要同步到module_destroy_t中
     module_create_t module[] = {
         {"system",      &context->system_handle,    &system_config,     (create_t)HySystemCreate,       HySystemDestroy},
-        {"debug uart",  &context->uart_handle,      &uart_config,       (create_t)HyUartDebugCreate,    HyUartDebugDestroy},
-        {"log",         &context->log_handle,       &log_config,        (create_t)HyLogCreate,          HyLogDestroy},
-        {"time",        &context->time_handle,      &time_config,       (create_t)HyTimeCreate,         HyTimeDestroy},
+        // {"debug uart",  &context->uart_handle,      &uart_config,       (create_t)HyUartDebugCreate,    HyUartDebugDestroy},
+        // {"log",         &context->log_handle,       &log_config,        (create_t)HyLogCreate,          HyLogDestroy},
+        // {"time",        &context->time_handle,      &time_config,       (create_t)HyTimeCreate,         HyTimeDestroy},
     };
 
     RUN_CREATE(module);
@@ -131,6 +133,22 @@ int main(int argc, char const* argv[])
     if (!context) {
         LOGE("_module_create faild \n");
         return -1;
+    }
+
+    HyGpio_t gpio;
+    gpio.group = HY_GPIO_GROUP_PD;
+    gpio.pin = HY_GPIO_PIN_13;
+    HyGpioSetOutput(&gpio, HY_GPIO_LEVEL_LOW);
+
+    gpio.group = HY_GPIO_GROUP_PD;
+    gpio.pin = HY_GPIO_PIN_14;
+    HyGpioSetOutput(&gpio, HY_GPIO_LEVEL_LOW);
+
+    gpio.group = HY_GPIO_GROUP_PD;
+    gpio.pin = HY_GPIO_PIN_15;
+    HyGpioSetOutput(&gpio, HY_GPIO_LEVEL_LOW);
+
+    while (1) {
     }
 
     LOGI("version: %s, date: %s, time: %s \n", VERSION, __DATE__, __TIME__);

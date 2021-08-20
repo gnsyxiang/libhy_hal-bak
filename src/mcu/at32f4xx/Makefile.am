@@ -41,6 +41,7 @@ _include_com    += \
 _include_com    += $(HY_MCU_INCS)
 
 _sources_com    += \
+                   hy_gpio.c \
                    hy_time.c \
                    hy_uart.c \
                    hy_system.c

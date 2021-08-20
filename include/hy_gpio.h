@@ -29,6 +29,7 @@ typedef enum {
     HY_GPIO_GROUP_PB,
     HY_GPIO_GROUP_PC,
     HY_GPIO_GROUP_PD,
+    HY_GPIO_GROUP_PE,
 
     HY_GPIO_GROUP_MAX,
 } HyGpioGroup_t;
