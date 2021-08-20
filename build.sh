@@ -29,8 +29,14 @@ elif [ x$1 = x"mcu" ]; then
     gcc_version=gcc-arm-none-eabi-5_4-2016q3
     gcc_prefix=arm-none-eabi
     cross_gcc_path=${data_disk_path}/opt/toolchains/${vender}/${gcc_version}/bin/${gcc_prefix}-
-    _cppflags_com="-DAT32F407VGT7 -DAT_START_F407_V1_0 -DUSE_STDPERIPH_DRIVER"
     _ldflag_com="-specs=nano.specs -specs=nosys.specs"
+
+    # _cppflags_com=""
+    # _cflags_com="-mcpu=cortex-m0 -mthumb"
+    # _param_com="--with-target_os=mcu --with-mcu=hc32l13x --enable-libprotobuf_c"
+
+    _cppflags_com="-DAT32F407VGT7 -DAT_START_F407_V1_0 -DUSE_STDPERIPH_DRIVER -DSYSCLK_FREQ_240MHz=240000000"
+    _cflags_com="-mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard"
     _param_com="--with-target_os=mcu --with-mcu=at32f4xx --enable-libprotobuf_c"
 else
     help_info
@@ -54,7 +60,7 @@ ${target_path}/configure                                    \
     CC=${cross_gcc_path}gcc                                 \
     CXX=${cross_gcc_path}g++                                \
     CPPFLAGS="-I${lib_3rd_path}/include ${_cppflags_com}"   \
-    CFLAGS=""                                               \
+    CFLAGS="${_cflags_com}"                                 \
     CXXFLAGS=""                                             \
     LDFLAGS="-L${lib_3rd_path}/lib ${_ldflag_com}"          \
     LIBS=""                                                 \
@@ -68,5 +74,5 @@ ${target_path}/configure                                    \
 
 thread_jobs=`getconf _NPROCESSORS_ONLN 2>/dev/null || echo 1`
 
-make -j${thread_jobs}; make install
+# make -j${thread_jobs}; make install
 

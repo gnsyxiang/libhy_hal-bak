@@ -33,10 +33,12 @@ bin_PROGRAMS    =
 BUILT_SOURCES   =
 CLEANFILES      =
 
+_elf_file       =
+
 # ---------------------
 # add necessary content
 # ---------------------
-_no_error_com       += -Wno-error=address
+_no_error_com   += -Wno-error=address
 
 _include_com    += -I$(top_srcdir)/include
 
@@ -90,32 +92,24 @@ if COMPILE_LIBHY_UTILS
 _ldadd_com      += $(HY_MCU_LIBS)
 endif
 
+if COMPILE_SELECT_MCU_AT32F4XX
+_ldflags_com    += -T$(top_srcdir)/src/mcu/at32f4xx/AT32F407xG_FLASH.ld
+endif
+
+_elf_file                       += hy_mcu_time_demo
 bin_PROGRAMS                    += hy_mcu_time_demo.elf
 hy_mcu_time_demo_elf_SOURCES    = $(_sources_com) hy_mcu_time_demo.c
 hy_mcu_time_demo_elf_CPPFLAGS   = $(_cppflags_com)
 hy_mcu_time_demo_elf_CFLAGS     = $(_cflags_com)
 hy_mcu_time_demo_elf_CXXFLAGS   = $(_cxxflags_com)
-hy_mcu_time_demo_elf_LDFLAGS    = $(_ldflags_com)
+hy_mcu_time_demo_elf_LDFLAGS    = $(_ldflags_com) -Wl,--gc-sections,-Map=hy_mcu_time_demo.map,-cref,-u,Reset_Handler
 hy_mcu_time_demo_elf_LDADD      = $(_ldadd_com)
 
 if COMPILE_LIBPROTOBUF_C
 
-#if COMPILE_MCU_AT32F407VGT7
-#_ldflags_com    += -T$(top_srcdir)/$(_at32f4xx_lib)/CMSIS/CM4/DeviceSupport/startup/gcc/linker/AT32F407xG_FLASH.ld
-#endif
-#
-#bin_PROGRAMS        += main.elf
-#main_elf_SOURCES    = $(_sources_com) main.c
-#main_elf_CPPFLAGS   = $(_cppflags_com)
-#main_elf_CFLAGS     = $(_cflags_com)
-#main_elf_CXXFLAGS   = $(_cxxflags_com)
-#main_elf_LDFLAGS    = $(_ldflags_com) -Wl,--gc-sections,-Map=main.map,-cref,-u,Reset_Handler
-#main_elf_LDADD      = $(_ldadd_com)
-
-if COMPILE_LIBPROTOBUF_C
 _ldadd_com      += $(LIBPROTOBUF_C_LIBS)
-endif
 
+_elf_file                       += hy_protobuf-c_demo
 bin_PROGRAMS                    += hy_protobuf-c_demo.elf
 hy_protobuf_c_demo_elf_SOURCES  = $(_sources_com) hy_protobuf-c_demo.c address_book.pb-c.c
 hy_protobuf_c_demo_elf_CPPFLAGS = $(_cppflags_com)
@@ -133,10 +127,13 @@ BUILT_SOURCES += \
 
 CLEANFILES += $(BUILT_SOURCES)
 
+endif
+
+endif
+
 install-exec-hook:
-	@gcc_prefix@objcopy -O binary hy_protobuf-c_demo.elf hy_protobuf-c_demo.bin
-	@gcc_prefix@objcopy -O binary hy_mcu_time_demo.elf hy_mcu_time_demo.bin
+	for file in $(_elf_file); do \
+		@gcc_prefix@objcopy -O binary $$file.elf $$file.bin; \
+	done
 	$(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) *.bin "$(DESTDIR)$(bindir)$$dir"
-endif
-endif
 
