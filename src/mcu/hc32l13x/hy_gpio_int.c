@@ -20,6 +20,7 @@
 #include <stdio.h>
 
 #include "hy_gpio_int.h"
+#include "inside_gpio.h"
 
 #include "gpio.h"
 
@@ -117,9 +118,11 @@ void *HyIntCreate(HyIntConfig_t *int_config)
 
         context_arr[gpio->group][gpio->pin] = context;
 
+        LOGI("interrupt pin<%s, %s> create successful \n", HY_GPIO_GROUP_2_STR(gpio->group), HY_GPIO_PIN_2_STR(gpio->pin));
         return context;
     } while (0);
 
     HyIntDestroy((void **)&context);
     return NULL;
 }
+

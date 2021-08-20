@@ -20,6 +20,7 @@
 #include <stdio.h>
 
 #include "hy_time.h"
+#include "inside_time.h"
 
 #include "bt.h"
 #include "lptim.h"
@@ -31,24 +32,6 @@
 
 #define ALONE_DEBUG 1
 
-#define _HY_TIME_NUM_2_STR(_buf, val)                                           \
-    ({                                                                          \
-     if      ((val) == HY_TIME_NUM_0)           _buf = "HY_TIME_NUM_0";         \
-     else if ((val) == HY_TIME_NUM_1)           _buf = "HY_TIME_NUM_1";         \
-     else if ((val) == HY_TIME_NUM_2)           _buf = "HY_TIME_NUM_2";         \
-     else if ((val) == HY_TIME_NUM_3)           _buf = "HY_TIME_NUM_3";         \
-     else if ((val) == HY_TIME_NUM_4)           _buf = "HY_TIME_NUM_4";         \
-     else if ((val) == HY_TIME_NUM_5)           _buf = "HY_TIME_NUM_5";         \
-     else if ((val) == HY_TIME_NUM_6)           _buf = "HY_TIME_NUM_6";         \
-     else if ((val) == HY_TIME_NUM_7)           _buf = "HY_TIME_NUM_7";         \
-     else if ((val) == HY_TIME_NUM_LP_0)        _buf = "HY_TIME_NUM_LP_0";      \
-     else if ((val) == HY_TIME_NUM_LP_1)        _buf = "HY_TIME_NUM_LP_1";      \
-     else if ((val) == HY_TIME_NUM_SYSTICK)     _buf = "HY_TIME_NUM_SYSTICK";   \
-     else                                       _buf = "HY_TIME_NUM_MAX";       \
-     _buf;                                                                      \
-     })
-#define HY_TIME_NUM_2_STR(val) ({char *_buf = NULL; _HY_TIME_NUM_2_STR(_buf, val);})
-
 typedef struct {
     HyTimeConfigSave_t config_save;
 
@@ -56,6 +39,37 @@ typedef struct {
 } _time_context_t;
 
 static _time_context_t *context_arr[HY_TIME_NUM_MAX] = {0};
+
+static void _delay_com(size_t cnt, size_t base)
+{
+    uint32_t u32end;
+    size_t start = SystemCoreClock / base;
+
+    SysTick->LOAD = 0xFFFFFF;
+    SysTick->VAL  = 0;
+    SysTick->CTRL = SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_CLKSOURCE_Msk;
+
+    while (cnt-- > 0) {
+        SysTick->VAL  = 0;
+        u32end = 0x1000000 - start;
+
+        while (SysTick->VAL > u32end) {
+            ;
+        }
+    }
+
+    SysTick->CTRL = (SysTick->CTRL & (~SysTick_CTRL_ENABLE_Msk));
+}
+
+void HyTimeDelayMs(size_t ms)
+{
+    _delay_com(ms, 1000);
+}
+
+void HyTimeDelayUs(size_t us)
+{
+    _delay_com(us, 1000000);
+}
 
 #define _TIME_CB(num)                                                   \
     do {                                                                \
@@ -222,36 +236,5 @@ void *HyTimeCreate(HyTimeConfig_t *time_config)
 
     HyTimeDestroy((void **)&context);
     return NULL;
-}
-
-static void _delay_com(size_t cnt, size_t base)
-{
-    uint32_t u32end;
-    size_t start = SystemCoreClock / base;
-
-    SysTick->LOAD = 0xFFFFFF;
-    SysTick->VAL  = 0;
-    SysTick->CTRL = SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_CLKSOURCE_Msk;
-
-    while (cnt-- > 0) {
-        SysTick->VAL  = 0;
-        u32end = 0x1000000 - start;
-
-        while (SysTick->VAL > u32end) {
-            ;
-        }
-    }
-
-    SysTick->CTRL = (SysTick->CTRL & (~SysTick_CTRL_ENABLE_Msk));
-}
-
-void HyTimeDelayMs(size_t ms)
-{
-    _delay_com(ms, 1000);
-}
-
-void HyTimeDelayUs(size_t us)
-{
-    _delay_com(us, 1000000);
 }
 
