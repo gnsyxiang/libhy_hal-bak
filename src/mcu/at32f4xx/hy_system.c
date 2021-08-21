@@ -23,14 +23,16 @@
 
 #include "hy_system.h"
 
+#include "at32f4xx_rcc.h"
+#include "misc.h"
+
 #include "hy_utils/hy_log.h"
 #include "hy_utils/hy_mem.h"
 #include "hy_utils/hy_string.h"
 #include "hy_utils/hy_assert.h"
 
-#include "misc.h"
-
 #define ALONE_DEBUG 1
+
 #define SYSTEM_TICK_1MS_FACTOR (1000)   // 产生中断1ms
 // #define SYSTEM_TICK_1MS_FACTOR (100)    // 产生中断10ms
 

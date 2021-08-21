@@ -130,7 +130,7 @@ static void _init_uart_gpio(HyUartNum_t num)
     HyGpioSetInput(&gpio[num][1]);
 }
 
-static void _uart_config(HyUartConfig_t *uart_config)
+static void _init_uart_func(HyUartConfig_t *uart_config)
 {
     _DEFINE_UART();
 
@@ -139,22 +139,15 @@ static void _uart_config(HyUartConfig_t *uart_config)
     };
 
     en_uart_stop_t stop[HY_UART_STOP_MAX] = {
-        UartMsk1bit, UartMsk1_5bit, UartMsk2bit
+        0, UartMsk1bit, UartMsk1_5bit, UartMsk2bit
     };
 
     en_uart_mmdorck_t parity[] = {
         UartMskDataOrAddr, UartMskOdd, UartMskEven
     };
 
-    hy_u32_t b_arr[HY_UART_RATE_MAX][2] = {
-        {HY_UART_RATE_1200,      1200},
-        {HY_UART_RATE_2400,      2400},
-        {HY_UART_RATE_4800,      4800},
-        {HY_UART_RATE_9600,      9600},
-        {HY_UART_RATE_19200,     19200},
-        {HY_UART_RATE_38400,     38400},
-        {HY_UART_RATE_57600,     57600},
-        {HY_UART_RATE_115200,    115200},
+    hy_u32_t rate[HY_UART_RATE_MAX] = {
+        1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200,
     };
 
     IRQn_Type irq[] = {UART0_IRQn, UART1_IRQn};
@@ -167,7 +160,7 @@ static void _uart_config(HyUartConfig_t *uart_config)
     stcCfg.enRunMode        = UartMskMode1;
     stcCfg.enStopBit        = stop[uart_config->stop];
     stcCfg.enMmdorCk        = parity[uart_config->parity];
-    stcCfg.stcBaud.u32Baud  = b_arr[uart_config->rate][1];
+    stcCfg.stcBaud.u32Baud  = rate[uart_config->rate];
     stcCfg.stcBaud.enClkDiv = UartMsk8Or16Div;       ///<通道采样分频配置
     stcCfg.stcBaud.u32Pclk  = Sysctrl_GetPClkFreq(); ///<获得外设时钟（PCLK）频率值
     Uart_Init(uart[uart_config->num], &stcCfg);
@@ -224,7 +217,7 @@ void *HyUartCreate(HyUartConfig_t *uart_config)
         context->num = uart_config->num;
 
         _init_uart_gpio(context->num);
-        _uart_config(uart_config);
+        _init_uart_func(uart_config);
 
         context_arr[context->num] = context;
 

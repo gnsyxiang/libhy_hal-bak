@@ -74,11 +74,14 @@ static void _init_PA_pin(HyGpio_t *gpio, GPIO_InitType *GPIO_InitStructure)
 {
     switch (gpio->pin) {
         case HY_GPIO_PIN_0:
-            GPIO_InitStructure->GPIO_Mode = GPIO_Mode_IN_PD;
+            GPIO_InitStructure->GPIO_Mode       = GPIO_Mode_IN_PD;
             break;
         case HY_GPIO_PIN_9:
+            GPIO_InitStructure->GPIO_MaxSpeed   = GPIO_MaxSpeed_50MHz;
+            GPIO_InitStructure->GPIO_Mode       = GPIO_Mode_AF_PP;
             break;
         case HY_GPIO_PIN_10:
+            GPIO_InitStructure->GPIO_Mode       = GPIO_Mode_IN_FLOATING;
             break;
         default:
             break;

@@ -61,9 +61,10 @@ typedef enum {
 } HyUartRate_t;
 
 typedef enum {
-    HY_UART_FLOW_CONTROL_DISABLE,
-    HY_UART_FLOW_CONTROL_HARD_ENABLE,
-    HY_UART_FLOW_CONTROL_SOFT_ENABLE,
+    HY_UART_FLOW_CONTROL_NONE,
+    HY_UART_FLOW_CONTROL_RTS,
+    HY_UART_FLOW_CONTROL_CTS,
+    HY_UART_FLOW_CONTROL_RTS_CTS,
 } HyUartFlowControl_t;
 
 typedef enum {
@@ -71,6 +72,7 @@ typedef enum {
     HY_UART_BITS_6,
     HY_UART_BITS_7,
     HY_UART_BITS_8,
+    HY_UART_BITS_9,
 
     HY_UART_BITS_MAX,
 } HyUartBits_t;
@@ -82,6 +84,7 @@ typedef enum {
 } HyUartParity_t;
 
 typedef enum {
+    HY_UART_STOP_0_5,
     HY_UART_STOP_1,
     HY_UART_STOP_1_5,
     HY_UART_STOP_2,

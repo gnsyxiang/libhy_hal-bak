@@ -94,7 +94,7 @@ static _main_context_t *_module_create(void)
     // uart_config.dev_name                = "/dev/ttyUSB1";
     uart_config.num                     = HY_UART_NUM_1;
     uart_config.rate                    = HY_UART_RATE_115200;
-    uart_config.flow_control            = HY_UART_FLOW_CONTROL_DISABLE;
+    uart_config.flow_control            = HY_UART_FLOW_CONTROL_NONE;
     uart_config.bits                    = HY_UART_BITS_8;
     uart_config.parity                  = HY_UART_PARITY_N;
     uart_config.stop                    = HY_UART_STOP_1;
@@ -117,8 +117,8 @@ static _main_context_t *_module_create(void)
     // note: 增加或删除要同步到module_destroy_t中
     module_create_t module[] = {
         {"system",      &context->system_handle,    &system_config,     (create_t)HySystemCreate,       HySystemDestroy},
-        // {"debug uart",  &context->uart_handle,      &uart_config,       (create_t)HyUartDebugCreate,    HyUartDebugDestroy},
-        // {"log",         &context->log_handle,       &log_config,        (create_t)HyLogCreate,          HyLogDestroy},
+        {"debug uart",  &context->uart_handle,      &uart_config,       (create_t)HyUartDebugCreate,    HyUartDebugDestroy},
+        {"log",         &context->log_handle,       &log_config,        (create_t)HyLogCreate,          HyLogDestroy},
         // {"time",        &context->time_handle,      &time_config,       (create_t)HyTimeCreate,         HyTimeDestroy},
     };
 
@@ -134,6 +134,8 @@ int main(int argc, char const* argv[])
         LOGE("_module_create faild \n");
         return -1;
     }
+
+    LOGI("version: %s, date: %s, time: %s \n", VERSION, __DATE__, __TIME__);
 
     HyGpio_t gpio;
     gpio.group = HY_GPIO_GROUP_PD;
@@ -154,11 +156,11 @@ int main(int argc, char const* argv[])
     HyGpioSetInput(&key);
 
     while (1) {
-        if (HyGpioGetLevel(&key) == HY_GPIO_LEVEL_HIGH) {
-            HyGpioSetLevel(&gpio, HY_GPIO_LEVEL_HIGH);
-        } else {
-            HyGpioSetLevel(&gpio, HY_GPIO_LEVEL_LOW);
-        }
+        // if (HyGpioGetLevel(&key) == HY_GPIO_LEVEL_HIGH) {
+            // HyGpioSetLevel(&gpio, HY_GPIO_LEVEL_HIGH);
+        // } else {
+            // HyGpioSetLevel(&gpio, HY_GPIO_LEVEL_LOW);
+        // }
     }
 
     LOGI("version: %s, date: %s, time: %s \n", VERSION, __DATE__, __TIME__);

@@ -22,104 +22,132 @@
 #include <string.h>
 
 #include "hy_uart.h"
+#include "hy_gpio.h"
 
 #include "at32f4xx_gpio.h"
 #include "at32f4xx_usart.h"
+#include "at32f4xx_rcc.h"
+#include "misc.h"
+#include "at32f4xx.h"
 
 #include "hy_utils/hy_log.h"
 #include "hy_utils/hy_mem.h"
 #include "hy_utils/hy_string.h"
 #include "hy_utils/hy_assert.h"
 
-
 #define ALONE_DEBUG 1
 
 typedef struct {
-    HyUartNum_t num;
-
     HyUartConfigSave_t config_save;
+
+    HyUartNum_t num;
 } _uart_context_t;
 
 static _uart_context_t *context_array[HY_UART_NUM_MAX] = {NULL};
 
-typedef struct {
-    HyUartNum_t     uart;
-    GPIO_Type*      gpiox;
-    uint16_t        tx_pin;
-    uint16_t        rx_pin;
-} _uart_pin_t;
+int HyUartSendByte(void *handle, char byte);
+int HyUartSendBuf(void *handle, void *buf, size_t len);
 
-typedef struct {
-    uint32_t        uart_rcc;
-    uint32_t        gpio_rcc;
-    uint32_t        gpio_remap;
-    FunctionalState new_state;
-} _uart_rcc_t;
+#ifdef DEBUG_UART
+#ifdef __GNUC__
+int _write(int fd, char *ptr, int len)
+{
+    /*
+     * write "len" of char from "ptr" to file id "fd"
+     * Return number of char written.
+     *
+     * Only work for STDOUT, STDIN, and STDERR
+     */
+    if (fd > 2) {
+        return -1;
+    }
+
+    int i = 0;
+    while (*ptr && (i < len)) {
+        if (*ptr == '\n') {
+            HyUartSendByte(context_array[DEBUG_UART_NUM], '\r');
+        }
+        HyUartSendByte(context_array[DEBUG_UART_NUM], *ptr);
+        i++;
+        ptr++;
+    }
+    return i;
+}
+#endif
+#if __CC_ARM
+int fputc(int ch, FILE *f)
+{
+    if ((hy_u8_t)ch == '\n') {
+        HyUartSendByte(context_array[DEBUG_UART_NUM], '\r');
+    }
+    HyUartSendByte(context_array[DEBUG_UART_NUM], (hy_u8_t)ch);
+
+    return 1;
+}
+#endif
+#endif
 
 static void _init_uart_gpio(HyUartNum_t num)
 {
-    _uart_pin_t uart_pin[] = {
-        {HY_UART_NUM_1, GPIOA, GPIO_Pins_9,  GPIO_Pins_10},
-        {HY_UART_NUM_4, GPIOC, GPIO_Pins_10, GPIO_Pins_11},
-        {HY_UART_NUM_5, GPIOB, GPIO_Pins_9,  GPIO_Pins_8},
-    };
-    _uart_rcc_t uart_rcc[] = {
-        {RCC_APB2PERIPH_USART1, RCC_APB2PERIPH_GPIOA,                        0, ENABLE},
-        {RCC_APB1PERIPH_UART4,  RCC_APB2PERIPH_GPIOC,                        0, ENABLE},
-        {RCC_APB1PERIPH_UART5,  RCC_APB2PERIPH_GPIOB | RCC_APB2PERIPH_AFIO,  AFIO_MAP5_USART5_0001, ENABLE},
+    HyGpio_t gpio[][2] = {
+        {{0, 0}, {0, 0}},
+        {{HY_GPIO_GROUP_PA, HY_GPIO_PIN_9}, {HY_GPIO_GROUP_PA, HY_GPIO_PIN_10}},
     };
 
-    for (int i = 0; i < HY_UART_NUM_MAX; i++) {
-        if (num != uart_pin[i].uart) {
-            continue;
-        }
-
-        RCC_APB2PeriphClockCmd(uart_rcc[i].gpio_rcc, ENABLE);
-        if (HY_UART_NUM_1 == num) {
-            RCC_APB2PeriphClockCmd(uart_rcc[i].uart_rcc, ENABLE);
-        } else {
-            RCC_APB1PeriphClockCmd(uart_rcc[i].uart_rcc, ENABLE);
-        }
-        if (uart_rcc[i].gpio_remap) {
-            GPIO_PinsRemapConfig(uart_rcc[i].gpio_remap, uart_rcc[i].new_state);
-        }
-
-        GPIO_InitType gpio;
-
-        GPIO_StructInit(&gpio);
-        gpio.GPIO_Pins      = uart_pin[i].tx_pin; 
-        gpio.GPIO_MaxSpeed  = GPIO_MaxSpeed_50MHz;
-        gpio.GPIO_Mode      = GPIO_Mode_AF_PP;
-
-        GPIO_Init(uart_pin[i].gpiox, &gpio);
-
-        gpio.GPIO_Pins      = uart_pin[i].rx_pin;
-        gpio.GPIO_Mode      = GPIO_Mode_IN_PD;
-
-        GPIO_Init(uart_pin[i].gpiox, &gpio);
-
-        break;
-    }
+    HyGpioSetOutput(&gpio[num][0], HY_GPIO_LEVEL_HIGH);
+    HyGpioSetInput(&gpio[num][1]);
 }
 
-static void _init_uart_func(HyUartNum_t num, uint32_t rate)
+static void _init_uart_func(HyUartConfig_t *uart_config)
 {
-    USART_InitType uart;
     USART_Type* uart_num[HY_UART_NUM_MAX] = {
         NULL, USART1, USART2, USART3, UART4, UART5
     };
 
+    hy_u32_t rate[HY_UART_RATE_MAX] = {
+        1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200,
+    };
+
+    hy_u16_t bits[] = {0, 0, 0, USART_WordLength_8b, USART_WordLength_9b};
+    hy_u16_t parity[] = {USART_Parity_No, USART_Parity_Odd, USART_Parity_Even};
+    hy_u16_t stop[] = {
+        USART_StopBits_0_5, USART_StopBits_1,
+        USART_StopBits_1_5, USART_StopBits_2
+    };
+    hy_u16_t flow_control[] = {
+        USART_HardwareFlowControl_None, USART_HardwareFlowControl_RTS,
+        USART_HardwareFlowControl_CTS, USART_HardwareFlowControl_RTS_CTS
+    };
+
+    RCC_APB2PeriphClockCmd(RCC_APB2PERIPH_USART1, ENABLE);  
+
+    USART_InitType uart;
     USART_StructInit(&uart);
-    uart.USART_BaudRate              = rate;
-    uart.USART_WordLength            = USART_WordLength_8b;
-    uart.USART_StopBits              = USART_StopBits_1;
-    uart.USART_Parity                = USART_Parity_No;
-    uart.USART_HardwareFlowControl   = USART_HardwareFlowControl_None;
+
+    uart.USART_BaudRate              = rate[uart_config->rate];
+    uart.USART_WordLength            = bits[uart_config->bits];
+    uart.USART_Parity                = parity[uart_config->parity];
+    uart.USART_StopBits              = stop[uart_config->stop];
+    uart.USART_HardwareFlowControl   = flow_control[uart_config->flow_control];
     uart.USART_Mode                  = USART_Mode_Rx | USART_Mode_Tx;	
 
-    USART_Init(uart_num[num], &uart); 
+    USART_Init(uart_num[uart_config->num], &uart); 
+
+    NVIC_InitType NVIC_InitStructure;
+
+    NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+
+    NVIC_Init(&NVIC_InitStructure);
+
+    USART_INTConfig(USART1, USART_INT_RDNE, ENABLE);
+
+    USART_Cmd(USART1, ENABLE);
 }
 
+#if 0
 typedef struct {
     USART_Type  *uart;
     uint8_t     ch;
@@ -148,6 +176,7 @@ static void _init_uart_interrupt(HyUartNum_t num)
     USART_INTConfig(uart_interrupt[num].uart, USART_INT_RDNE, ENABLE);
     USART_Cmd(uart_interrupt[num].uart, ENABLE);
 }
+#endif
 
 static void _uart_irq_handler(HyUartNum_t num)
 {
@@ -250,55 +279,26 @@ void HyUartDestroy(void **handle)
 void *HyUartCreate(HyUartConfig_t *uart_config)
 {
     LOGT("%s:%d \n", __func__, __LINE__);
-
     HY_ASSERT_NULL_RET_VAL(!uart_config, NULL);
 
     _uart_context_t *context = NULL;
 
     do {
-        context = HY_MALLOC_BREAK(sizeof(*context));
-
-        context_array[uart_config->num] = context;
-        context->num                    = uart_config->num;
+        context = (_uart_context_t *)HY_MALLOC_BREAK(sizeof(*context));
 
         HY_MEMCPY(&context->config_save, &uart_config->config_save);
+        context->num = uart_config->num;
 
         _init_uart_gpio(uart_config->num);
-        _init_uart_func(uart_config->num, uart_config->rate);
-        _init_uart_interrupt(uart_config->num);
+        _init_uart_func(uart_config);
+        // _init_uart_interrupt(uart_config->num);
+
+        context_array[uart_config->num] = context;
 
         return context;
     } while (0);
 
     HyUartDestroy((void **)&context);
-
     return NULL;
 }
-
-#ifdef DEBUG_UART
-
-int _write(int fd, char *ptr, int len)
-{
-    /*
-     * write "len" of char from "ptr" to file id "fd"
-     * Return number of char written.
-     *
-     * Only work for STDOUT, STDIN, and STDERR
-     */
-    if (fd > 2) {
-        return -1;
-    }
-
-    int i = 0;
-    while (*ptr && (i < len)) {
-        if (*ptr == '\n') {
-            HyUartSendByte(context_array[DEBUG_UART_NUM], '\r');
-        }
-        HyUartSendByte(context_array[DEBUG_UART_NUM], *ptr);
-        i++;
-        ptr++;
-    }
-    return i;
-}
-#endif
 
