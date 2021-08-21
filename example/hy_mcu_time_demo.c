@@ -36,14 +36,16 @@
 
 typedef struct {
     void    *system_handle;
-    void    *uart_handle;
+    void    *debug_uart_handle;
     void    *log_handle;
     void    *time_handle;
+
+    HyGpio_t red_led;
 } _main_context_t;
 
 static void _sys_tick_cb(void *args)
 {
-#if 1
+#if 0
     static int cnt = 0;
     if (cnt++ == 1000) {
         cnt = 0;
@@ -55,14 +57,24 @@ static void _sys_tick_cb(void *args)
 
 static void _time_cb(void *args)
 {
-    LOGE("------------haha\n");
-#if 0
+    _main_context_t *context = args;
+
+#if 1
     static int cnt = 0;
     if (cnt++ == 1000) {
         cnt = 0;
-        LOGD("--time\n");
+
+        HyGpioSetLevelToggle(&context->red_led);
     }
 #endif
+}
+
+static void _gpio_init(_main_context_t *context)
+{
+    HyGpio_t *gpio = &context->red_led;
+    gpio->group = HY_GPIO_GROUP_PD;
+    gpio->pin = HY_GPIO_PIN_13;
+    HyGpioSetOutput(gpio, HY_GPIO_LEVEL_HIGH);
 }
 
 static void _module_destroy(_main_context_t **context_pp)
@@ -71,10 +83,10 @@ static void _module_destroy(_main_context_t **context_pp)
 
     // note: 增加或删除要同步到module_create_t中
     module_destroy_t module[] = {
-        {"system",      &context->system_handle,    HySystemDestroy},
-        {"debug uart",  &context->uart_handle,      HyUartDebugDestroy},
-        {"log",         &context->log_handle,       HyLogDestroy},
-        {"time",        &context->time_handle,      HyTimeDestroy},
+        {"time",        &context->time_handle,          HyTimeDestroy},
+        {"log",         &context->log_handle,           HyLogDestroy},
+        {"debug uart",  &context->debug_uart_handle,    HyUartDebugDestroy},
+        {"system",      &context->system_handle,        HySystemDestroy},
     };
 
     RUN_DESTROY(module);
@@ -90,36 +102,36 @@ static _main_context_t *_module_create(void)
     system_config.config_save.sys_tick_cb   = _sys_tick_cb;
     system_config.config_save.args          = context;
 
-    HyUartConfig_t uart_config;
-    // uart_config.dev_name                = "/dev/ttyUSB1";
-    uart_config.num                     = HY_UART_NUM_1;
-    uart_config.rate                    = HY_UART_RATE_115200;
-    uart_config.flow_control            = HY_UART_FLOW_CONTROL_NONE;
-    uart_config.bits                    = HY_UART_BITS_8;
-    uart_config.parity                  = HY_UART_PARITY_N;
-    uart_config.stop                    = HY_UART_STOP_1;
-    // uart_config.config_save.is_block    = HY_UART_BLOCK;
-    // uart_config.config_save.read_cb     = _uart1_read_cb;
-    // uart_config.config_save.args        = context;
+    HyUartConfig_t debug_uart_config;
+    // debug_uart_config.dev_name              = "/dev/ttyUSB1";
+    debug_uart_config.num                   = HY_UART_NUM_1;
+    debug_uart_config.rate                  = HY_UART_RATE_115200;
+    debug_uart_config.flow_control          = HY_UART_FLOW_CONTROL_NONE;
+    debug_uart_config.bits                  = HY_UART_BITS_8;
+    debug_uart_config.parity                = HY_UART_PARITY_N;
+    debug_uart_config.stop                  = HY_UART_STOP_1;
+    // debug_uart_config.config_save.is_block  = HY_UART_BLOCK;
+    // debug_uart_config.config_save.read_cb   = _uart1_read_cb;
+    // debug_uart_config.config_save.args      = context;
 
     HyLogConfig_t log_config;
-    log_config.buf_len                  = 256;
-    log_config.level                    = HY_LOG_LEVEL_TRACE;
-    log_config.config_file              = NULL;
+    log_config.buf_len                      = 256;
+    log_config.level                        = HY_LOG_LEVEL_TRACE;
+    log_config.config_file                  = NULL;
 
     HyTimeConfig_t time_config;
-    time_config.num                     = HY_TIME_NUM_2;
-    time_config.us                      = 1000;
-    time_config.flag                    = HY_TIME_FLAG_ENABLE;
-    time_config.config_save.time_cb     = _time_cb;
-    time_config.config_save.args        = context;
+    time_config.num                         = HY_TIME_NUM_2;
+    time_config.us                          = 1000;
+    time_config.flag                        = HY_TIME_FLAG_ENABLE;
+    time_config.config_save.time_cb         = _time_cb;
+    time_config.config_save.args            = context;
 
     // note: 增加或删除要同步到module_destroy_t中
     module_create_t module[] = {
-        {"system",      &context->system_handle,    &system_config,     (create_t)HySystemCreate,       HySystemDestroy},
-        {"debug uart",  &context->uart_handle,      &uart_config,       (create_t)HyUartDebugCreate,    HyUartDebugDestroy},
-        {"log",         &context->log_handle,       &log_config,        (create_t)HyLogCreate,          HyLogDestroy},
-        // {"time",        &context->time_handle,      &time_config,       (create_t)HyTimeCreate,         HyTimeDestroy},
+        {"system",      &context->system_handle,        &system_config,         (create_t)HySystemCreate,       HySystemDestroy},
+        {"debug uart",  &context->debug_uart_handle,    &debug_uart_config,     (create_t)HyUartDebugCreate,    HyUartDebugDestroy},
+        {"log",         &context->log_handle,           &log_config,            (create_t)HyLogCreate,          HyLogDestroy},
+        {"time",        &context->time_handle,          &time_config,           (create_t)HyTimeCreate,         HyTimeDestroy},
     };
 
     RUN_CREATE(module);
@@ -137,33 +149,7 @@ int main(int argc, char const* argv[])
 
     LOGI("version: %s, date: %s, time: %s \n", VERSION, __DATE__, __TIME__);
 
-    HyGpio_t gpio;
-    gpio.group = HY_GPIO_GROUP_PD;
-    gpio.pin = HY_GPIO_PIN_13;
-    HyGpioSetOutput(&gpio, HY_GPIO_LEVEL_LOW);
-
-    gpio.group = HY_GPIO_GROUP_PD;
-    gpio.pin = HY_GPIO_PIN_14;
-    HyGpioSetOutput(&gpio, HY_GPIO_LEVEL_LOW);
-
-    gpio.group = HY_GPIO_GROUP_PD;
-    gpio.pin = HY_GPIO_PIN_15;
-    HyGpioSetOutput(&gpio, HY_GPIO_LEVEL_LOW);
-
-    HyGpio_t key;
-    key.group = HY_GPIO_GROUP_PA;
-    key.pin = HY_GPIO_PIN_0;
-    HyGpioSetInput(&key);
-
-    while (1) {
-        // if (HyGpioGetLevel(&key) == HY_GPIO_LEVEL_HIGH) {
-            // HyGpioSetLevel(&gpio, HY_GPIO_LEVEL_HIGH);
-        // } else {
-            // HyGpioSetLevel(&gpio, HY_GPIO_LEVEL_LOW);
-        // }
-    }
-
-    LOGI("version: %s, date: %s, time: %s \n", VERSION, __DATE__, __TIME__);
+    _gpio_init(context);
 
     while (1) {
 #ifdef USE_SYSTICK_DELAY

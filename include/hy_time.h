@@ -38,6 +38,14 @@ typedef enum {
     HY_TIME_NUM_5,
     HY_TIME_NUM_6,
     HY_TIME_NUM_7,
+    HY_TIME_NUM_8,
+    HY_TIME_NUM_9,
+    HY_TIME_NUM_10,
+    HY_TIME_NUM_11,
+    HY_TIME_NUM_12,
+    HY_TIME_NUM_13,
+    HY_TIME_NUM_14,
+    HY_TIME_NUM_15,
 
     HY_TIME_NUM_LP_0,
     HY_TIME_NUM_LP_1,
@@ -50,6 +58,8 @@ typedef enum {
 typedef enum {
     HY_TIME_FLAG_DISABLE,
     HY_TIME_FLAG_ENABLE,
+
+    HY_TIME_FLAG_MAX,
 } HytimeFlag_t;
 
 typedef struct {
