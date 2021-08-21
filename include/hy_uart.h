@@ -43,6 +43,7 @@ typedef enum {
     HY_UART_NUM_5,
     HY_UART_NUM_6,
     HY_UART_NUM_7,
+    HY_UART_NUM_8,
 
     HY_UART_NUM_MAX
 } HyUartNum_t;
@@ -130,7 +131,17 @@ typedef struct {
 void *HyUartCreate(HyUartConfig_t *uart_config);
 void HyUartDestroy(void **handle);
 
+/**
+ * @brief 过程处理函数
+ *
+ * @param handle 操作句柄
+ *
+ * @return -1表示出错
+ *
+ * @note 单片机未实现该函数，使用中断回调函数
+ */
 hy_s32_t HyUartProcess(void *handle);
+
 hy_s32_t HyUartWrite(void *handle, void *buf, size_t len);
 
 #ifdef DEBUG_UART
