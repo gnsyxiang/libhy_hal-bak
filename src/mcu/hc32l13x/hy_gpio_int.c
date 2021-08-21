@@ -108,15 +108,14 @@ void *HyIntCreate(HyIntConfig_t *int_config)
 
     do {
         context = (_int_context_t *)HY_MALLOC_BREAK(sizeof(*context));
+        HyGpio_t *gpio = &context->config_save.gpio;
 
         HY_MEMCPY(&context->config_save, &int_config->config_save);
+        context_arr[gpio->group][gpio->pin] = context;
 
-        HyGpio_t *gpio = &context->config_save.gpio;
         HyGpioSetInput(gpio);
 
         _int_irq(int_config);
-
-        context_arr[gpio->group][gpio->pin] = context;
 
         LOGI("interrupt pin<%s, %s> create successful \n", HY_GPIO_GROUP_2_STR(gpio->group), HY_GPIO_PIN_2_STR(gpio->pin));
         return context;

@@ -211,6 +211,7 @@ void *HyTimeCreate(HyTimeConfig_t *time_config)
 
     do {
         context = (_time_context_t *)HY_MALLOC_BREAK(sizeof(*context));
+        context_arr[time_config->num] = context;
 
         HY_MEMCPY(&context->config_save, &time_config->config_save);
         context->num = time_config->num;
@@ -227,8 +228,6 @@ void *HyTimeCreate(HyTimeConfig_t *time_config)
             default:
                 break;
         }
-
-        context_arr[time_config->num] = context;
 
         LOGI("time %s create successful \n", HY_TIME_NUM_2_STR(time_config->num));
         return context;

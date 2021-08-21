@@ -74,5 +74,5 @@ ${target_path}/configure                                    \
 
 thread_jobs=`getconf _NPROCESSORS_ONLN 2>/dev/null || echo 1`
 
-# make -j${thread_jobs}; make install
+make -j${thread_jobs}; make install
 

@@ -47,7 +47,7 @@ typedef struct {
     HyUartNum_t num;
 } _uart_context_t;
 
-static _uart_context_t *context_arr[HY_UART_NUM_MAX] = {0};
+static _uart_context_t *context_array[HY_UART_NUM_MAX] = {0};
 
 #ifdef DEBUG_UART
 #ifdef __GNUC__
@@ -94,7 +94,7 @@ int fputc(int ch, FILE *f)
 
 static inline void _uart_irq_handler(HyUartNum_t num)
 {
-    _uart_context_t *context = context_arr[num];
+    _uart_context_t *context = context_array[num];
 
     _DEFINE_UART();
 
@@ -173,11 +173,6 @@ static void _init_uart_func(HyUartConfig_t *uart_config)
     EnableNvic(irq[uart_config->num], IrqLevel3, TRUE);
 }
 
-hy_s32_t HyUartProcess(void *handle)
-{
-    return 0;
-}
-
 hy_s32_t HyUartWrite(void *handle, void *buf, size_t len)
 {
     HY_ASSERT_NULL_RET_VAL(!handle || !buf, HY_ERR_FAILD);
@@ -193,10 +188,19 @@ hy_s32_t HyUartWrite(void *handle, void *buf, size_t len)
     return len;
 }
 
+hy_s32_t HyUartProcess(void *handle)
+{
+    return 0;
+}
+
 void HyUartDestroy(void **handle)
 {
     LOGT("%s:%d \n", __func__, __LINE__);
     HY_ASSERT_NULL_RET(!handle || !*handle);
+
+    _uart_context_t *context = *handle;
+
+    context_array[context->num] = NULL;
 
     HY_FREE(handle);
 
@@ -214,12 +218,11 @@ void *HyUartCreate(HyUartConfig_t *uart_config)
         context = (_uart_context_t *)HY_MALLOC_BREAK(sizeof(*context));
 
         HY_MEMCPY(&context->config_save, &uart_config->config_save);
-        context->num = uart_config->num;
+        context->num                = uart_config->num;
+        context_array[context->num] = context;
 
         _init_uart_gpio(context->num);
         _init_uart_func(uart_config);
-
-        context_arr[context->num] = context;
 
         LOGI("uart %s create successful \n", HY_UART_NUM_2_STR(uart_config->num));
         return context;

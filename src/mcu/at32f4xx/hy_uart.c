@@ -23,6 +23,7 @@
 
 #include "hy_uart.h"
 #include "hy_gpio.h"
+#include "inside_uart.h"
 
 #include "at32f4xx_gpio.h"
 #include "at32f4xx_usart.h"
@@ -99,6 +100,7 @@ static void _uart_irq_handler(HyUartNum_t num)
         _DEFINE_UART();
 
         if (USART_GetITStatus(uart[num], USART_INT_RDNE) != RESET) {
+
             HyUartConfigSave_t *config_save = &context_array[num]->config_save;
             if (config_save->read_cb) {
                 hy_u8_t ch = USART_ReceiveData(uart[num]);
@@ -212,9 +214,9 @@ hy_s32_t HyUartWrite(void *handle, void *buf, size_t len)
 {
     HY_ASSERT_NULL_RET_VAL(!handle, -1);
 
+    _uart_context_t *context = handle;
     _DEFINE_UART();
 
-    _uart_context_t *context = handle;
     FlagStatus status = RESET;
     hy_u32_t cnt = 0;
     uint16_t i = 0;
@@ -246,14 +248,15 @@ hy_s32_t HyUartProcess(void *handle)
 void HyUartDestroy(void **handle)
 {
     LOGT("%s:%d \n", __func__, __LINE__);
+    HY_ASSERT_NULL_RET(!handle || !*handle);
 
-    if (handle && *handle) {
-        _uart_context_t *context = *handle;
+    _uart_context_t *context = *handle;
 
-        context_array[context->num] = NULL;
+    context_array[context->num] = NULL;
 
-        HY_FREE(handle);
-    }
+    HY_FREE(handle);
+
+    LOGI("uart destroy successful \n");
 }
 
 void *HyUartCreate(HyUartConfig_t *uart_config)
@@ -267,13 +270,13 @@ void *HyUartCreate(HyUartConfig_t *uart_config)
         context = (_uart_context_t *)HY_MALLOC_BREAK(sizeof(*context));
 
         HY_MEMCPY(&context->config_save, &uart_config->config_save);
-        context->num = uart_config->num;
+        context->num                    = uart_config->num;
+        context_array[uart_config->num] = context;
 
         _init_uart_gpio(uart_config->num);
         _init_uart_func(uart_config);
 
-        context_array[uart_config->num] = context;
-
+        LOGI("uart %s create successful \n", HY_UART_NUM_2_STR(uart_config->num));
         return context;
     } while (0);
 

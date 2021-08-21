@@ -117,7 +117,10 @@ void HyAdcStop(void *handle)
 
 void HyAdcDestroy(void **handle)
 {
+    LOGT("%s:%d \n", __func__, __LINE__);
+    HY_ASSERT_NULL_RET(!handle || !*handle);
 
+    HY_FREE(handle);
 }
 
 void *HyAdcCreate(HyAdcConfig_t *adc_config)
@@ -131,10 +134,9 @@ void *HyAdcCreate(HyAdcConfig_t *adc_config)
         context = (_adc_context_t *)HY_MALLOC_BREAK(sizeof(*context));
 
         HY_MEMCPY(&context->config_save, &adc_config->config_save);
+        context_arr[0] = context;
 
         _adc_init();
-
-        context_arr[0] = context;
 
         LOGI("adc create successful \n");
         return context;
