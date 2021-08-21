@@ -70,6 +70,17 @@ void HyGpioSetLevel(HyGpio_t *gpio, HyGpioLevel_t level)
     }
 }
 
+void HyGpioSetLevelToggle(HyGpio_t *gpio)
+{
+    HY_ASSERT_NULL_RET(!gpio);
+    LOGI("pin<%s, %s> toggle \n", HY_GPIO_GROUP_2_STR(gpio->group), HY_GPIO_PIN_2_STR(gpio->pin));
+
+    _DEFINE_GROUP();
+    _DEFINE_PIN();
+
+    group[gpio->group]->OPTDT ^= pin[gpio->pin];
+}
+
 static void _init_PA_pin(HyGpio_t *gpio, GPIO_InitType *GPIO_InitStructure)
 {
     switch (gpio->pin) {

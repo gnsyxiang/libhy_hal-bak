@@ -34,9 +34,7 @@ _ldadd_com      =
 # ---------------------
 # add necessary content
 # ---------------------
-_include_com    += \
-                   -I$(top_srcdir)/include/wrapper \
-                   -I$(top_srcdir)/include
+_include_com    += -I$(top_srcdir)/include
 
 _include_com    += $(HY_MCU_INCS)
 
