@@ -28,6 +28,7 @@
 #include "hy_time.h"
 #include "hy_gpio.h"
 #include "hy_key.h"
+#include "hy_timer.h"
 
 #include "hy_utils/hy_log.h"
 #include "hy_utils/hy_module.h"
@@ -41,6 +42,7 @@ typedef struct {
     void    *log_handle;
     void    *time_handle;
     void    *key_handle;
+    void    *timer_handle;
 
     HyGpio_t red_led;
     HyGpio_t key_gpio;
@@ -61,6 +63,8 @@ static void _sys_tick_cb(void *args)
 static void _time_cb(void *args)
 {
     _main_context_t *context = args;
+
+    HyTimerTickUpdate(context->timer_handle, 1);
 
     static int cnt_5ms = 0;
     if (cnt_5ms++ == 5) {
@@ -146,13 +150,13 @@ static void _key_init(_main_context_t *context)
     void *key_handle = HyKeyPinAssign(context->key_handle, &pin_config);
 
     HyKeyEventAdd_t event_add[] = {
-        {HY_KEY_EVENT_DOWN,             {_key_num_0_down_cb, context}},
-        {HY_KEY_EVENT_UP,               {_key_num_0_up_cb, context}},
-        {HY_KEY_EVENT_REPEAT,           {_key_num_0_repeat_cb, context}},
-        {HY_KEY_EVENT_CLICK_SINGLE,     {_key_num_0_click_single_cb, context}},
-        {HY_KEY_EVENT_CLICK_DOUBLE,     {_key_num_0_click_double_cb, context}},
-        {HY_KEY_EVENT_LONG_PRESS_START, {_key_num_0_long_start_cb, context}},
-        {HY_KEY_EVENT_LONG_PRESS_HOLD,  {_key_num_0_long_hold_cb, context}},
+        {HY_KEY_EVENT_DOWN,             {_key_num_0_down_cb,            context}},
+        {HY_KEY_EVENT_UP,               {_key_num_0_up_cb,              context}},
+        {HY_KEY_EVENT_REPEAT,           {_key_num_0_repeat_cb,          context}},
+        {HY_KEY_EVENT_CLICK_SINGLE,     {_key_num_0_click_single_cb,    context}},
+        {HY_KEY_EVENT_CLICK_DOUBLE,     {_key_num_0_click_double_cb,    context}},
+        {HY_KEY_EVENT_LONG_PRESS_START, {_key_num_0_long_start_cb,      context}},
+        {HY_KEY_EVENT_LONG_PRESS_HOLD,  {_key_num_0_long_hold_cb,       context}},
     };
 
     for (int i = 0; i < HyUtilsArrayCnt(event_add); ++i) {
@@ -166,6 +170,7 @@ static void _module_destroy(_main_context_t **context_pp)
 
     // note: 增加或删除要同步到module_create_t中
     module_destroy_t module[] = {
+        {"timer",       &context->key_handle,           HyTimerDestroy},
         {"key",         &context->key_handle,           HyKeyDestroy},
         {"time",        &context->time_handle,          HyTimeDestroy},
         {"log",         &context->log_handle,           HyLogDestroy},
@@ -215,13 +220,21 @@ static _main_context_t *_module_create(void)
         {"system",      &context->system_handle,        &system_config,         (create_t)HySystemCreate,       HySystemDestroy},
         {"debug uart",  &context->debug_uart_handle,    &debug_uart_config,     (create_t)HyUartDebugCreate,    HyUartDebugDestroy},
         {"log",         &context->log_handle,           &log_config,            (create_t)HyLogCreate,          HyLogDestroy},
-        {"time",        &context->time_handle,          &time_config,           (create_t)HyTimeCreate,         HyTimeDestroy},
+        {"timer",       &context->timer_handle,         NULL,                   (create_t)HyTimerCreate,        HyTimerDestroy},
         {"key",         &context->key_handle,           NULL,                   (create_t)HyKeyCreate,          HyKeyDestroy},
+        {"time",        &context->time_handle,          &time_config,           (create_t)HyTimeCreate,         HyTimeDestroy},
     };
 
     RUN_CREATE(module);
 
     return context;
+}
+
+static void _timer_cb(void *timer_handle, void *args)
+{
+    _main_context_t *context = args;
+
+    HyGpioSetLevelToggle(&context->red_led);
 }
 
 int main(int argc, char const* argv[])
@@ -237,7 +250,16 @@ int main(int argc, char const* argv[])
     _gpio_init(context);
     _key_init(context);
 
+    HyTimerConfig_t timer_config;
+    timer_config.repeat_flag = HY_TIMER_FLAG_ENABLE;
+    timer_config.expired_ms = 500;
+    timer_config.timer_cb = _timer_cb;
+    timer_config.args = context;
+    HyTimerAdd(context->timer_handle, &timer_config);
+
     while (1) {
+        HyTimerProcess(context->timer_handle);
+
 #ifdef USE_SYSTICK_DELAY
         HySystemDelayS(1);
         LOGD("delay 1s\n");

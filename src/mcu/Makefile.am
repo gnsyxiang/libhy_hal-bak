@@ -51,7 +51,9 @@ _include_com    += -I$(top_srcdir)/include
 
 _include_com    += $(HY_MCU_INCS)
 
-_sources_com    += hy_key.c
+_sources_com    += \
+                   hy_timer.c \
+                   hy_key.c
 
 _cppflags_com   += \
                    $(CPPFLAGS_COM) \
