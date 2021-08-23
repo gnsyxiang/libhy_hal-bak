@@ -140,7 +140,6 @@ static void _key_num_0_long_hold_cb(void *args)
 static void _key_init(_main_context_t *context)
 {
     HyKeyConfig_t pin_config;
-    pin_config.num          = HY_KEY_NUM_0;
     pin_config.active_level = HY_KEY_LEVEL_HIGH;
     pin_config.read_pin     = _read_key_pin_cb;
     pin_config.args         = context;

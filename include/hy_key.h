@@ -26,11 +26,29 @@ extern "C" {
 
 #include "hy_utils/hy_type.h"
 
-#define HY_KEY_TICK_MS          (5)
-#define HY_KEY_TICK_DEBOUNCE    (3)
-#define HY_KEY_TICK_SHORT       (300 / HY_KEY_TICK_MS)
-#define HY_KEY_TICK_LONG        (1000 / HY_KEY_TICK_MS)
+/**
+ * @brief 按键处理函数调用的频率
+ */
+#define HY_KEY_TICK_MS              (5)
 
+/**
+ * @brief 按键去抖时间
+ *
+ * @note 去抖时间为: HY_KEY_TICK_MS * HY_KEY_TICK_DEBOUNCE_CNT
+ */
+#define HY_KEY_TICK_DEBOUNCE_CNT    (3)
+
+/**
+ * @brief 触发长按的最短时间
+ *
+ * @note 需要是HY_KEY_TICK_MS的倍数
+ */
+#define HY_KEY_TICK_MS_LONG         (1000)
+
+/**
+ * @enum HyKeyLevel_t
+ * @brief 定义按键的高低电平
+ */
 typedef enum {
     HY_KEY_LEVEL_LOW,
     HY_KEY_LEVEL_HIGH,
@@ -38,6 +56,10 @@ typedef enum {
     HY_KEY_LEVEL_MAX,
 } HyKeyLevel_t;
 
+/**
+ * @enum HyKeyEvent_t
+ * @brief 定义按键触发的事件
+ */
 typedef enum {
     HY_KEY_EVENT_DOWN,
     HY_KEY_EVENT_UP,
@@ -52,19 +74,6 @@ typedef enum {
     HY_KEY_EVENT_MAX,
 } HyKeyEvent_t;
 
-typedef enum {
-    HY_KEY_NUM_0,
-    HY_KEY_NUM_1,
-    HY_KEY_NUM_2,
-    HY_KEY_NUM_3,
-    HY_KEY_NUM_4,
-    HY_KEY_NUM_5,
-    HY_KEY_NUM_6,
-    HY_KEY_NUM_7,
-
-    HY_KEY_NUM_MAX,
-} HyKeyNum_t;
-
 typedef struct {
     void (*event_cb)(void *args);
     void *args;
@@ -76,7 +85,6 @@ typedef struct {
 } HyKeyEventAdd_t;
 
 typedef struct {
-    HyKeyNum_t num;
     HyKeyLevel_t active_level;
     HyKeyLevel_t (*read_pin)(void *args);
     void *args;
@@ -93,7 +101,7 @@ void HyKeyPinEventAttach(void *key_handle, HyKeyEventAdd_t *event_add);
  *
  * @param handle 句柄
  *
- * @note: 该函数放在5ms的定时回调中
+ * @note: 该函数放在HY_KEY_TICK_MS的定时回调中
  */
 void HyKeyProcess(void *handle);
 
