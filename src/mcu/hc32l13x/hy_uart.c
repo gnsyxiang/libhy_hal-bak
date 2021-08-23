@@ -139,7 +139,7 @@ static void _init_uart_func(HyUartConfig_t *uart_config)
     };
 
     en_uart_stop_t stop[HY_UART_STOP_MAX] = {
-        0, UartMsk1bit, UartMsk1_5bit, UartMsk2bit
+        (en_uart_stop_t)0, UartMsk1bit, UartMsk1_5bit, UartMsk2bit
     };
 
     en_uart_mmdorck_t parity[] = {
