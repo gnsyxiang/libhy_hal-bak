@@ -46,7 +46,11 @@
 HyGpioLevel_t HyGpioGetLevel(HyGpio_t *gpio)
 {
     HY_ASSERT_NULL_RET_VAL(!gpio, HY_GPIO_LEVEL_MAX);
-    return HY_GPIO_LEVEL_LOW;
+
+    _DEFINE_GROUP();
+    _DEFINE_PIN();
+
+    return Gpio_GetInputIO(group[gpio->group], pin[gpio->pin]);
 }
 
 void HyGpioSetLevel(HyGpio_t *gpio, HyGpioLevel_t level)
