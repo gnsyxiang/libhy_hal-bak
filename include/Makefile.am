@@ -46,6 +46,7 @@ endif
 
 if COMPILE_SELECT_TARGET_OS_MCU
 _install_headers_com        += \
+                               hy_key.h \
                                hy_adc.h \
                                hy_gpio.h \
                                hy_gpio_int.h \

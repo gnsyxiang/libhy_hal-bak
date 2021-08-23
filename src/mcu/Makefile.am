@@ -44,11 +44,11 @@ _ldadd_com      =
 # ---------------------
 # add necessary content
 # ---------------------
-_include_com    +=
+_include_com    += -I$(top_srcdir)/include
 
 _include_com    += $(HY_MCU_INCS)
 
-_sources_com    +=
+_sources_com    += hy_key.c
 
 _cppflags_com   += \
                    $(CPPFLAGS_COM) \

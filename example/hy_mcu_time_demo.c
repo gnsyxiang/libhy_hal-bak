@@ -27,6 +27,7 @@
 #include "hy_uart.h"
 #include "hy_time.h"
 #include "hy_gpio.h"
+#include "hy_key.h"
 
 #include "hy_utils/hy_log.h"
 #include "hy_utils/hy_module.h"
@@ -39,8 +40,10 @@ typedef struct {
     void    *debug_uart_handle;
     void    *log_handle;
     void    *time_handle;
+    void    *key_handle;
 
     HyGpio_t red_led;
+    HyGpio_t key_gpio;
 } _main_context_t;
 
 static void _sys_tick_cb(void *args)
@@ -59,22 +62,103 @@ static void _time_cb(void *args)
 {
     _main_context_t *context = args;
 
+    static int cnt_5ms = 0;
+    if (cnt_5ms++ == 5) {
+        cnt_5ms = 0;
+
+        HyKeyProcess(context->key_handle);
+    }
+
 #if 1
     static int cnt = 0;
     if (cnt++ == 1000) {
         cnt = 0;
 
-        HyGpioSetLevelToggle(&context->red_led);
+        // LOGE("--haha\n");
+        // HyGpioSetLevelToggle(&context->red_led);
     }
 #endif
 }
 
 static void _gpio_init(_main_context_t *context)
 {
-    HyGpio_t *gpio = &context->red_led;
+    HyGpio_t *gpio = NULL;
+
+    gpio = &context->red_led;
     gpio->group = HY_GPIO_GROUP_PD;
     gpio->pin = HY_GPIO_PIN_13;
     HyGpioSetOutput(gpio, HY_GPIO_LEVEL_HIGH);
+
+    gpio = &context->key_gpio;
+    gpio->group = HY_GPIO_GROUP_PA;
+    gpio->pin = HY_GPIO_PIN_0;
+    HyGpioSetInput(gpio);
+}
+
+static HyKeyLevel_t _read_key_pin_cb(void *args)
+{
+    _main_context_t *context = args;
+
+    return (HyKeyLevel_t)HyGpioGetLevel(&context->key_gpio);
+}
+
+static void _key_num_0_down_cb(void *args)
+{
+    LOGE("---down \n");
+}
+
+static void _key_num_0_up_cb(void *args)
+{
+    LOGE("---up \n");
+}
+
+static void _key_num_0_repeat_cb(void *args)
+{
+    LOGE("---repeat \n");
+}
+
+static void _key_num_0_click_single_cb(void *args)
+{
+    LOGE("---click signal \n");
+}
+
+static void _key_num_0_click_double_cb(void *args)
+{
+    LOGE("---click double \n");
+}
+
+static void _key_num_0_long_start_cb(void *args)
+{
+    LOGE("---long start \n");
+}
+
+static void _key_num_0_long_hold_cb(void *args)
+{
+    LOGE("---long hole\n");
+}
+
+static void _key_init(_main_context_t *context)
+{
+    HyKeyConfig_t pin_config;
+    pin_config.num          = HY_KEY_NUM_0;
+    pin_config.active_level = HY_KEY_LEVEL_HIGH;
+    pin_config.read_pin     = _read_key_pin_cb;
+    pin_config.args         = context;
+    void *key_handle = HyKeyPinAssign(context->key_handle, &pin_config);
+
+    HyKeyEventAdd_t event_add[] = {
+        {HY_KEY_EVENT_DOWN,             {_key_num_0_down_cb, context}},
+        {HY_KEY_EVENT_UP,               {_key_num_0_up_cb, context}},
+        {HY_KEY_EVENT_REPEAT,           {_key_num_0_repeat_cb, context}},
+        {HY_KEY_EVENT_CLICK_SINGLE,     {_key_num_0_click_single_cb, context}},
+        {HY_KEY_EVENT_CLICK_DOUBLE,     {_key_num_0_click_double_cb, context}},
+        {HY_KEY_EVENT_LONG_PRESS_START, {_key_num_0_long_start_cb, context}},
+        {HY_KEY_EVENT_LONG_PRESS_HOLD,  {_key_num_0_long_hold_cb, context}},
+    };
+
+    for (int i = 0; i < HyUtilsArrayCnt(event_add); ++i) {
+        HyKeyPinEventAttach(key_handle, &event_add[i]);
+    }
 }
 
 static void _module_destroy(_main_context_t **context_pp)
@@ -83,6 +167,7 @@ static void _module_destroy(_main_context_t **context_pp)
 
     // note: 增加或删除要同步到module_create_t中
     module_destroy_t module[] = {
+        {"key",         &context->key_handle,           HyKeyDestroy},
         {"time",        &context->time_handle,          HyTimeDestroy},
         {"log",         &context->log_handle,           HyLogDestroy},
         {"debug uart",  &context->debug_uart_handle,    HyUartDebugDestroy},
@@ -132,6 +217,7 @@ static _main_context_t *_module_create(void)
         {"debug uart",  &context->debug_uart_handle,    &debug_uart_config,     (create_t)HyUartDebugCreate,    HyUartDebugDestroy},
         {"log",         &context->log_handle,           &log_config,            (create_t)HyLogCreate,          HyLogDestroy},
         {"time",        &context->time_handle,          &time_config,           (create_t)HyTimeCreate,         HyTimeDestroy},
+        {"key",         &context->key_handle,           NULL,                   (create_t)HyKeyCreate,          HyKeyDestroy},
     };
 
     RUN_CREATE(module);
@@ -150,6 +236,7 @@ int main(int argc, char const* argv[])
     LOGI("version: %s, date: %s, time: %s \n", VERSION, __DATE__, __TIME__);
 
     _gpio_init(context);
+    _key_init(context);
 
     while (1) {
 #ifdef USE_SYSTICK_DELAY
