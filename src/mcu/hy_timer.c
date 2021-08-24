@@ -94,29 +94,25 @@ void HyTimerTickUpdate(void *handle, hy_u32_t ms)
     context->tick += ms;
 }
 
-static void _timer_process_com(_timer_context_t *context, _timer_list_t *timer_list)
-{
-    HyTimerConfig_t *timer = &timer_list->timer;
-    if (context->tick - timer->cur_tick >= timer->expired_ms) {
-        if (timer->repeat_flag == HY_TIMER_FLAG_DISABLE) {
-            HyTimerDel(context, timer_list);
-        } else {
-            timer->cur_tick = context->tick;
-        }
-        if (timer->timer_cb) {
-            timer->timer_cb(timer, timer->args);
-        }
-    }
-}
-
 void HyTimerProcess(void *handle)
 {
     HY_ASSERT_NULL_RET(!handle);
     _timer_context_t *context = handle;
 
-    _timer_list_t *pos;
-    list_for_each_entry(pos, &context->list, list) {
-        _timer_process_com(context, pos);
+    _timer_list_t *pos, *n;
+    list_for_each_entry_safe(pos, n, &context->list, list) {
+        HyTimerConfig_t *timer = &pos->timer;
+        if (context->tick - timer->cur_tick >= timer->expired_ms) {
+            if (timer->timer_cb) {
+                timer->timer_cb(timer, timer->args);
+            }
+            if (timer->repeat_flag == HY_TIMER_FLAG_DISABLE) {
+                list_del(&pos->list);
+                HY_FREE(&pos);
+            } else {
+                timer->cur_tick = context->tick;
+            }
+        }
     }
 }
 
