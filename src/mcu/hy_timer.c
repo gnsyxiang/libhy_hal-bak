@@ -47,7 +47,11 @@ void HyTimerStart(void *timer_handle)
 
 void HyTimerStop(void *timer_handle)
 {
+    HY_ASSERT_NULL_RET(!timer_handle);
 
+    _timer_list_t *timer_list = timer_handle;
+
+    timer_list->timer.repeat_flag = HY_TIMER_FLAG_DISABLE;
 }
 
 void *HyTimerAdd(void *handle, HyTimerConfig_t *timer_config)
