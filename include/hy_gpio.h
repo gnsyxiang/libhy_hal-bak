@@ -69,10 +69,10 @@ typedef struct {
 
 void HyGpioSetInput(HyGpio_t *gpio);
 void HyGpioSetOutput(HyGpio_t *gpio, HyGpioLevel_t level);
-void HyGpioSetLevelToggle(HyGpio_t *gpio);
 
 HyGpioLevel_t HyGpioGetLevel(HyGpio_t *gpio);
 void HyGpioSetLevel(HyGpio_t *gpio, HyGpioLevel_t level);
+void HyGpioSetLevelToggle(HyGpio_t *gpio);
 
 #ifdef __cplusplus
 }

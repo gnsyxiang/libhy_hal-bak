@@ -218,7 +218,7 @@ void *HyTimeCreate(HyTimeConfig_t *time_config)
 
         switch (time_config->num) {
             case HY_TIME_NUM_0:
-                time_config->us = 500;
+                time_config->us = 500; // 内部设定1ms
                 _time0_init(time_config);
                 break;
             case HY_TIME_NUM_LP_0:

@@ -50,7 +50,7 @@ HyGpioLevel_t HyGpioGetLevel(HyGpio_t *gpio)
     _DEFINE_GROUP();
     _DEFINE_PIN();
 
-    return Gpio_GetInputIO(group[gpio->group], pin[gpio->pin]);
+    return (HyGpioLevel_t)Gpio_GetInputIO(group[gpio->group], pin[gpio->pin]);
 }
 
 void HyGpioSetLevel(HyGpio_t *gpio, HyGpioLevel_t level)
@@ -61,11 +61,20 @@ void HyGpioSetLevel(HyGpio_t *gpio, HyGpioLevel_t level)
     _DEFINE_GROUP();
     _DEFINE_PIN();
 
-    if (level == HY_GPIO_LEVEL_HIGH) {
-        Gpio_SetIO(group[gpio->group], pin[gpio->pin]);
-    } else {
-        Gpio_ClrIO(group[gpio->group], pin[gpio->pin]);
-    }
+    Gpio_WriteOutputIO(group[gpio->group], pin[gpio->pin], level);
+}
+
+void HyGpioSetLevelToggle(HyGpio_t *gpio)
+{
+    HY_ASSERT_NULL_RET(!gpio);
+    LOGI("pin<%s, %s> toggle \n", HY_GPIO_GROUP_2_STR(gpio->group), HY_GPIO_PIN_2_STR(gpio->pin));
+
+    _DEFINE_GROUP();
+    _DEFINE_PIN();
+
+    volatile uint32_t *addr = ((uint32_t)&M0P_GPIO->PAOUT + group[gpio->group]);
+
+    *addr ^= ((1UL)<<(pin[gpio->pin]));
 }
 
 static void _init_PA_pin(HyGpio_t *gpio, stc_gpio_cfg_t *stcGpioCfg)
