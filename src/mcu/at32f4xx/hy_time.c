@@ -61,7 +61,7 @@ static void _time_irq_handler(HyTimeNum_t num)
 
             HyTimeConfigSave_t *time_config = &context_array[num]->config_save;
             if (time_config->time_cb) {
-                time_config->time_cb(time_config->args);
+                time_config->time_cb(1, time_config->args);
             }
         }
     }

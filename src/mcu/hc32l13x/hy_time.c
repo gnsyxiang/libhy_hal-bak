@@ -32,6 +32,14 @@
 
 #define ALONE_DEBUG 1
 
+#define TIME_0_CNT      (500)       // 定时1ms
+#define TIME_0_MS       (1)
+
+// #define LP_TIME_0_CNT   (0)         // 定时2s
+// #define LP_TIME_0_MS    (2000)
+#define LP_TIME_0_CNT   (32768)     // 定时1s
+#define LP_TIME_0_MS    (1000)
+
 typedef struct {
     HyTimeConfigSave_t config_save;
 
@@ -71,13 +79,13 @@ void HyTimeDelayUs(size_t us)
     _delay_com(us, 1000000);
 }
 
-#define _TIME_CB(num)                                                   \
+#define _TIME_CB(num, ms)                                               \
     do {                                                                \
         _time_context_t *context = context_arr[num];                    \
         if (context) {                                                  \
             HyTimeConfigSave_t *config_save = &context->config_save;    \
             if (config_save->time_cb) {                                 \
-                config_save->time_cb(config_save->args);                \
+                config_save->time_cb(ms, config_save->args);            \
             }                                                           \
         }                                                               \
     } while (0)
@@ -87,7 +95,7 @@ void Tim0_IRQHandler(void)
     if (TRUE == Bt_GetIntFlag(TIM0, BtUevIrq)) {
         Bt_ClearIntFlag(TIM0,BtUevIrq);
 
-        _TIME_CB(HY_TIME_NUM_0);
+        _TIME_CB(HY_TIME_NUM_0, TIME_0_MS);
     }
 }
 
@@ -96,7 +104,7 @@ void LpTim_IRQHandler(void)
     if (TRUE == Lptim_GetItStatus(M0P_LPTIMER)) {
         Lptim_ClrItStatus(M0P_LPTIMER);
 
-        _TIME_CB(HY_TIME_NUM_LP_0);
+        _TIME_CB(HY_TIME_NUM_LP_0, LP_TIME_0_MS);
     }
 }
 
@@ -218,11 +226,11 @@ void *HyTimeCreate(HyTimeConfig_t *time_config)
 
         switch (time_config->num) {
             case HY_TIME_NUM_0:
-                time_config->us = 500; // 内部设定1ms
+                time_config->us = TIME_0_CNT;
                 _time0_init(time_config);
                 break;
             case HY_TIME_NUM_LP_0:
-                time_config->us = 0;   // 内部设定2s定时，跟外界设置无关
+                time_config->us = LP_TIME_0_CNT;
                 _lp_time0_init(time_config);
                 break;
             default:

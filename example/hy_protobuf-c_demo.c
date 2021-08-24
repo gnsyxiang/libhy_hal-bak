@@ -54,7 +54,7 @@ static void _sys_tick_cb(void *args)
 }
 
 
-static void _time_cb(void *args)
+static void _time_cb(hy_u32_t ms, void *args)
 {
 #if 0
     static int cnt = 0;

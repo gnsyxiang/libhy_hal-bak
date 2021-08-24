@@ -60,11 +60,11 @@ static void _sys_tick_cb(void *args)
 }
 
 
-static void _time_cb(void *args)
+static void _time_cb(hy_u32_t ms, void *args)
 {
     _main_context_t *context = args;
 
-    HyTimerTickUpdate(context->timer_handle, 1);
+    HyTimerTickUpdate(context->timer_handle, ms);
 
     static int cnt_5ms = 0;
     if (cnt_5ms++ == 5) {

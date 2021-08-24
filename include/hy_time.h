@@ -63,7 +63,7 @@ typedef enum {
 } HytimeFlag_t;
 
 typedef struct {
-    void (*time_cb)(void *args);
+    void (*time_cb)(hy_u32_t ms, void *args);
     void *args;
 } HyTimeConfigSave_t;
 
