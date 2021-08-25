@@ -22,6 +22,7 @@
 #include "hy_system.h"
 
 #include "sysctrl.h"
+#include "trim.h"
 #include "flash.h"
 #include "lpm.h"
 
@@ -78,6 +79,70 @@ static void _clock_init(void)
     Sysctrl_ClkSourceEnable(SysctrlClkRCL, TRUE);
 }
 
+#if 0
+static volatile uint8_t u8TrimTestFlag   = 0;
+/*******************************************************************************
+ * TRIM 中断服务程序
+ ******************************************************************************/   
+void ClkTrim_IRQHandler(void)
+{
+    volatile uint32_t u32CalCnt;
+    
+    if(Trim_GetIntFlag(TrimStop))
+    {
+        u32CalCnt = Trim_CalCntGet();
+        ///<参考计数值计数完成（1ms)时，查看待校准计数值是否也为（1ms）计数值,或是否在允许误差范围内，此处为32768/1000 = 33(±0.3%)
+        ///<可根据实际修改该比较范围，提高TRIM校准精度。
+        if ((u32CalCnt <= (33u + 1u)) &&
+            (u32CalCnt >= (33u - 1u)))
+        {
+            Trim_Stop();
+            ///< 校准结束,此时的TRIM值即为最佳频率值
+            u8TrimTestFlag = 0xFFu;
+        }
+        else
+        {
+            Trim_Stop();
+            ///< 为达到目标精度，TRIM值增加1，继续校准
+            M0P_SYSCTRL->RCL_CR_f.TRIM += 1;       
+            Trim_Run();           
+        }
+        
+    }
+    
+    if(Trim_GetIntFlag(TrimCalCntOf))  //参考校准时间设置过长，导致待校准计数器溢出，此时需要重新配置参考校准时间及校准精度
+    {
+        u8TrimTestFlag = 0;
+    }
+}
+
+static void _trim_init(void)
+{
+    //设置初始TRIM值,本样例采用从小到大的方式来TRIM，故此处设置为'1',后续不断更新该值后进行TRIM，直到符合条件（校准）为止
+    M0P_SYSCTRL->RCL_CR_f.TRIM = 1;
+    ///< 使能待校准时钟，本样例对RCL 32768Hz进行校准
+    Sysctrl_ClkSourceEnable(SysctrlClkRCL, TRUE);
+
+    stc_trim_cfg_t stcCfg;
+
+    //打开TRIM外设时钟
+    Sysctrl_SetPeripheralGate(SysctrlPeripheralTrim, TRUE);
+     
+    //TRIM校准流程
+    stcCfg.enMON     = TrimMonDisable;
+    stcCfg.enREFCLK  = TrimRefMskXTL;
+    stcCfg.enCALCLK  = TrimCalMskRCL;
+    stcCfg.u32RefCon = 33u;             //1ms校准时间（增加该时间可提高TRIM精度）
+    stcCfg.u32CalCon = 0xFFFFFFFFu;     //配置为默认值
+    Trim_Init(&stcCfg);
+    
+    ///< 打开TRIM中断使能
+    Trim_EnableIrq();
+    ///< 使能并配置TRIM 系统中断
+    EnableNvic(CLKTRIM_IRQn, IrqLevel3, TRUE);
+}
+#endif
+
 void HySystemDeepSleep(void)
 {
     Lpm_GotoDeepSleep(FALSE);
@@ -104,6 +169,9 @@ void *HySystemCreate(HySystemConfig_t *system_config)
         HY_MEMCPY(&context->config_save, &system_config->config_save);
 
         _clock_init();
+#if 0
+        _trim_init();
+#endif
 
         return context;
     } while (0);
