@@ -37,8 +37,10 @@
 
 // #define LP_TIME_0_CNT   (0)         // 定时2s
 // #define LP_TIME_0_MS    (2000)
-#define LP_TIME_0_CNT   (32768)     // 定时1s
-#define LP_TIME_0_MS    (1000)
+// #define LP_TIME_0_CNT   (32768)     // 定时1s
+// #define LP_TIME_0_MS    (1000)
+#define LP_TIME_0_CNT   (33)     // 定时1ms
+#define LP_TIME_0_MS    (1)
 
 typedef struct {
     HyTimeConfigSave_t config_save;
@@ -152,7 +154,7 @@ static void _lp_time0_init(HyTimeConfig_t *time_config)
     stcLptCfg.enTogen  = LptimTogEnLow;
     stcLptCfg.enCt     = LptimTimerFun;
     stcLptCfg.enMd     = LptimMode2;                //工作模式为模式1：无自动重装载16位计数器/定时器
-    stcLptCfg.u16Arr   = (hy_u16_t)time_config->us; //预装载寄存器值
+    stcLptCfg.u16Arr   = 0xFFFF - (hy_u16_t)time_config->us + 1; //预装载寄存器值
     Lptim_Init(M0P_LPTIMER, &stcLptCfg);
 
     Lptim_ClrItStatus(M0P_LPTIMER);                 //清除中断标志位
