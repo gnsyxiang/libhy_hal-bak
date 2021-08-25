@@ -83,6 +83,7 @@ static void _init_PA_pin(HyGpio_t *gpio, stc_gpio_cfg_t *stcGpioCfg)
     _DEFINE_PIN();
 
     switch (gpio->pin) {
+        case HY_GPIO_PIN_2:
         case HY_GPIO_PIN_11:
         case HY_GPIO_PIN_12:
             stcGpioCfg->enPu  = GpioPuEnable;
@@ -104,7 +105,19 @@ static void _init_PA_pin(HyGpio_t *gpio, stc_gpio_cfg_t *stcGpioCfg)
 
 static void _init_PB_pin(HyGpio_t *gpio, stc_gpio_cfg_t *stcGpioCfg)
 {
+    _DEFINE_GROUP();
+    _DEFINE_PIN();
 
+    switch (gpio->pin) {
+        case HY_GPIO_PIN_5:
+        case HY_GPIO_PIN_6:
+            stcGpioCfg->enPd  = GpioPdEnable;
+            stcGpioCfg->enDrv = GpioDrvL;
+            break;
+        default:
+            break;
+    }
+    Gpio_Init(group[gpio->group], pin[gpio->pin], stcGpioCfg);
 }
 
 static void _init_PC_pin(HyGpio_t *gpio, stc_gpio_cfg_t *stcGpioCfg)
