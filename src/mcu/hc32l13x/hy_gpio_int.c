@@ -71,24 +71,30 @@ static _int_context_t *context_arr[HY_GPIO_GROUP_MAX][HY_GPIO_PIN_MAX] = {0};
 
 void PortA_IRQHandler(void)
 {
-    _PIN_INT_CB(HY_GPIO_GROUP_PA, HY_GPIO_PIN_8);
-    _PIN_INT_CB(HY_GPIO_GROUP_PA, HY_GPIO_PIN_11);
+    for (HyGpioPin_t i = HY_GPIO_PIN_0; i < HY_GPIO_PIN_MAX; ++i) {
+        _PIN_INT_CB(HY_GPIO_GROUP_PA, i);
+    }
 }
 
 void PortB_IRQHandler(void)
 {
-    _PIN_INT_CB(HY_GPIO_GROUP_PB, HY_GPIO_PIN_5);
-    _PIN_INT_CB(HY_GPIO_GROUP_PB, HY_GPIO_PIN_6);
+    for (HyGpioPin_t i = HY_GPIO_PIN_0; i < HY_GPIO_PIN_MAX; ++i) {
+        _PIN_INT_CB(HY_GPIO_GROUP_PB, i);
+    }
 }
 
 void PortC_IRQHandler(void)
 {
-
+    for (HyGpioPin_t i = HY_GPIO_PIN_0; i < HY_GPIO_PIN_MAX; ++i) {
+        _PIN_INT_CB(HY_GPIO_GROUP_PC, i);
+    }
 }
 
 void PortD_IRQHandler(void)
 {
-
+    for (HyGpioPin_t i = HY_GPIO_PIN_0; i < HY_GPIO_PIN_MAX; ++i) {
+        _PIN_INT_CB(HY_GPIO_GROUP_PD, i);
+    }
 }
 
 static void _int_irq(HyIntConfig_t *int_config)
