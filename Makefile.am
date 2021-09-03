@@ -60,7 +60,7 @@ CPPFLAGS_COM        += \
                        $(_no_error_com) \
                        $(ACLOCAL_AMFLAGS)
 
-LIB_LDFLAGS_COM     += -rdynamic
+BIN_LDFLAGS_COM     += -rdynamic
 
 _remove_unuse_func  += \
                        -ffunction-sections \

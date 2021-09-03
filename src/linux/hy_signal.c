@@ -37,6 +37,8 @@
 
 #define ALONE_DEBUG 1
 
+#define BACKTRACE_SIZE   32
+
 typedef struct {
     HySignalConfig_t signal_config;
 } _signal_context_t;
@@ -54,13 +56,30 @@ static char *signal_str[] = {
     [29] = "SIGPROF",     [30] = "SIGXCPU",     [31] = "SIGXFSZ",
 };
 
+static void _dump_backtrace(void)
+{
+    int nptrs;
+    char **strings = NULL;
+    void *buffer[BACKTRACE_SIZE];
+
+    nptrs = backtrace(buffer, BACKTRACE_SIZE);
+
+    printf("Call Trace:\n");
+    strings = backtrace_symbols(buffer, nptrs);
+    if (strings == NULL) {
+        perror("Not Found\n\n");
+        return ;
+    }
+
+    for (int j = 0; j < nptrs; j++) {
+        printf("  [%02d] %s\n", j, strings[j]);
+    }
+
+    free(strings);
+}
+
 static void _signal_handler(int signo)
 {
-    char cmd[256] = {0};
-    void *array[10];
-    int size = 0;
-    char **strings = NULL;
-    int i = 0;
     HySignalConfig_t *config = &context->signal_config;
 
     if (config->handle_cb) {
@@ -70,20 +89,12 @@ static void _signal_handler(int signo)
     printf("\n\n[%s] %s(%d) crashed by signal %s.\n",
            __func__, config->appname, getpid(), signal_str[signo]);
 
-    printf("Call Trace:\n");
-    size = backtrace(array, 10);
-    strings = backtrace_symbols(array, size);
-    if (strings) {
-        for (i = 0; i < size; i++)
-            printf("  %s\n", strings[i]);
-        free(strings);
-    } else {
-        printf("Not Found\n\n");
-    }
+    _dump_backtrace();
 
     if (signo == SIGINT || signo == SIGUSR1 || signo == SIGUSR2) {
         exit(-1);
     } else {
+        char cmd[256] = {0};
         sprintf(cmd, "mkdir -p %s", config->coredump_path);
         system(cmd);
         sprintf(cmd, "cat /proc/%d/maps", getpid());
