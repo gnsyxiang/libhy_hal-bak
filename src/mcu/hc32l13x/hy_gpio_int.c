@@ -20,6 +20,7 @@
 #include <stdio.h>
 
 #include "hy_gpio_int.h"
+#include "inside_gpio.h"
 
 #include "gpio.h"
 
@@ -31,6 +32,19 @@
 
 #define ALONE_DEBUG 1
 
+#define _DEFINE_GROUP()                                 \
+    en_gpio_port_t group[HY_GPIO_GROUP_MAX] = {         \
+        GpioPortA, GpioPortB, GpioPortC, GpioPortD      \
+    }
+
+#define _DEFINE_PIN()                                   \
+    en_gpio_pin_t pin[HY_GPIO_PIN_MAX] = {              \
+        GpioPin0,   GpioPin1,   GpioPin2,   GpioPin3,   \
+        GpioPin4,   GpioPin5,   GpioPin6,   GpioPin7,   \
+        GpioPin8,   GpioPin9,   GpioPin10,  GpioPin11,  \
+        GpioPin12,  GpioPin13,  GpioPin14,  GpioPin15,  \
+    }
+
 typedef struct {
     HyIntConfigSave_t config_save;
 
@@ -39,47 +53,58 @@ typedef struct {
 
 static _int_context_t *context_arr[HY_GPIO_GROUP_MAX][HY_GPIO_PIN_MAX] = {0};
 
-#define _PIN_INT_CB(group, pin)                                 \
-    do {                                                        \
-        _int_context_t *context = context_arr[group][pin];      \
-        HyIntConfigSave_t *config_save = &context->config_save; \
-        if (config_save->int_cb) {                              \
-            config_save->int_cb(config_save->args);             \
-        }                                                       \
+#define _PIN_INT_CB(_group, _pin)                                       \
+    do {                                                                \
+        _DEFINE_GROUP();                                                \
+        _DEFINE_PIN();                                                  \
+                                                                        \
+        if (TRUE == Gpio_GetIrqStatus(group[_group], pin[_pin])) {      \
+            Gpio_ClearIrq(group[_group], pin[_pin]);                    \
+                                                                        \
+            _int_context_t *context = context_arr[_group][_pin];        \
+            HyIntConfigSave_t *config_save = &context->config_save;     \
+            if (config_save->int_cb) {                                  \
+                config_save->int_cb(config_save->args);                 \
+            }                                                           \
+        }                                                               \
     } while (0);
 
 void PortA_IRQHandler(void)
 {
-    if (TRUE == Gpio_GetIrqStatus(GpioPortA, GpioPin8)) {
-        Gpio_ClearIrq(GpioPortA, GpioPin8);
-
-        _PIN_INT_CB(HY_GPIO_GROUP_PA, HY_GPIO_PIN_8);
+    for (HyGpioPin_t i = HY_GPIO_PIN_0; i < HY_GPIO_PIN_MAX; ++i) {
+        _PIN_INT_CB(HY_GPIO_GROUP_PA, i);
     }
+}
 
-    if (TRUE == Gpio_GetIrqStatus(GpioPortA, GpioPin11)) {
-        Gpio_ClearIrq(GpioPortA, GpioPin11);
+void PortB_IRQHandler(void)
+{
+    for (HyGpioPin_t i = HY_GPIO_PIN_0; i < HY_GPIO_PIN_MAX; ++i) {
+        _PIN_INT_CB(HY_GPIO_GROUP_PB, i);
+    }
+}
 
-        _PIN_INT_CB(HY_GPIO_GROUP_PA, HY_GPIO_PIN_11);
+void PortC_IRQHandler(void)
+{
+    for (HyGpioPin_t i = HY_GPIO_PIN_0; i < HY_GPIO_PIN_MAX; ++i) {
+        _PIN_INT_CB(HY_GPIO_GROUP_PC, i);
+    }
+}
+
+void PortD_IRQHandler(void)
+{
+    for (HyGpioPin_t i = HY_GPIO_PIN_0; i < HY_GPIO_PIN_MAX; ++i) {
+        _PIN_INT_CB(HY_GPIO_GROUP_PD, i);
     }
 }
 
 static void _int_irq(HyIntConfig_t *int_config)
 {
-    en_gpio_port_t group[HY_GPIO_GROUP_MAX] = {
-        GpioPortA, GpioPortB, GpioPortC, GpioPortD
-    };
-
-    en_gpio_pin_t pin[HY_GPIO_PIN_MAX] = {
-        GpioPin0,   GpioPin1,   GpioPin2,   GpioPin3,
-        GpioPin4,   GpioPin5,   GpioPin6,   GpioPin7,
-        GpioPin8,   GpioPin9,   GpioPin10,  GpioPin11,
-        GpioPin12,  GpioPin13,  GpioPin14,  GpioPin15,
-    };
+    _DEFINE_GROUP();
+    _DEFINE_PIN();
 
     IRQn_Type enIrq[] = {
         PORTA_IRQn, PORTB_IRQn, PORTC_IRQn, PORTD_IRQn,
     };
-
 
     en_gpio_irqtype_t enType[] = {
         GpioIrqLow, GpioIrqHigh, GpioIrqRising, GpioIrqFalling
@@ -107,19 +132,20 @@ void *HyIntCreate(HyIntConfig_t *int_config)
 
     do {
         context = (_int_context_t *)HY_MALLOC_BREAK(sizeof(*context));
+        HyGpio_t *gpio = &context->config_save.gpio;
 
         HY_MEMCPY(&context->config_save, &int_config->config_save);
+        context_arr[gpio->group][gpio->pin] = context;
 
-        HyGpio_t *gpio = &context->config_save.gpio;
         HyGpioSetInput(gpio);
 
         _int_irq(int_config);
 
-        context_arr[gpio->group][gpio->pin] = context;
-
+        LOGI("interrupt pin<%s, %s> create successful \n", HY_GPIO_GROUP_2_STR(gpio->group), HY_GPIO_PIN_2_STR(gpio->pin));
         return context;
     } while (0);
 
     HyIntDestroy((void **)&context);
     return NULL;
 }
+

@@ -72,6 +72,7 @@ AC_CONFIG_FILES([Makefile
                  src/linux/Makefile
                  src/mac/Makefile
                  src/mcu/Makefile
+                 src/mcu/at32f4xx/Makefile
                  src/mcu/hc32l13x/Makefile
                  src/rtos/Makefile
                  src/window/Makefile])

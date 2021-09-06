@@ -29,6 +29,7 @@ typedef enum {
     HY_GPIO_GROUP_PB,
     HY_GPIO_GROUP_PC,
     HY_GPIO_GROUP_PD,
+    HY_GPIO_GROUP_PE,
 
     HY_GPIO_GROUP_MAX,
 } HyGpioGroup_t;
@@ -71,6 +72,7 @@ void HyGpioSetOutput(HyGpio_t *gpio, HyGpioLevel_t level);
 
 HyGpioLevel_t HyGpioGetLevel(HyGpio_t *gpio);
 void HyGpioSetLevel(HyGpio_t *gpio, HyGpioLevel_t level);
+void HyGpioSetLevelToggle(HyGpio_t *gpio);
 
 #ifdef __cplusplus
 }

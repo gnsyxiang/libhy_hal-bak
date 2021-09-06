@@ -5,7 +5,7 @@
 # @file    Makefile.am
 # @brief   
 # @author  gnsyxiang <gnsyxiang@163.com>
-# @date    09/07 2021 15:30
+# @date    19/08 2021 19:13
 # @version v0.0.1
 # 
 # @since    note
@@ -13,9 +13,9 @@
 # 
 #     change log:
 #     NO.     Author              Date            Modified
-#     00      zhenquan.qiu        09/07 2021      create the file
+#     00      zhenquan.qiu        19/08 2021      create the file
 # 
-#     last modified: 09/07 2021 15:30
+#     last modified: 19/08 2021 19:13
 # ===============================================================
 
 noinst_LTLIBRARIES = libhy_mcu_os.la
@@ -39,12 +39,10 @@ _include_com    += -I$(top_srcdir)/include
 _include_com    += $(HY_MCU_INCS)
 
 _sources_com    += \
-                   hy_adc.c \
                    hy_gpio.c \
-                   hy_gpio_int.c \
-                   hy_system.c \
                    hy_time.c \
-                   hy_uart.c
+                   hy_uart.c \
+                   hy_system.c
 
 _cppflags_com   += \
                    $(CPPFLAGS_COM) \

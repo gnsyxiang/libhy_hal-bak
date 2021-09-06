@@ -21,6 +21,7 @@
 
 #include "hy_uart.h"
 #include "hy_gpio.h"
+#include "inside_uart.h"
 
 #include "uart.h"
 #include "gpio.h"
@@ -28,25 +29,17 @@
 #include "hy_utils/hy_mem.h"
 #include "hy_utils/hy_string.h"
 #include "hy_utils/hy_assert.h"
+#include "hy_utils/hy_error.h"
 #include "hy_utils/hy_type.h"
 #include "hy_utils/hy_log.h"
 
 #define ALONE_DEBUG 1
 
-#define _HY_UART_NUM_2_STR(_buf, val)                                           \
-    ({                                                                          \
-     if      ((val) == HY_UART_NUM_0)           _buf = "HY_UART_NUM_0";         \
-     else if ((val) == HY_UART_NUM_1)           _buf = "HY_UART_NUM_1";         \
-     else if ((val) == HY_UART_NUM_2)           _buf = "HY_UART_NUM_2";         \
-     else if ((val) == HY_UART_NUM_3)           _buf = "HY_UART_NUM_3";         \
-     else if ((val) == HY_UART_NUM_4)           _buf = "HY_UART_NUM_4";         \
-     else if ((val) == HY_UART_NUM_5)           _buf = "HY_UART_NUM_5";         \
-     else if ((val) == HY_UART_NUM_6)           _buf = "HY_UART_NUM_6";         \
-     else if ((val) == HY_UART_NUM_7)           _buf = "HY_UART_NUM_7";         \
-     else                                       _buf = "HY_UART_NUM_MAX";       \
-     _buf;                                                                      \
-     })
-#define HY_UART_NUM_2_STR(val) ({char *_buf = NULL; _HY_UART_NUM_2_STR(_buf, val);})
+#define _DEFINE_UART()              \
+    M0P_UART_TypeDef* uart[] = {    \
+        M0P_UART0,                  \
+        M0P_UART1,                  \
+    }
 
 typedef struct {
     HyUartConfigSave_t config_save;
@@ -54,16 +47,56 @@ typedef struct {
     HyUartNum_t num;
 } _uart_context_t;
 
-static _uart_context_t *context_arr[HY_UART_NUM_MAX] = {0};
+static _uart_context_t *context_array[HY_UART_NUM_MAX] = {0};
+
+#ifdef DEBUG_UART
+#ifdef __GNUC__
+int _write(int fd, char *ptr, int len)
+{
+    /*
+     * write "len" of char from "ptr" to file id "fd"
+     * Return number of char written.
+     *
+     * Only work for STDOUT, STDIN, and STDERR
+     */
+    if (fd > 2) {
+        return -1;
+    }
+
+    _DEFINE_UART();
+
+    int i = 0;
+    while (*ptr && (i < len)) {
+        if (*ptr == '\n') {
+            Uart_SendDataPoll(uart[DEBUG_UART_NUM], '\r');
+        }
+        Uart_SendDataPoll(uart[DEBUG_UART_NUM], *ptr);
+        i++;
+        ptr++;
+    }
+    return i;
+}
+#endif
+#if __CC_ARM
+int fputc(int ch, FILE *f)
+{
+    _DEFINE_UART();
+
+    if ((hy_u8_t)ch == '\n') {
+        Uart_SendDataPoll(uart[DEBUG_UART_NUM], '\r');
+    }
+    Uart_SendDataPoll(uart[DEBUG_UART_NUM], (hy_u8_t)ch);
+
+    return 1;
+}
+#endif
+#endif
 
 static inline void _uart_irq_handler(HyUartNum_t num)
 {
-    _uart_context_t *context = context_arr[num];
+    _uart_context_t *context = context_array[num];
 
-    M0P_UART_TypeDef* uart[] = {
-        M0P_UART0,
-        M0P_UART1,
-    };
+    _DEFINE_UART();
 
     if (Uart_GetStatus(uart[num], UartRC)) {
         Uart_ClrStatus(uart[num], UartRC);
@@ -86,7 +119,7 @@ void Uart1_IRQHandler(void)
     _uart_irq_handler(HY_UART_NUM_1);
 }
 
-static void _gpio_init(HyUartNum_t num)
+static void _init_uart_gpio(HyUartNum_t num)
 {
     HyGpio_t gpio[][2] = {
         {{HY_GPIO_GROUP_PA, HY_GPIO_PIN_9}, {HY_GPIO_GROUP_PA, HY_GPIO_PIN_10}},
@@ -97,45 +130,27 @@ static void _gpio_init(HyUartNum_t num)
     HyGpioSetInput(&gpio[num][1]);
 }
 
-static void _uart_config(HyUartConfig_t *uart_config)
+static void _init_uart_func(HyUartConfig_t *uart_config)
 {
+    _DEFINE_UART();
+
     en_sysctrl_peripheral_gate_t clock[HY_UART_NUM_MAX] = {
-        SysctrlPeripheralUart0,
-        SysctrlPeripheralUart1,
+        SysctrlPeripheralUart0, SysctrlPeripheralUart1
     };
 
     en_uart_stop_t stop[HY_UART_STOP_MAX] = {
-        UartMsk1bit,
-        UartMsk1_5bit,
-        UartMsk2bit,
+        (en_uart_stop_t)0, UartMsk1bit, UartMsk1_5bit, UartMsk2bit
     };
 
     en_uart_mmdorck_t parity[] = {
-        UartMskDataOrAddr,
-        UartMskOdd,
-        UartMskEven,
+        UartMskDataOrAddr, UartMskOdd, UartMskEven
     };
 
-    hy_u32_t b_arr[HY_UART_RATE_MAX][2] = {
-        {HY_UART_RATE_1200,      1200},
-        {HY_UART_RATE_2400,      2400},
-        {HY_UART_RATE_4800,      4800},
-        {HY_UART_RATE_9600,      9600},
-        {HY_UART_RATE_19200,     19200},
-        {HY_UART_RATE_38400,     38400},
-        {HY_UART_RATE_57600,     57600},
-        {HY_UART_RATE_115200,    115200},
+    hy_u32_t rate[HY_UART_RATE_MAX] = {
+        1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200,
     };
 
-    M0P_UART_TypeDef* uart[] = {
-        M0P_UART0,
-        M0P_UART1,
-    };
-
-    IRQn_Type irq[] = {
-        UART0_IRQn,
-        UART1_IRQn,
-    };
+    IRQn_Type irq[] = {UART0_IRQn, UART1_IRQn};
 
     Sysctrl_SetPeripheralGate(clock[uart_config->num], TRUE);
 
@@ -145,7 +160,7 @@ static void _uart_config(HyUartConfig_t *uart_config)
     stcCfg.enRunMode        = UartMskMode1;
     stcCfg.enStopBit        = stop[uart_config->stop];
     stcCfg.enMmdorCk        = parity[uart_config->parity];
-    stcCfg.stcBaud.u32Baud  = b_arr[uart_config->rate][1];
+    stcCfg.stcBaud.u32Baud  = rate[uart_config->rate];
     stcCfg.stcBaud.enClkDiv = UartMsk8Or16Div;       ///<通道采样分频配置
     stcCfg.stcBaud.u32Pclk  = Sysctrl_GetPClkFreq(); ///<获得外设时钟（PCLK）频率值
     Uart_Init(uart[uart_config->num], &stcCfg);
@@ -158,19 +173,12 @@ static void _uart_config(HyUartConfig_t *uart_config)
     EnableNvic(irq[uart_config->num], IrqLevel3, TRUE);
 }
 
-hy_s32_t HyUartProcess(void *handle)
-{
-    return 0;
-}
-
 hy_s32_t HyUartWrite(void *handle, void *buf, size_t len)
 {
-    _uart_context_t *context = handle;
+    HY_ASSERT_NULL_RET_VAL(!handle || !buf, HY_ERR_FAILD);
 
-    M0P_UART_TypeDef* uart[] = {
-        M0P_UART0,
-        M0P_UART1,
-    };
+    _uart_context_t *context = handle;
+    _DEFINE_UART();
 
     char *ch = buf;
     for (size_t i = 0; i < len; ++i) {
@@ -180,10 +188,19 @@ hy_s32_t HyUartWrite(void *handle, void *buf, size_t len)
     return len;
 }
 
+hy_s32_t HyUartProcess(void *handle)
+{
+    return 0;
+}
+
 void HyUartDestroy(void **handle)
 {
     LOGT("%s:%d \n", __func__, __LINE__);
     HY_ASSERT_NULL_RET(!handle || !*handle);
+
+    _uart_context_t *context = *handle;
+
+    context_array[context->num] = NULL;
 
     HY_FREE(handle);
 
@@ -201,12 +218,11 @@ void *HyUartCreate(HyUartConfig_t *uart_config)
         context = (_uart_context_t *)HY_MALLOC_BREAK(sizeof(*context));
 
         HY_MEMCPY(&context->config_save, &uart_config->config_save);
-        context->num = uart_config->num;
+        context->num                = uart_config->num;
+        context_array[context->num] = context;
 
-        _gpio_init(context->num);
-        _uart_config(uart_config);
-
-        context_arr[context->num] = context;
+        _init_uart_gpio(context->num);
+        _init_uart_func(uart_config);
 
         LOGI("uart %s create successful \n", HY_UART_NUM_2_STR(uart_config->num));
         return context;
@@ -216,52 +232,3 @@ void *HyUartCreate(HyUartConfig_t *uart_config)
     return NULL;
 }
 
-#ifdef DEBUG_UART
-#ifdef __GNUC__
-int _write(int fd, char *ptr, int len)
-{
-    /*
-     * write "len" of char from "ptr" to file id "fd"
-     * Return number of char written.
-     *
-     * Only work for STDOUT, STDIN, and STDERR
-     */
-    if (fd > 2) {
-        return -1;
-    }
-
-    M0P_UART_TypeDef* uart[] = {
-        M0P_UART0,
-        M0P_UART1,
-    };
-    _uart_context_t *context = context_arr[DEBUG_UART_NUM];
-
-    int i = 0;
-    while (*ptr && (i < len)) {
-        if (*ptr == '\n') {
-            Uart_SendDataPoll(uart[context->num], '\r');
-        }
-        Uart_SendDataPoll(uart[context->num], *ptr);
-        i++;
-        ptr++;
-    }
-    return i;
-}
-#endif
-#if __CC_ARM
-int fputc(int ch, FILE *f)
-{
-    M0P_UART_TypeDef* uart[] = {
-        M0P_UART0,
-        M0P_UART1,
-    };
-
-    if ((hy_u8_t)ch == '\n') {
-        Uart_SendDataPoll(uart[DEBUG_UART_NUM], '\r');
-    }
-    Uart_SendDataPoll(uart[DEBUG_UART_NUM], (hy_u8_t)ch);
-
-    return 1;
-}
-#endif
-#endif

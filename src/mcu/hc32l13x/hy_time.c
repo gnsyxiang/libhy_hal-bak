@@ -20,6 +20,7 @@
 #include <stdio.h>
 
 #include "hy_time.h"
+#include "inside_time.h"
 
 #include "bt.h"
 #include "lptim.h"
@@ -31,23 +32,15 @@
 
 #define ALONE_DEBUG 1
 
-#define _HY_TIME_NUM_2_STR(_buf, val)                                           \
-    ({                                                                          \
-     if      ((val) == HY_TIME_NUM_0)           _buf = "HY_TIME_NUM_0";         \
-     else if ((val) == HY_TIME_NUM_1)           _buf = "HY_TIME_NUM_1";         \
-     else if ((val) == HY_TIME_NUM_2)           _buf = "HY_TIME_NUM_2";         \
-     else if ((val) == HY_TIME_NUM_3)           _buf = "HY_TIME_NUM_3";         \
-     else if ((val) == HY_TIME_NUM_4)           _buf = "HY_TIME_NUM_4";         \
-     else if ((val) == HY_TIME_NUM_5)           _buf = "HY_TIME_NUM_5";         \
-     else if ((val) == HY_TIME_NUM_6)           _buf = "HY_TIME_NUM_6";         \
-     else if ((val) == HY_TIME_NUM_7)           _buf = "HY_TIME_NUM_7";         \
-     else if ((val) == HY_TIME_NUM_LP_0)        _buf = "HY_TIME_NUM_LP_0";      \
-     else if ((val) == HY_TIME_NUM_LP_1)        _buf = "HY_TIME_NUM_LP_1";      \
-     else if ((val) == HY_TIME_NUM_SYSTICK)     _buf = "HY_TIME_NUM_SYSTICK";   \
-     else                                       _buf = "HY_TIME_NUM_MAX";       \
-     _buf;                                                                      \
-     })
-#define HY_TIME_NUM_2_STR(val) ({char *_buf = NULL; _HY_TIME_NUM_2_STR(_buf, val);})
+#define TIME_0_CNT      (500)       // 定时1ms
+#define TIME_0_MS       (1)
+
+// #define LP_TIME_0_CNT   (0)         // 定时2s
+// #define LP_TIME_0_MS    (2000)
+// #define LP_TIME_0_CNT   (32768)     // 定时1s
+// #define LP_TIME_0_MS    (1000)
+#define LP_TIME_0_CNT   (33)     // 定时1ms
+#define LP_TIME_0_MS    (1)
 
 typedef struct {
     HyTimeConfigSave_t config_save;
@@ -57,13 +50,44 @@ typedef struct {
 
 static _time_context_t *context_arr[HY_TIME_NUM_MAX] = {0};
 
-#define _TIME_CB(num)                                                   \
+static void _delay_com(size_t cnt, size_t base)
+{
+    uint32_t u32end;
+    size_t start = SystemCoreClock / base;
+
+    SysTick->LOAD = 0xFFFFFF;
+    SysTick->VAL  = 0;
+    SysTick->CTRL = SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_CLKSOURCE_Msk;
+
+    while (cnt-- > 0) {
+        SysTick->VAL  = 0;
+        u32end = 0x1000000 - start;
+
+        while (SysTick->VAL > u32end) {
+            ;
+        }
+    }
+
+    SysTick->CTRL = (SysTick->CTRL & (~SysTick_CTRL_ENABLE_Msk));
+}
+
+void HyTimeDelayMs(size_t ms)
+{
+    _delay_com(ms, 1000);
+}
+
+void HyTimeDelayUs(size_t us)
+{
+    _delay_com(us, 1000000);
+}
+
+#define _TIME_CB(num, ms)                                               \
     do {                                                                \
         _time_context_t *context = context_arr[num];                    \
         if (context) {                                                  \
             HyTimeConfigSave_t *config_save = &context->config_save;    \
             if (config_save->time_cb) {                                 \
-                config_save->time_cb(config_save->args);                \
+                config_save->time_cb(ms, config_save->args);            \
             }                                                           \
         }                                                               \
     } while (0)
@@ -73,7 +97,7 @@ void Tim0_IRQHandler(void)
     if (TRUE == Bt_GetIntFlag(TIM0, BtUevIrq)) {
         Bt_ClearIntFlag(TIM0,BtUevIrq);
 
-        _TIME_CB(HY_TIME_NUM_0);
+        _TIME_CB(HY_TIME_NUM_0, TIME_0_MS);
     }
 }
 
@@ -82,7 +106,7 @@ void LpTim_IRQHandler(void)
     if (TRUE == Lptim_GetItStatus(M0P_LPTIMER)) {
         Lptim_ClrItStatus(M0P_LPTIMER);
 
-        _TIME_CB(HY_TIME_NUM_LP_0);
+        _TIME_CB(HY_TIME_NUM_LP_0, LP_TIME_0_MS);
     }
 }
 
@@ -130,7 +154,7 @@ static void _lp_time0_init(HyTimeConfig_t *time_config)
     stcLptCfg.enTogen  = LptimTogEnLow;
     stcLptCfg.enCt     = LptimTimerFun;
     stcLptCfg.enMd     = LptimMode2;                //工作模式为模式1：无自动重装载16位计数器/定时器
-    stcLptCfg.u16Arr   = (hy_u16_t)time_config->us; //预装载寄存器值
+    stcLptCfg.u16Arr   = 0xFFFF - (hy_u16_t)time_config->us + 1; //预装载寄存器值
     Lptim_Init(M0P_LPTIMER, &stcLptCfg);
 
     Lptim_ClrItStatus(M0P_LPTIMER);                 //清除中断标志位
@@ -197,24 +221,23 @@ void *HyTimeCreate(HyTimeConfig_t *time_config)
 
     do {
         context = (_time_context_t *)HY_MALLOC_BREAK(sizeof(*context));
+        context_arr[time_config->num] = context;
 
         HY_MEMCPY(&context->config_save, &time_config->config_save);
         context->num = time_config->num;
 
         switch (time_config->num) {
             case HY_TIME_NUM_0:
-                time_config->us = 500;
+                time_config->us = TIME_0_CNT;
                 _time0_init(time_config);
                 break;
             case HY_TIME_NUM_LP_0:
-                time_config->us = 0;   // 内部设定2s定时，跟外界设置无关
+                time_config->us = LP_TIME_0_CNT;
                 _lp_time0_init(time_config);
                 break;
             default:
                 break;
         }
-
-        context_arr[time_config->num] = context;
 
         LOGI("time %s create successful \n", HY_TIME_NUM_2_STR(time_config->num));
         return context;
@@ -222,36 +245,5 @@ void *HyTimeCreate(HyTimeConfig_t *time_config)
 
     HyTimeDestroy((void **)&context);
     return NULL;
-}
-
-static void _delay_com(size_t cnt, size_t base)
-{
-    uint32_t u32end;
-    size_t start = SystemCoreClock / base;
-
-    SysTick->LOAD = 0xFFFFFF;
-    SysTick->VAL  = 0;
-    SysTick->CTRL = SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_CLKSOURCE_Msk;
-
-    while (cnt-- > 0) {
-        SysTick->VAL  = 0;
-        u32end = 0x1000000 - start;
-
-        while (SysTick->VAL > u32end) {
-            ;
-        }
-    }
-
-    SysTick->CTRL = (SysTick->CTRL & (~SysTick_CTRL_ENABLE_Msk));
-}
-
-void HyTimeDelayMs(size_t ms)
-{
-    _delay_com(ms, 1000);
-}
-
-void HyTimeDelayUs(size_t us)
-{
-    _delay_com(us, 1000000);
 }
 

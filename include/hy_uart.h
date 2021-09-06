@@ -43,6 +43,7 @@ typedef enum {
     HY_UART_NUM_5,
     HY_UART_NUM_6,
     HY_UART_NUM_7,
+    HY_UART_NUM_8,
 
     HY_UART_NUM_MAX
 } HyUartNum_t;
@@ -61,9 +62,10 @@ typedef enum {
 } HyUartRate_t;
 
 typedef enum {
-    HY_UART_FLOW_CONTROL_DISABLE,
-    HY_UART_FLOW_CONTROL_HARD_ENABLE,
-    HY_UART_FLOW_CONTROL_SOFT_ENABLE,
+    HY_UART_FLOW_CONTROL_NONE,
+    HY_UART_FLOW_CONTROL_RTS,
+    HY_UART_FLOW_CONTROL_CTS,
+    HY_UART_FLOW_CONTROL_RTS_CTS,
 } HyUartFlowControl_t;
 
 typedef enum {
@@ -71,6 +73,7 @@ typedef enum {
     HY_UART_BITS_6,
     HY_UART_BITS_7,
     HY_UART_BITS_8,
+    HY_UART_BITS_9,
 
     HY_UART_BITS_MAX,
 } HyUartBits_t;
@@ -82,6 +85,7 @@ typedef enum {
 } HyUartParity_t;
 
 typedef enum {
+    HY_UART_STOP_0_5,
     HY_UART_STOP_1,
     HY_UART_STOP_1_5,
     HY_UART_STOP_2,
@@ -127,7 +131,17 @@ typedef struct {
 void *HyUartCreate(HyUartConfig_t *uart_config);
 void HyUartDestroy(void **handle);
 
+/**
+ * @brief 过程处理函数
+ *
+ * @param handle 操作句柄
+ *
+ * @return -1表示出错
+ *
+ * @note 单片机未实现该函数，使用中断回调函数
+ */
 hy_s32_t HyUartProcess(void *handle);
+
 hy_s32_t HyUartWrite(void *handle, void *buf, size_t len);
 
 #ifdef DEBUG_UART

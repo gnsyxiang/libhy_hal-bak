@@ -28,7 +28,10 @@ install_includedir          = $(includedir)/@project_name@
 # ---------------------
 # add necessary content
 # ---------------------
-_no_install_headers_com     +=
+_no_install_headers_com     += \
+                               inside_uart.h \
+                               inside_time.h \
+                               inside_gpio.h
 
 _install_headers_com        += \
                                hy_socket.h \
@@ -43,6 +46,8 @@ endif
 
 if COMPILE_SELECT_TARGET_OS_MCU
 _install_headers_com        += \
+                               hy_timer.h \
+                               hy_key.h \
                                hy_adc.h \
                                hy_gpio.h \
                                hy_gpio_int.h \

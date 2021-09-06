@@ -146,19 +146,13 @@ static hy_s32_t _uart_create(_uart_context_t *context, HyUartConfig_t *uart_conf
         }
 
         /*设置输入输出波特率，两者保持一致*/
-        hy_u32_t b_arr[HY_RATE_MAX][2] = {
-            {HY_RATE_1200,      B1200},
-            {HY_RATE_2400,      B2400},
-            {HY_RATE_4800,      B4800},
-            {HY_RATE_9600,      B9600},
-            {HY_RATE_19200,     B19200},
-            {HY_RATE_38400,     B38400},
-            {HY_RATE_57600,     B57600},
-            {HY_RATE_115200,    B115200},
+        hy_u32_t b_arr[HY_UART_RATE_MAX] = {
+            B1200, B2400, B4800, B9600,
+            B19200, B38400, B57600, B115200,
         };
 
-        if (cfsetispeed(&options, b_arr[uart_config->rate][1]) == -1 \
-                || cfsetospeed(&options, b_arr[uart_config->rate][1]) == -1) {
+        if (cfsetispeed(&options, b_arr[uart_config->rate]) == -1 \
+                || cfsetospeed(&options, b_arr[uart_config->rate]) == -1) {
             LOGE("cfsetispeed or cfsetospeed faild \n");
             break;
         }
@@ -212,6 +206,10 @@ static hy_s32_t _uart_create(_uart_context_t *context, HyUartConfig_t *uart_conf
 
         /*设置数据流控制*/
         switch(uart_config->flow_control) {
+            case HY_UART_FLOW_CONTROL_NONE://不进行流控制
+                options.c_cflag &= ~CRTSCTS;
+                break;
+#if 0
             case HY_UART_FLOW_CONTROL_DISABLE://不进行流控制
                 options.c_cflag &= ~CRTSCTS;
                 break;
@@ -221,6 +219,7 @@ static hy_s32_t _uart_create(_uart_context_t *context, HyUartConfig_t *uart_conf
             case HY_UART_FLOW_CONTROL_SOFT_ENABLE://进行软件流控制
                 options.c_cflag |= IXON|IXOFF|IXANY;
                 break;
+#endif
             default:
                 LOGE("unknow flow control \n");
                 break;

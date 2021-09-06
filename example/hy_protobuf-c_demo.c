@@ -54,7 +54,7 @@ static void _sys_tick_cb(void *args)
 }
 
 
-static void _time_cb(void *args)
+static void _time_cb(hy_u32_t ms, void *args)
 {
 #if 0
     static int cnt = 0;
@@ -94,7 +94,7 @@ static _main_context_t *_module_create(void)
     // uart_config.dev_name                = "/dev/ttyUSB1";
     uart_config.num                     = HY_UART_NUM_1;
     uart_config.rate                    = HY_UART_RATE_115200;
-    uart_config.flow_control            = HY_UART_FLOW_CONTROL_DISABLE;
+    uart_config.flow_control            = HY_UART_FLOW_CONTROL_NONE;
     uart_config.bits                    = HY_UART_BITS_8;
     uart_config.parity                  = HY_UART_PARITY_N;
     uart_config.stop                    = HY_UART_STOP_1;
