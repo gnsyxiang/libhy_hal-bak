@@ -26,6 +26,10 @@ if COMPILE_SELECT_MCU_HC32L13X
 _select_mcu = hc32l13x
 endif
 
+if COMPILE_SELECT_MCU_HC32F003
+_select_mcu = hc32f003
+endif
+
 SUBDIRS = $(_select_mcu)
 
 noinst_LTLIBRARIES = libhy_os.la

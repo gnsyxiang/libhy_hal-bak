@@ -31,13 +31,21 @@ elif [ x$1 = x"mcu" ]; then
     cross_gcc_path=${data_disk_path}/opt/toolchains/${vender}/${gcc_version}/bin/${gcc_prefix}-
     _ldflag_com="-specs=nano.specs -specs=nosys.specs"
 
-    # _cppflags_com=""
-    # _cflags_com="-mcpu=cortex-m0 -mthumb"
-    # _param_com="--with-target_os=mcu --with-mcu=hc32l13x"
+    # -----------
+    # 华大芯片
+    # -----------
+    #
+    # M0/M0+系列
+    #
+    _cppflags_com=""
+    _cflags_com="-mcpu=cortex-m0 -mthumb"
+    _param_com="--with-target_os=mcu"
+    # _param_com="${_param_com} --with-mcu=hc32l13x"
+    _param_com="${_param_com} --with-mcu=hc32f003"
 
-    _cppflags_com="-DAT32F407VGT7 -DAT_START_F407_V1_0 -DUSE_STDPERIPH_DRIVER -DSYSCLK_FREQ_240MHz=240000000"
-    _cflags_com="-mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard"
-    _param_com="--with-target_os=mcu --with-mcu=at32f4xx --enable-libprotobuf_c"
+    # _cppflags_com="-DAT32F407VGT7 -DAT_START_F407_V1_0 -DUSE_STDPERIPH_DRIVER -DSYSCLK_FREQ_240MHz=240000000"
+    # _cflags_com="-mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard"
+    # _param_com="--with-target_os=mcu --with-mcu=at32f4xx --enable-libprotobuf_c"
 else
     help_info
 fi

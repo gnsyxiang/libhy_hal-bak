@@ -45,6 +45,9 @@
 /* select mcu at32f4xx */
 #undef HAVE_SELECT_MCU_AT32F4XX
 
+/* select mcu hc32f003 */
+#undef HAVE_SELECT_MCU_HC32F003
+
 /* select mcu hc32l13x */
 #undef HAVE_SELECT_MCU_HC32L13X
 
@@ -157,6 +160,10 @@
 
 /* Define to `int' if <sys/types.h> does not define. */
 #undef ssize_t
+
+/* Define to the type of an unsigned integer type of width exactly 16 bits if
+   such a type exists and the standard includes do not define it. */
+#undef uint16_t
 
 /* Define to the type of an unsigned integer type of width exactly 32 bits if
    such a type exists and the standard includes do not define it. */

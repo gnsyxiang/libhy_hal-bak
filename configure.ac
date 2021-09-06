@@ -55,6 +55,7 @@ AC_TYPE_INT32_T
 AC_TYPE_PID_T
 AC_TYPE_SIZE_T
 AC_TYPE_SSIZE_T
+AC_TYPE_UINT16_T
 AC_TYPE_UINT32_T
 AC_TYPE_UINT8_T
 
@@ -73,6 +74,7 @@ AC_CONFIG_FILES([Makefile
                  src/mac/Makefile
                  src/mcu/Makefile
                  src/mcu/at32f4xx/Makefile
+                 src/mcu/hc32f003/Makefile
                  src/mcu/hc32l13x/Makefile
                  src/rtos/Makefile
                  src/window/Makefile])
