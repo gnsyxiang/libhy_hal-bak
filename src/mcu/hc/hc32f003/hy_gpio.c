@@ -59,17 +59,22 @@ void HyGpioSetLevelToggle(HyGpio_t *gpio)
 {
 }
 
-static void _init_PA_pin(HyGpio_t *gpio, gpio_config_t *stcGpioCfg)
+static void _init_P0_pin(HyGpio_t *gpio, gpio_config_t *stcGpioCfg)
 {
 }
 
-static void _init_PB_pin(HyGpio_t *gpio, gpio_config_t *stcGpioCfg)
+static void _init_P1_pin(HyGpio_t *gpio, gpio_config_t *stcGpioCfg)
+{
+}
+
+static void _init_P2_pin(HyGpio_t *gpio, gpio_config_t *stcGpioCfg)
 {
     switch (gpio->pin) {
         case HY_GPIO_PIN_5:
-            stcGpioCfg->pu = FALSE;
+        case HY_GPIO_PIN_6:
+            stcGpioCfg->pu = TRUE;
             stcGpioCfg->pd = FALSE;
-            stcGpioCfg->odr = FALSE;
+            stcGpioCfg->odr = TRUE;
             stcGpioCfg->driver = FALSE;
             break;
         default:
@@ -80,19 +85,14 @@ static void _init_PB_pin(HyGpio_t *gpio, gpio_config_t *stcGpioCfg)
             stcGpioCfg->odr, stcGpioCfg->driver);
 }
 
-static void _init_PC_pin(HyGpio_t *gpio, gpio_config_t *stcGpioCfg)
-{
-
-}
-
-static void _init_PD_pin(HyGpio_t *gpio, gpio_config_t *stcGpioCfg)
+static void _init_P3_pin(HyGpio_t *gpio, gpio_config_t *stcGpioCfg)
 {
 }
 
 static void _init_gpio_com(HyGpio_t *gpio, en_gpio_dir_t dir)
 {
     void (*_init_pin[HY_GPIO_GROUP_MAX])(HyGpio_t *, gpio_config_t *) = {
-        _init_PA_pin, _init_PB_pin, _init_PC_pin, _init_PD_pin,
+        _init_P0_pin, _init_P1_pin, _init_P2_pin, _init_P3_pin,
     };
 
     gpio_config_t stcGpioCfg;
