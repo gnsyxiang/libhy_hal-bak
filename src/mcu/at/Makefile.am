@@ -5,7 +5,7 @@
 # @file    Makefile.am
 # @brief   
 # @author  gnsyxiang <gnsyxiang@163.com>
-# @date    09/07 2021 15:30
+# @date    06/09 2021 10:33
 # @version v0.0.1
 # 
 # @since    note
@@ -13,12 +13,18 @@
 # 
 #     change log:
 #     NO.     Author              Date            Modified
-#     00      zhenquan.qiu        09/07 2021      create the file
+#     00      zhenquan.qiu        06/09 2021      create the file
 # 
-#     last modified: 09/07 2021 15:30
+#     last modified: 06/09 2021 10:33
 # ===============================================================
 
-noinst_LTLIBRARIES = libhy_mcu_os.la
+if COMPILE_SELECT_MCU_AT32F4XX
+_mcu_type = at32f4xx
+endif
+
+SUBDIRS = $(_mcu_type)
+
+noinst_LTLIBRARIES = libmcu_os.la
 
 # ------------------
 # defining variables
@@ -34,17 +40,9 @@ _ldadd_com      =
 # ---------------------
 # add necessary content
 # ---------------------
-_include_com    += -I$(top_srcdir)/include
+_include_com    +=
 
-_include_com    += $(HY_MCU_INCS)
-
-_sources_com    += \
-                   hy_adc.c \
-                   hy_gpio.c \
-                   hy_gpio_int.c \
-                   hy_system.c \
-                   hy_time.c \
-                   hy_uart.c
+_sources_com    +=
 
 _cppflags_com   += \
                    $(CPPFLAGS_COM) \
@@ -56,12 +54,11 @@ _cxxflags_com   += $(CXXFLAGS_COM)
 
 _ldflags_com    += $(LIB_LDFLAGS_COM)
 
-_ldadd_com      +=
+_ldadd_com      += $(top_builddir)/src/mcu/at/$(_mcu_type)/libat_mcu_os.la
 
-libhy_mcu_os_la_SOURCES   = $(_sources_com)
-libhy_mcu_os_la_CPPFLAGS  = $(_cppflags_com)
-libhy_mcu_os_la_CFLAGS    = $(_cflags_com)
-libhy_mcu_os_la_CXXFLAGS  = $(_cxxflags_com)
-libhy_mcu_os_la_LDFLAGS   = $(_ldflags_com)
-libhy_mcu_os_la_LIBADD    = $(_ldadd_com)
-
+libmcu_os_la_SOURCES  = $(_sources_com)
+libmcu_os_la_CPPFLAGS = $(_cppflags_com)
+libmcu_os_la_CFLAGS   = $(_cflags_com)
+libmcu_os_la_CXXFLAGS = $(_cxxflags_com)
+libmcu_os_la_LDFLAGS  = $(_ldflags_com)
+libmcu_os_la_LIBADD   = $(_ldadd_com)

@@ -18,7 +18,7 @@
 #     last modified: 19/08 2021 19:13
 # ===============================================================
 
-noinst_LTLIBRARIES = libhy_mcu_os.la
+noinst_LTLIBRARIES = libat_mcu_os.la
 
 # ------------------
 # defining variables
@@ -56,10 +56,10 @@ _ldflags_com    += $(LIB_LDFLAGS_COM)
 
 _ldadd_com      +=
 
-libhy_mcu_os_la_SOURCES   = $(_sources_com)
-libhy_mcu_os_la_CPPFLAGS  = $(_cppflags_com)
-libhy_mcu_os_la_CFLAGS    = $(_cflags_com)
-libhy_mcu_os_la_CXXFLAGS  = $(_cxxflags_com)
-libhy_mcu_os_la_LDFLAGS   = $(_ldflags_com)
-libhy_mcu_os_la_LIBADD    = $(_ldadd_com)
+libat_mcu_os_la_SOURCES   = $(_sources_com)
+libat_mcu_os_la_CPPFLAGS  = $(_cppflags_com)
+libat_mcu_os_la_CFLAGS    = $(_cflags_com)
+libat_mcu_os_la_CXXFLAGS  = $(_cxxflags_com)
+libat_mcu_os_la_LDFLAGS   = $(_ldflags_com)
+libat_mcu_os_la_LIBADD    = $(_ldadd_com)
 

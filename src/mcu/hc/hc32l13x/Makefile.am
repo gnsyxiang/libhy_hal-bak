@@ -18,17 +18,7 @@
 #     last modified: 09/07 2021 15:30
 # ===============================================================
 
-if COMPILE_SELECT_MCU_AT
-_mcu_vender = at
-endif
-
-if COMPILE_SELECT_MCU_HC
-_mcu_vender = hc
-endif
-
-SUBDIRS = $(_mcu_vender)
-
-noinst_LTLIBRARIES = libhy_os.la
+noinst_LTLIBRARIES = libhc_mcu_os.la
 
 # ------------------
 # defining variables
@@ -45,15 +35,19 @@ _ldadd_com      =
 # ---------------------
 # add necessary content
 # ---------------------
-_no_error_com   += -Wno-error=address
+_no_error_com   += -Wno-error=int-conversion
 
 _include_com    += -I$(top_srcdir)/include
 
 _include_com    += $(HY_MCU_INCS)
 
 _sources_com    += \
-                   hy_timer.c \
-                   hy_key.c
+                   hy_adc.c \
+                   hy_gpio.c \
+                   hy_gpio_int.c \
+                   hy_system.c \
+                   hy_time.c \
+                   hy_uart.c
 
 _cppflags_com   += \
                    $(CPPFLAGS_COM) \
@@ -66,12 +60,12 @@ _cxxflags_com   += $(CXXFLAGS_COM)
 
 _ldflags_com    += $(LIB_LDFLAGS_COM)
 
-_ldadd_com      += $(top_builddir)/src/mcu/$(_mcu_vender)/libmcu_os.la
+_ldadd_com      +=
 
-libhy_os_la_SOURCES   = $(_sources_com)
-libhy_os_la_CPPFLAGS  = $(_cppflags_com)
-libhy_os_la_CFLAGS    = $(_cflags_com)
-libhy_os_la_CXXFLAGS  = $(_cxxflags_com)
-libhy_os_la_LDFLAGS   = $(_ldflags_com)
-libhy_os_la_LIBADD    = $(_ldadd_com)
+libhc_mcu_os_la_SOURCES   = $(_sources_com)
+libhc_mcu_os_la_CPPFLAGS  = $(_cppflags_com)
+libhc_mcu_os_la_CFLAGS    = $(_cflags_com)
+libhc_mcu_os_la_CXXFLAGS  = $(_cxxflags_com)
+libhc_mcu_os_la_LDFLAGS   = $(_ldflags_com)
+libhc_mcu_os_la_LIBADD    = $(_ldadd_com)
 

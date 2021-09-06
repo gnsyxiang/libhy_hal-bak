@@ -73,9 +73,11 @@ AC_CONFIG_FILES([Makefile
                  src/linux/Makefile
                  src/mac/Makefile
                  src/mcu/Makefile
-                 src/mcu/at32f4xx/Makefile
-                 src/mcu/hc32f003/Makefile
-                 src/mcu/hc32l13x/Makefile
+                 src/mcu/at/Makefile
+                 src/mcu/at/at32f4xx/Makefile
+                 src/mcu/hc/Makefile
+                 src/mcu/hc/hc32f003/Makefile
+                 src/mcu/hc/hc32l13x/Makefile
                  src/rtos/Makefile
                  src/window/Makefile])
 AC_OUTPUT

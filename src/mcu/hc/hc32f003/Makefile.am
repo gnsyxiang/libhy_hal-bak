@@ -18,7 +18,7 @@
 #     last modified: 06/09 2021 08:34
 # ===============================================================
 
-noinst_LTLIBRARIES = libhy_mcu_os.la
+noinst_LTLIBRARIES = libhc_mcu_os.la
 
 # ------------------
 # defining variables
@@ -39,7 +39,10 @@ _include_com    += -I$(top_srcdir)/include
 _include_com    += $(HY_MCU_INCS)
 
 _sources_com    += \
-                   hy_gpio.c
+                   hy_gpio.c \
+                   hy_system.c \
+                   hy_time.c \
+                   hy_uart.c
 
 _cppflags_com   += \
                    $(CPPFLAGS_COM) \
@@ -53,10 +56,9 @@ _ldflags_com    += $(LIB_LDFLAGS_COM)
 
 _ldadd_com      +=
 
-libhy_mcu_os_la_SOURCES   = $(_sources_com)
-libhy_mcu_os_la_CPPFLAGS  = $(_cppflags_com)
-libhy_mcu_os_la_CFLAGS    = $(_cflags_com)
-libhy_mcu_os_la_CXXFLAGS  = $(_cxxflags_com)
-libhy_mcu_os_la_LDFLAGS   = $(_ldflags_com)
-libhy_mcu_os_la_LIBADD    = $(_ldadd_com)
-
+libhc_mcu_os_la_SOURCES   = $(_sources_com)
+libhc_mcu_os_la_CPPFLAGS  = $(_cppflags_com)
+libhc_mcu_os_la_CFLAGS    = $(_cflags_com)
+libhc_mcu_os_la_CXXFLAGS  = $(_cxxflags_com)
+libhc_mcu_os_la_LDFLAGS   = $(_ldflags_com)
+libhc_mcu_os_la_LIBADD    = $(_ldadd_com)

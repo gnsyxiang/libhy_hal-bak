@@ -60,7 +60,9 @@ CPPFLAGS_COM        += \
                        $(_no_error_com) \
                        $(ACLOCAL_AMFLAGS)
 
+if COMPILE_SELECT_TARGET_OS_LINUX
 BIN_LDFLAGS_COM     += -rdynamic
+endif
 
 _remove_unuse_func  += \
                        -ffunction-sections \
@@ -97,3 +99,8 @@ _dist_files_com     += \
                        @project_name@.pc.in
 EXTRA_DIST          = $(_dist_files_com)
 
+if COMPILE_SELECT_TARGET_OS_MCU
+install-exec-hook:
+	sed -i 's/-lhy_hal/-lhy_hal -lhy_mcu/g' \
+		$(top_builddir)/@project_name@.pc
+endif
